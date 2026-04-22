@@ -1,0 +1,75 @@
+# ============================================================
+# Visual Studio - Carpetas de build y salida
+# ============================================================
+ARM64/
+x64/
+Debug/
+Release/
+
+# ============================================================
+# Visual Studio - Archivos de IDE y solucion
+# ============================================================
+.vs/
+*.user
+*.suo
+*.aps
+*.ncb
+*.sdf
+*.opensdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+ipch/
+
+# ============================================================
+# VS Code - Configuracion local del editor
+# ============================================================
+.vscode/
+
+# ============================================================
+# Archivos intermedios de compilacion MSVC
+# ============================================================
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.idb
+*.iobj
+*.ipdb
+*.pch
+*.res
+*.manifest
+*.map
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.vspscc
+*.vssscc
+*.tlog
+*.log
+*.lastbuildstate
+unsuccessfulbuild
+
+# ============================================================
+# IntelliSense / Browse info
+# ============================================================
+*.bsc
+Browse.VC.db
+
+# ============================================================
+# Binarios compilados (las DLLs de dependencia si se versionan)
+# ============================================================
+*.exe
+
+# ============================================================
+# CMake
+# ============================================================
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
