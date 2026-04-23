@@ -23,6 +23,7 @@ Pr�ctica 7: Iluminaci�n 1
 #include "dependencias/Camera.h"
 #include "dependencias/Texture.h"
 #include "dependencias/Skybox.h"
+#include "dependencias/Model.h"
 
 //para iluminaci�n
 #include "dependencias/CommonValues.h"
@@ -38,7 +39,11 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 
-Texture pisoTexture;
+// Modelo del oceano (reemplaza el piso)
+Model oceanModel;
+
+// Modelo de la isla
+Model islandModel;
 
 Skybox skybox;
 
@@ -58,29 +63,6 @@ static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
 
-
-
-void CreateObjects()
-{
-	unsigned int floorIndices[] = {
-		0, 2, 1,
-		1, 2, 3
-	};
-
-	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	 0.0f,  0.0f,	0.0f, -1.0f, 0.0f,
-		 10.0f, 0.0f, -10.0f,	10.0f,  0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f,  10.0f,	 0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		 10.0f, 0.0f,  10.0f,	10.0f, 10.0f,	0.0f, -1.0f, 0.0f
-	};
-
-	// meshList[0] = piso
-	Mesh* obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);
-}
-
-
 void CreateShaders()
 {
 	Shader* shader1 = new Shader();
@@ -93,13 +75,15 @@ int main()
 {
 	mainWindow = Window(1366, 768);
 	mainWindow.Initialise();
-	CreateObjects();
 	CreateShaders();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 
-	pisoTexture = Texture("Textures/piso.tga");
-	pisoTexture.LoadTextureA();
+	// Cargar modelo del oceano
+	oceanModel.LoadModel("Models/ocean.obj");
+
+	// Cargar modelo de la isla
+	islandModel.LoadModel("Models/island.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -112,14 +96,15 @@ int main()
 
 	Material_opaco = Material(0.3f, 4);
 
-	// luz direccional - siempre debe existir
+	// luz direccional - simula luz solar desde arriba
 	mainLight = DirectionalLight(
-		1.0f, 1.0f, 1.0f,
-		0.5f, 0.3f,
-		0.0f, 0.0f, -1.0f);
+		1.0f, 1.0f, 1.0f,  // color blanco
+		0.5f, 0.8f,         // ambiente moderada para evitar sombras negras, difusa fuerte tipo sol
+		0.0f, -1.0f, 0.0f); // apunta hacia abajo (luz viene desde arriba)
 
 	unsigned int spotLightCount = 0;
-	// linterna ligada a la camara
+	// linterna ligada a la camara (desactivada)
+	/*
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		0.0f, 2.0f,
 		0.0f, 0.0f, 0.0f,
@@ -127,6 +112,7 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		5.0f);
 	spotLightCount++;
+	*/
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -136,7 +122,6 @@ int main()
 
 	glm::mat4 model(1.0);
 	glm::vec3 color(1.0f, 1.0f, 1.0f);
-	glm::vec3 lowerLight;
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -169,27 +154,34 @@ int main()
 			camera.getCameraPosition().y,
 			camera.getCameraPosition().z);
 
-		// linterna ligada a la camara
-		lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		// Piso
+		// Oceano (reemplaza el piso)
+		// El modelo mide ~20 unidades en X/Z; el piso anterior cubria 300 (quad 10 * scale 30)
+		// Factor de escala: 300 / 20 = 15
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 1.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		pisoTexture.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[0]->RenderMesh();
+		oceanModel.RenderModel();
 
-		glUseProgram(0);
-		mainWindow.swapBuffers();
+		// Isla centrada en la escena
+		// El mar ocupa 400 unidades (ocean ~20 * escala 10 * 2); 80% = 320 unidades
+		// La isla mide ~0.256 unidades en su lado mayor (Z), escala = 320 / 0.256 = 1250
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, -13.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1250.0f, 1250.0f, 1250.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		islandModel.RenderModel();
+
+		glUseProgram(0);		mainWindow.swapBuffers();
 	}
 
 	return 0;
