@@ -45,6 +45,9 @@ Model oceanModel;
 // Modelo de la isla
 Model islandModel;
 
+// Modelo forerunner (cuadrante sur-este de la isla)
+Model forerunnerModel;
+
 Skybox skybox;
 
 Material Material_opaco;
@@ -56,6 +59,7 @@ static double limitFPS = 1.0 / 60.0;
 // luz direccional
 DirectionalLight mainLight;
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+PointLight pointLights[MAX_POINT_LIGHTS];
 
 // Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
@@ -85,6 +89,9 @@ int main()
 	// Cargar modelo de la isla
 	islandModel.LoadModel("Models/island.obj");
 
+	// Cargar modelo forerunner
+	forerunnerModel.LoadModel("Models/forerunner.obj");
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
@@ -113,6 +120,25 @@ int main()
 		5.0f);
 	spotLightCount++;
 	*/
+
+	// Luz roja al norte (Z negativo) y azul al sur (Z positivo)
+	unsigned int pointLightCount = 0;
+
+	// Norte: luz roja en Z negativo
+	pointLights[0] = PointLight(
+		1.0f, 0.0f, 0.0f,    // color rojo
+		0.5f, 1.0f,           // ambient, diffuse
+		0.0f, 10.0f, -200.0f, // posicion norte
+		0.3f, 0.02f, 0.001f); // atenuacion
+	pointLightCount++;
+
+	// Sur: luz azul en Z positivo
+	pointLights[1] = PointLight(
+		0.0f, 0.0f, 1.0f,    // color azul
+		0.5f, 1.0f,           // ambient, diffuse
+		0.0f, 10.0f, 200.0f,  // posicion sur
+		0.3f, 0.02f, 0.001f); // atenuacion
+	pointLightCount++;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -155,13 +181,12 @@ int main()
 			camera.getCameraPosition().z);
 
 		shaderList[0].SetDirectionalLight(&mainLight);
+		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		// Oceano (reemplaza el piso)
-		// El modelo mide ~20 unidades en X/Z; el piso anterior cubria 300 (quad 10 * scale 30)
-		// Factor de escala: 300 / 20 = 15
+		// Oceano - por debajo del punto 0 (superficie de la isla)
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -25.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 1.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -169,17 +194,27 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		oceanModel.RenderModel();
 
-		// Isla centrada en la escena
-		// El mar ocupa 400 unidades (ocean ~20 * escala 10 * 2); 80% = 320 unidades
-		// La isla mide ~0.256 unidades en su lado mayor (Z), escala = 320 / 0.256 = 1250
+		// Isla centrada en la escena - superficie en Y = 0
+		// La isla mide ~0.0204u de alto * escala 1250 = ~25.5u, bajada para que su tope quede en 0
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -13.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -28.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1250.0f, 1250.0f, 1250.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		islandModel.RenderModel();
+
+		// Forerunner en el cuadrante sur-este de la isla (X+, Z+)
+		// Y = 0.0 -> superficie de la isla = punto 0 de altura
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, -5.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		forerunnerModel.RenderModel();
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
