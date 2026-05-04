@@ -28,8 +28,12 @@ Pr�ctica 7: Iluminaci�n 1
 //para iluminaci�n
 #include "dependencias/CommonValues.h"
 #include "dependencias/DirectionalLight.h"
+#include "dependencias/PointLight.h"
 #include "dependencias/SpotLight.h"
 #include "dependencias/Material.h"
+
+// Modulos de integrantes
+#include "Integrantes/Isra/vias_tren.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -47,6 +51,9 @@ Model islandModel;
 
 // Modelo forerunner (cuadrante sur-este de la isla)
 Model forerunnerModel;
+
+// Vias del tren (modulo Isra)
+ViasTren viasTren;
 
 Skybox skybox;
 
@@ -91,6 +98,9 @@ int main()
 
 	// Cargar modelo forerunner
 	forerunnerModel.LoadModel("Models/forerunner.obj");
+
+	// Inicializar vias del tren
+	viasTren.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -199,16 +209,20 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -28.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1250.0f, 1250.0f, 1250.0f));
+		glm::mat4 islandTransform = model; // Guardar para jerarquia
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		islandModel.RenderModel();
 
+		// Vias del tren (jerarquicamente sobre la isla)
+		viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
+
 		// Forerunner en el cuadrante sur-este de la isla (X+, Z+)
-		// Y = 0.0 -> superficie de la isla = punto 0 de altura
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, -5.0f, 70.0f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));

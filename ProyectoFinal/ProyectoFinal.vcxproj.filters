@@ -54,6 +54,12 @@
     <ClCompile Include="dependencias\Window.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Integrantes\Isra\halo.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Isra\vias_tren.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencias\Camera.h">
