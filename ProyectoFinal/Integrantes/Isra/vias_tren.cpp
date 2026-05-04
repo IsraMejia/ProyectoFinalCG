@@ -12,9 +12,9 @@ ViasTren::ViasTren()
 	railWidth = 0.003f;   // ancho del riel
 	railHeight = 0.002f;  // alto del riel
 
-	// Dimensiones de los ovalos - reducido 6%
-	outerRadiusX = 0.07941f;  // 94% de 0.08448
-	outerRadiusZ = 0.05956f;  // 94% de 0.06336
+	// Dimensiones de los ovalos - optimizado para aprovechar espacio sin salirse
+	outerRadiusX = 0.08604f;  // 102% de 0.08448
+	outerRadiusZ = 0.06463f;  // 102% de 0.06336
 
 	// Separacion entre rieles
 	float separation = 0.006f;
@@ -285,9 +285,9 @@ void ViasTren::Render(GLuint uniformModel, GLuint uniformColor,
 	// Altura de la isla en espacio local - 1 unidad mas abajo
 	float islandHeight = 0.0194f + 0.001f - 0.0008f;
 
-	// Offset para mover las vias: izquierda (X-) y arriba (Z-)
-	float offsetX = -0.005f;  // mover a la izquierda
-	float offsetZ = -0.015f;  // mover hacia arriba (Z negativo)
+	// Offset para centrar las vias en la isla
+	float offsetX = 0.0f;     // centrado en X
+	float offsetZ = -0.010f;  // ligeramente hacia arriba (Z negativo)
 
 	const float PI = 3.14159265f;
 
