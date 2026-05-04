@@ -1,22 +1,12 @@
-# Guía de Código Modular - Proyecto Final
+# Guía Modular - Proyecto Final
 
-## Objetivo
-Mantener `main.cpp` limpio y legible, moviendo la lógica de cada elemento a módulos separados en `Integrantes/<nombre>/`.
+## Regla: 1 línea por feature en main.cpp
 
-## Estructura de Archivos
+Cada modelo/feature debe estar en su propio módulo: `Integrantes/<Nombre>/<modulo>.h/.cpp`
 
-```
-ProyectoFinal/
-├── main.cpp                          # Solo declaraciones e inicialización
-├── Integrantes/
-│   └── <Nombre>/
-│       ├── <modulo>.h                # Header con clase
-│       └── <modulo>.cpp              # Implementación completa
-```
+## Patrón Rápido
 
-## Patrón de Modularización
-
-### 1. Crear Header (.h)
+### 1. Header (.h)
 ```cpp
 #pragma once
 #include <glew.h>
@@ -24,130 +14,104 @@ ProyectoFinal/
 #include "../../dependencias/Model.h"
 #include "../../dependencias/Material.h"
 
-class MiModulo
-{
+class MiModulo {
 public:
     MiModulo();
-    ~MiModulo();
-    
-    void Initialize();  // Carga modelos/genera geometría
+    void Initialize();
     void Render(GLuint uniformModel, GLuint uniformColor,
                 GLuint uniformSpecularIntensity, GLuint uniformShininess,
-                const glm::mat4& parentTransform, const float toRadians);
-
+                const float toRadians);
 private:
     Model modelo;
     Material material;
-    // ... otros miembros privados
+    glm::vec3 position, scale;
+    float rotationY;
 };
 ```
 
-### 2. Implementar (.cpp)
+### 2. Implementación (.cpp)
 ```cpp
 #include "mimodulo.h"
 
-MiModulo::MiModulo()
-{
-    // Inicializar parámetros (posición, escala, etc.)
+MiModulo::MiModulo() {
+    position = glm::vec3(x, y, z);
+    scale = glm::vec3(sx, sy, sz);
+    rotationY = angulo;
+    material = Material(0.3f, 4);
 }
 
-void MiModulo::Initialize()
-{
-    // Cargar modelos o generar geometría procedural
+void MiModulo::Initialize() {
     modelo.LoadModel("Models/mimodelo.obj");
 }
 
-void MiModulo::Render(...)
-{
-    // Aplicar transformaciones y renderizar
-    glm::mat4 model = parentTransform;
-    model = glm::translate(model, posicion);
-    model = glm::rotate(model, rotacion, eje);
-    model = glm::scale(model, escala);
+void MiModulo::Render(GLuint uniformModel, GLuint uniformColor,
+    GLuint uniformSpecularIntensity, GLuint uniformShininess,
+    const float toRadians) {
+    
+    glm::mat4 model(1.0);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, rotationY * toRadians, glm::vec3(0,1,0));
+    model = glm::scale(model, scale);
     
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+    glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1,1,1)));
     material.UseMaterial(uniformSpecularIntensity, uniformShininess);
     modelo.RenderModel();
 }
 ```
 
-### 3. Usar en main.cpp
-
-**Incluir header:**
+### 3. En main.cpp (4 líneas total)
 ```cpp
-#include "Integrantes/<Nombre>/<modulo>.h"
+#include "Integrantes/<Nombre>/<modulo>.h"  // 1. Include
+MiModulo miModulo;                          // 2. Declarar global
+miModulo.Initialize();                      // 3. En main(), antes del loop
+miModulo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians); // 4. En loop
 ```
 
-**Declarar globalmente:**
+## Ejemplo Real: HaloForerunner
+
+**Antes (13 líneas en main.cpp):**
 ```cpp
-MiModulo miModulo;
+Model forerunnerModel;
+forerunnerModel.LoadModel("Models/forerunner.obj");
+// En loop:
+model = glm::mat4(1.0);
+model = glm::translate(model, glm::vec3(70.0f, -5.0f, 70.0f));
+model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0,1,0));
+model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+// ... más código
 ```
 
-**Inicializar (en main, antes del loop):**
+**Después (1 línea en main.cpp):**
 ```cpp
-miModulo.Initialize();
+haloForerunner.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 ```
 
-**Renderizar (en el loop, 1 línea):**
+Ver `Integrantes/Isra/halo.h` y `halo.cpp` para implementación completa.
+
+---
+
+## Jerarquía (opcional)
+
+Si tu feature va sobre otro objeto (ej: vías sobre isla):
+
 ```cpp
-miModulo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, parentTransform, toRadians);
+// En Render(), recibe parentTransform:
+void Render(..., const glm::mat4& parentTransform, ...) {
+    glm::mat4 model = parentTransform;  // Heredar
+    model = glm::translate(model, offsetLocal);
+    // ...
+}
 ```
 
-## Jerarquía de Transformaciones
+## Checklist
 
-Para elementos que dependen de otro (ej: vías sobre la isla):
+- [ ] Crear `.h` y `.cpp` en `Integrantes/<Nombre>/`
+- [ ] Include en `main.cpp`
+- [ ] Declarar instancia global
+- [ ] Llamar `Initialize()` antes del loop
+- [ ] Llamar `Render()` en el loop (1 línea)
+- [ ] Agregar `.cpp` al proyecto Visual Studio
 
-```cpp
-// En main.cpp - guardar transformación del padre
-glm::mat4 islandTransform = model;
-islandModel.RenderModel();
-
-// Pasar al hijo
-viasTren.Render(..., islandTransform, ...);
-```
-
-En el módulo hijo:
-```cpp
-glm::mat4 model = parentTransform;  // Heredar transformación
-model = glm::translate(model, offsetLocal);  // Aplicar offset local
-```
-
-## Ejemplos en el Proyecto
-
-### ViasTren (Geometría Procedural)
-- **Archivos**: `Integrantes/Isra/vias_tren.h`, `vias_tren.cpp`
-- **En main.cpp**: 3 líneas (include, declaración, Initialize, Render)
-- **Genera**: Anillos ovalados + tablas mediante vértices
-- **Jerarquía**: Hereda transformación de `islandTransform`
-
-### Forerunner (Modelo 3D)
-- **En main.cpp**: Código inline (puede modularizarse igual)
-- **Carga**: `forerunnerModel.LoadModel("Models/forerunner.obj")`
-- **Render**: Transformaciones + `RenderModel()`
-
-## Ventajas
-
-✅ **main.cpp limpio**: Solo 1-3 líneas por elemento  
-✅ **Código aislado**: Cambios no afectan otros módulos  
-✅ **Reutilizable**: Fácil copiar patrón para nuevos elementos  
-✅ **Legible para AI**: Archivos pequeños, contexto claro  
-✅ **Escalable**: Agregar elementos sin saturar main.cpp  
-
-## Notas Importantes
-
-- **Visual Studio**: Agregar `.cpp` al proyecto manualmente (Add → Existing Item)
-- **Paths relativos**: Headers usan `../../dependencias/`
-- **Auto-inicialización**: Opcional en `Render()` si se olvida `Initialize()`
-- **Parámetros uniformes**: Pasar todos los uniforms necesarios al `Render()`
-- **Material propio**: Cada módulo puede tener su propio `Material`
-
-## Checklist para Nuevo Módulo
-
-1. [ ] Crear `Integrantes/<Nombre>/<modulo>.h`
-2. [ ] Crear `Integrantes/<Nombre>/<modulo>.cpp`
-3. [ ] Definir clase con `Initialize()` y `Render()`
-4. [ ] Include en `main.cpp`
-5. [ ] Declarar instancia global
-6. [ ] Llamar `Initialize()` antes del loop
-7. [ ] Llamar `Render()` en el loop (1 línea)
-8. [ ] Agregar `.cpp` al proyecto de Visual Studio
+✅ **Resultado:** main.cpp limpio, código reutilizable, fácil para Kiro
