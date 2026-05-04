@@ -39,6 +39,9 @@ private:
 	Material tieMaterial;
 
 	// Parametros de las vias
+	float scaleFactorVias; // Factor de escala para ajustar todas las dimensiones (1.0 = base, 2.0 = doble)
+	float scaleFactorY;    // Factor de escala solo para el eje Y (altura de rieles y maderas)
+	float offsetY;         // Desplazamiento en Y para toda la via (positivo = arriba, negativo = abajo)
 	float railWidth;      // ancho de la seccion transversal del riel
 	float railHeight;     // alto de la seccion transversal del riel
 	float outerRadiusX;   // radio exterior del ovalo en X

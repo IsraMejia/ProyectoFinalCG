@@ -54,10 +54,13 @@
     <ClCompile Include="dependencias\Window.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="Integrantes\Isra\halo.cpp">
+    <ClCompile Include="Integrantes\Isra\vias_tren.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="Integrantes\Isra\vias_tren.cpp">
+    <ClCompile Include="Integrantes\Isra\torreforerunner.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Isra\estacion_tren.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

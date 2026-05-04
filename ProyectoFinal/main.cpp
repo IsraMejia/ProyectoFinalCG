@@ -34,7 +34,8 @@ Pr�ctica 7: Iluminaci�n 1
 
 // Modulos de integrantes
 #include "Integrantes/Isra/vias_tren.h"
-#include "Integrantes/Isra/halo.h"
+#include "Integrantes/Isra/estacion_tren.h"
+#include "Integrantes/Isra/torreforerunner.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -52,6 +53,9 @@ Model islandModel;
 
 // Vias del tren (modulo Isra)
 ViasTren viasTren;
+
+// Estacion de tren (modulo Isra)
+EstacionTren estacionTren;
 
 // Forerunner (modulo Isra)
 HaloForerunner haloForerunner;
@@ -99,6 +103,9 @@ int main()
 
 	// Inicializar vias del tren
 	viasTren.Initialize();
+
+	// Inicializar estacion de tren
+	estacionTren.Initialize();
 
 	// Inicializar forerunner
 	haloForerunner.Initialize();
@@ -198,7 +205,7 @@ int main()
 
 
 
-		
+
 		// Oceano - por debajo del punto 0 (superficie de la isla)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -25.0f, 0.0f));
@@ -227,6 +234,9 @@ int main()
 
 		// Vias del tren (jerarquicamente sobre la isla)
 		viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
+
+		// Estacion de tren (entre vias y torre forerunner)
+		estacionTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Forerunner en el cuadrante sur-este de la isla
 		haloForerunner.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);

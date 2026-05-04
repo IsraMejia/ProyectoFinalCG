@@ -8,27 +8,51 @@ ViasTren::ViasTren()
 	tieMesh = nullptr;
 	initialized = false;
 
-	// Dimensiones de la seccion transversal del riel
-	railWidth = 0.003f;   // ancho del riel
-	railHeight = 0.002f;  // alto del riel
+	// *** VARIABLE DE ESCALA PRINCIPAL ***
+	// Ajusta este valor para cambiar todas las dimensiones proporcionalmente
+	// 1.0 = tamaño base, 2.0 = doble tamaño, 0.5 = mitad del tamaño
+	scaleFactorVias = 0.3f;  // Actualmente configurado al doble
+
+	// *** VARIABLE DE ESCALA EN Y (ALTURA) ***
+	// Ajusta este valor para cambiar solo la altura de rieles y maderas
+	// 1.0 = altura base, 4.0 = cuatro veces más alto
+	scaleFactorY = 4.7f;  // Actualmente configurado 4X más alto
+
+	// *** VARIABLE DE DESPLAZAMIENTO EN Y ***
+	// Ajusta este valor para mover toda la via arriba o abajo
+	// Valores positivos = arriba, valores negativos = abajo
+	offsetY = 150.0f;  // Sin desplazamiento inicial
+
+	// Dimensiones base de la seccion transversal del riel
+	float baseRailWidth = 0.00042f;
+	float baseRailHeight = 0.00063f;
+
+	// Aplicar escala a las dimensiones del riel
+	railWidth = baseRailWidth * scaleFactorVias;
+	railHeight = baseRailHeight * scaleFactorVias * scaleFactorY;  // Aplicar escala adicional en Y
 
 	// Dimensiones de los ovalos - optimizado para aprovechar espacio sin salirse
 	outerRadiusX = 0.08604f;  // 102% de 0.08448
 	outerRadiusZ = 0.06463f;  // 102% de 0.06336
 
-	// Separacion entre rieles
-	float separation = 0.006f;
+	// Dimensiones base de las tablas de madera
+	float baseTieWidth = 0.00042f;
+	float baseTieHeight = 0.00063f;
+	float baseTieLength = 0.006f;  // longitud base de la madera
+
+	// Aplicar escala a las dimensiones de las maderas
+	tieWidth = baseTieWidth * scaleFactorVias;
+	tieHeight = baseTieHeight * scaleFactorVias * (scaleFactorY * 0.5f);  // Mitad de la escala Y (50%)
+	tieLength = baseTieLength * scaleFactorVias;
+
+	// La separacion entre rieles debe ser igual a la longitud de las maderas
+	float separation = tieLength;
 
 	innerRadiusX = outerRadiusX - separation;
 	innerRadiusZ = outerRadiusZ - separation;
 
 	// Numero de segmentos para suavidad
 	numSegments = 120;
-
-	// Dimensiones de las tablas de madera - 30% mas pequeñas
-	tieWidth = 0.0007f;    // ancho de la tabla (70% de 0.001)
-	tieHeight = 0.00105f;  // alto de la tabla (70% de 0.0015)
-	tieLength = (separation + railWidth + 0.002f) * 0.7f; // largo reducido 30%
 
 	// Material metalico plateado para los rieles
 	railMaterial = Material(1.0f, 64); // alta especularidad para metal plateado
@@ -304,8 +328,8 @@ void ViasTren::Render(GLuint uniformModel, GLuint uniformColor,
 	railMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 	innerRailMesh->RenderMesh();
 
-	// Renderizar tablas de madera cada 5 grados (360/5 = 72 tablas)
-	int numTies = 72;
+	// Renderizar tablas de madera - CUÁDRUPLE cantidad (288 tablas)
+	int numTies = 288;  // Cuadruplicado de 72 (doble del doble anterior)
 	for (int i = 0; i < numTies; i++)
 	{
 		float angle = (2.0f * PI * i) / numTies;
@@ -324,7 +348,7 @@ void ViasTren::Render(GLuint uniformModel, GLuint uniformColor,
 		float tangentAngle = atan2(dx, dz);
 
 		// Posicionar tabla en el punto mas alto (encima de los rieles)
-		float tieY = islandHeight + railHeight / 2.0f;
+		float tieY = islandHeight + railHeight / 3.5f;
 
 		model = islandTransform;
 		model = glm::translate(model, glm::vec3(x + offsetX, tieY, z + offsetZ));

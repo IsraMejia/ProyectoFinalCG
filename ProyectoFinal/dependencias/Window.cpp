@@ -45,7 +45,7 @@ int Window::Initialise()
 	height = (GLint)(videoMode->height * 0.8f);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "Practica 08: Iluminacion    -   Israel Hipolito Mejia Alba  ", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
 
 	if (!mainWindow)
 	{
