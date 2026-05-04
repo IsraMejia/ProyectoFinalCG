@@ -39,6 +39,8 @@
     <ClCompile Include="dependencias\SpotLight.cpp" />
     <ClCompile Include="dependencias\Texture.cpp" />
     <ClCompile Include="dependencias\Window.cpp" />
+    <ClCompile Include="Integrantes\Isra\halo.cpp" />
+    <ClCompile Include="Integrantes\Isra\vias_tren.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
