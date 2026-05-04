@@ -25,10 +25,10 @@ ViasTren::ViasTren()
 	// Numero de segmentos para suavidad
 	numSegments = 120;
 
-	// Dimensiones de las tablas de madera
-	tieWidth = 0.001f;    // ancho de la tabla (mas delgado)
-	tieHeight = 0.0015f;  // alto de la tabla
-	tieLength = separation + railWidth + 0.002f; // largo para cubrir entre rieles
+	// Dimensiones de las tablas de madera - 30% mas pequeñas
+	tieWidth = 0.0007f;    // ancho de la tabla (70% de 0.001)
+	tieHeight = 0.00105f;  // alto de la tabla (70% de 0.0015)
+	tieLength = (separation + railWidth + 0.002f) * 0.7f; // largo reducido 30%
 
 	// Material metalico plateado para los rieles
 	railMaterial = Material(1.0f, 64); // alta especularidad para metal plateado
