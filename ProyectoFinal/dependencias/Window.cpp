@@ -38,11 +38,13 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	// Obtener resolucion del monitor primario y calcular 90% de la pantalla
+	// Obtener resolucion del monitor primario y calcular dimensiones
 	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-	width  = (GLint)(videoMode->width  * 0.9f);
-	height = (GLint)(videoMode->height * 0.8f);
+	
+	// Ventana ocupa mitad derecha con 5% de margen arriba y abajo
+	width  = (GLint)(videoMode->width  * 0.5f);  // 50% del ancho (mitad derecha)
+	height = (GLint)(videoMode->height * 0.9f);  // 90% del alto (5% arriba, 5% abajo)
 
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
@@ -80,25 +82,25 @@ int Window::Initialise()
 							 //Asignar Viewport
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	
-	// Establecer color de fondo negro para evitar el blanco inicial
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	// Establecer color de fondo verde oscuro casi gris (RGB: 40, 50, 45)
+	glClearColor(0.157f, 0.196f, 0.176f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glfwSwapBuffers(mainWindow);
 	//Callback para detectar que se est� usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
 
-	// Centrar la ventana en el monitor
+	// Posicionar la ventana en la mitad derecha del monitor con 5% de margen arriba
 	int monitorX, monitorY;
 	glfwGetMonitorPos(primaryMonitor, &monitorX, &monitorY);
-	glfwSetWindowPos(mainWindow,
-		monitorX + (videoMode->width  - width)  / 2,
-		monitorY + (videoMode->height - height) / 2);
+	int windowPosX = monitorX + (videoMode->width / 2);  // Mitad derecha
+	int windowPosY = monitorY + (int)(videoMode->height * 0.05f);  // 5% de margen arriba
+	glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
 
 	// Centrar el mouse en la ventana al iniciar
 	glfwFocusWindow(mainWindow);
-	glfwSetCursorPos(mainWindow, width / 2.0, height / 2.0);
-	lastX = width / 2.0f;
-	lastY = height / 2.0f;
+	glfwSetCursorPos(mainWindow, (double)(width / 2.0), (double)(height / 2.0));
+	lastX = (GLfloat)(width / 2.0);
+	lastY = (GLfloat)(height / 2.0);
 	mouseFirstMoved = false;
 }
 
@@ -187,16 +189,16 @@ void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)
 
 	if (theWindow->mouseFirstMoved)
 	{
-		theWindow->lastX = xPos;
-		theWindow->lastY = yPos;
+		theWindow->lastX = (GLfloat)xPos;
+		theWindow->lastY = (GLfloat)yPos;
 		theWindow->mouseFirstMoved = false;
 	}
 
-	theWindow->xChange = xPos - theWindow->lastX;
-	theWindow->yChange = theWindow->lastY - yPos;
+	theWindow->xChange = (GLfloat)xPos - theWindow->lastX;
+	theWindow->yChange = theWindow->lastY - (GLfloat)yPos;
 
-	theWindow->lastX = xPos;
-	theWindow->lastY = yPos;
+	theWindow->lastX = (GLfloat)xPos;
+	theWindow->lastY = (GLfloat)yPos;
 }
 
 
