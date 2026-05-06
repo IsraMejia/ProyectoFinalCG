@@ -3,7 +3,7 @@
 HaloForerunner::HaloForerunner()
 {
 	// Posicion en el cuadrante sur-este de la isla (X+, Z+)
-	position = glm::vec3(80.0f, -5.0f, 95.0f);
+	position = glm::vec3(80.0f, -5.0f, 86.0f);
 	scale = glm::vec3(2.50f, 2.50f, 2.50f);
 	rotationY = 110.0f; // grados
 	initialized = false;

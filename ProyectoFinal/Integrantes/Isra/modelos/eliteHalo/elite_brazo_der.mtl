@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd textures/24_Bodysuit_1_0_0_diffuse.jpg
+map_Kd 24_Bodysuit_1_0_0_diffuse.jpg
 
 newmtl _4_FPBase_1_0_0
 Ns 250.000000
@@ -19,7 +19,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd textures/24_FPBase_1_0_0_diffuse.jpg
+map_Kd 24_FPBase_1_0_0_diffuse.jpg
 
 newmtl _6_Gauntlet_0_21_0_0
 Ns 250.000000
@@ -29,7 +29,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd textures/26_Gauntlet_0.21_0_0_diffuse.jpg
+map_Kd 26_Gauntlet_0.21_0_0_diffuse.jpg
 
 newmtl _6_Shoulder_0_21_0_0
 Ns 250.000000
@@ -39,4 +39,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd textures/26_Shoulder_0.21_0_0_diffuse.jpg
+map_Kd 26_Shoulder_0.21_0_0_diffuse.jpg

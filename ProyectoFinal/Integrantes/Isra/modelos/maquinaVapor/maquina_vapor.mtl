@@ -2,9 +2,9 @@
 # www.blender.org
 
 newmtl Material_001
-Ns 0.000000
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.000000 0.000000 0.000000
+Kd 0.200000 0.200000 0.200000
 Ks 0.500000 0.500000 0.500000
 Ke 0.117820 0.117820 0.117820
 Ni 1.500000
@@ -12,11 +12,11 @@ d 1.000000
 illum 3
 
 newmtl Material_0_001
-Ns 0.000000
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.500000
 d 1.000000
-illum 3
-map_Kd textures/Material_0.001_baseColor.jpg
-map_Ke textures/Material_0.001_baseColor.jpg
+illum 2
+map_Kd Material_0.001_baseColor.jpg
