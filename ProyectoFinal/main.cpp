@@ -42,6 +42,8 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/faro.h"
 #include "Integrantes/Isra/gato_gigante.h"
 #include "Integrantes/Isra/big_raven.h"
+#include "Integrantes/Isra/halo_pelican.h"
+#include "Integrantes/Isra/tren.h"
 #include "Integrantes/Isra/camara_position.h"
 
 const float toRadians = 3.14159265f / 180.0f;
@@ -84,6 +86,12 @@ GatoGigante gatoGigante;
 
 // Cuervo gigante (modulo Isra)
 BigRaven bigRaven;
+
+// Pelican de Halo (modulo Isra)
+HaloPelican haloPelican;
+
+// Tren (modulo Isra)
+Tren tren;
 
 Skybox skybox;
 
@@ -159,6 +167,12 @@ int main()
 
 	// Inicializar cuervo gigante
 	bigRaven.Initialize();
+
+	// Inicializar Pelican de Halo
+	haloPelican.Initialize();
+
+	// Inicializar tren
+	tren.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -310,6 +324,12 @@ int main()
 
 		// Cuervo gigante
 		bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Pelican de Halo
+		haloPelican.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Tren
+		tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}

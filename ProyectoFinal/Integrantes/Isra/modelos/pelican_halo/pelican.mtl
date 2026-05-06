@@ -1,0 +1,76 @@
+# Blender 5.1.1 MTL File: 'pelican_session.blend'
+# www.blender.org
+
+newmtl LandingLightBase_0010_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd LandingLightBase.0010_material_baseColor.jpg
+
+newmtl RightDoor0_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd RightDoor0_material_baseColor.jpg
+map_Bump -bm 1.000000 RightDoor0_material_normal_scale0_norm.jpg
+
+newmtl f_blackout0_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd f_blackout0_material_baseColor.jpg
+
+newmtl hull_base1_001_0010_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd hull_base1_001.0010_material_baseColor.jpg
+map_Bump -bm 1.000000 hull_base1_001.0010_material_normal_scale0_norm.jpg
+
+newmtl hull_base1_0100_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd f_blackout0_material_baseColor.jpg
+map_Bump -bm 1.000000 hull_base1_0100_material_normal_scale0_norm.jpg
+
+newmtl hull_stand0_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd hull_stand0_material_baseColor.jpg
+map_Bump -bm 1.000000 hull_stand0_material_normal_scale0_norm.jpg
+
+newmtl rightclamp0_material
+Ns 640.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd rightclamp0_material_baseColor.jpg

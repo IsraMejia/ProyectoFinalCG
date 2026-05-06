@@ -1,0 +1,35 @@
+# Blender 5.1.1 MTL File: 'tren_session.blend'
+# www.blender.org
+
+newmtl lambert6SG
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd lambert6SG_baseColor.jpg
+map_Bump -bm 1.000000 lambert6SG_normal.jpg
+
+newmtl lambert7SG
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd lambert7SG_baseColor.png
+map_d lambert7SG_baseColor.png
+map_Bump -bm 1.000000 lambert7SG_normal.jpg
+
+newmtl lambert8SG
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd lambert6SG_baseColor.jpg
+map_Ke lambert8SG_emissive.jpg
+map_Bump -bm 1.000000 lambert8SG_normal.jpg
