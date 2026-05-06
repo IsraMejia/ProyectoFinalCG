@@ -40,6 +40,8 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/grunt.h"
 #include "Integrantes/Isra/maquina_vapor.h"
 #include "Integrantes/Isra/faro.h"
+#include "Integrantes/Isra/gato_gigante.h"
+#include "Integrantes/Isra/big_raven.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -75,6 +77,12 @@ MaquinaVapor maquinaVapor;
 
 // Faro (modulo Isra)
 Faro faro;
+
+// Gato gigante (modulo Isra)
+GatoGigante gatoGigante;
+
+// Cuervo gigante (modulo Isra)
+BigRaven bigRaven;
 
 Skybox skybox;
 
@@ -112,8 +120,8 @@ int main()
 
 	//Posicion inicial de la camara
 	camera = Camera(
-		glm::vec3(0.0f, 0.0f, 0.0f),  //Posicion inicial 
-		//glm::vec3(30.0f, 5.0f, 90.0f),  //Posicion Halo 
+		//glm::vec3(0.0f, 0.0f, 0.0f),  //Posicion CentroMapa 
+		glm::vec3(10.0f, 0.0f, -140.0f),  //Posicion Dev
 		glm::vec3(0.0f, 1.0f, 0.0f), 
 		-60.0f, 0.0f, 0.3f, 0.5f
 	);
@@ -144,6 +152,12 @@ int main()
 
 	// Inicializar faro
 	faro.Initialize();
+
+	// Inicializar gato gigante
+	gatoGigante.Initialize();
+
+	// Inicializar cuervo gigante
+	bigRaven.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -287,6 +301,12 @@ int main()
 
 		// Faro
 		faro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Gato gigante en el centro de las vias
+		gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Cuervo gigante
+		bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
