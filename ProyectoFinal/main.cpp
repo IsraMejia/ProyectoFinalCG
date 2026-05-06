@@ -42,6 +42,7 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/faro.h"
 #include "Integrantes/Isra/gato_gigante.h"
 #include "Integrantes/Isra/big_raven.h"
+#include "Integrantes/Isra/camara_position.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -49,7 +50,7 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
-Camera camera;
+CameraPositionTracker cameraTracker;
 
 // Modelo del oceano (reemplaza el piso)
 Model oceanModel;
@@ -119,9 +120,9 @@ int main()
 
 
 	//Posicion inicial de la camara
-	camera = Camera(
-		//glm::vec3(0.0f, 0.0f, 0.0f),  //Posicion CentroMapa 
+	cameraTracker.Initialize(
 		glm::vec3(10.0f, 0.0f, -140.0f),  //Posicion Dev
+		//glm::vec3(0.0f, 0.0f, 0.0f),  //Posicion CentroMapa 
 		glm::vec3(0.0f, 1.0f, 0.0f), 
 		-60.0f, 0.0f, 0.3f, 0.5f
 	);
@@ -224,12 +225,14 @@ int main()
 		lastTime = now;
 
 		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		
+		// Actualizar camara con tracking de posicion
+		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
+		Camera* camera = cameraTracker.GetCamera();
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+		skybox.DrawSkybox(camera->calculateViewMatrix(), projection);
 
 		shaderList[0].UseShader();
 		uniformModel             = shaderList[0].GetModelLocation();
@@ -241,11 +244,11 @@ int main()
 		uniformShininess         = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(camera->calculateViewMatrix()));
 		glUniform3f(uniformEyePosition,
-			camera.getCameraPosition().x,
-			camera.getCameraPosition().y,
-			camera.getCameraPosition().z);
+			camera->getCameraPosition().x,
+			camera->getCameraPosition().y,
+			camera->getCameraPosition().z);
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);

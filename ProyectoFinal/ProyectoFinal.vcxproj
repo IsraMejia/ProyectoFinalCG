@@ -40,6 +40,7 @@
     <ClCompile Include="dependencias\Texture.cpp" />
     <ClCompile Include="dependencias\Window.cpp" />
     <ClCompile Include="Integrantes\Isra\big_raven.cpp" />
+    <ClCompile Include="Integrantes\Isra\camara_position.cpp" />
     <ClCompile Include="Integrantes\Isra\elite.cpp" />
     <ClCompile Include="Integrantes\Isra\estacion_tren.cpp" />
     <ClCompile Include="Integrantes\Isra\faro.cpp" />
@@ -63,6 +64,16 @@
     <ClInclude Include="dependencias\Shader_light.h" />
     <ClInclude Include="dependencias\SpotLight.h" />
     <ClInclude Include="dependencias\Window.h" />
+    <ClInclude Include="Integrantes\Isra\big_raven.h" />
+    <ClInclude Include="Integrantes\Isra\camara_position.h" />
+    <ClInclude Include="Integrantes\Isra\elite.h" />
+    <ClInclude Include="Integrantes\Isra\estacion_tren.h" />
+    <ClInclude Include="Integrantes\Isra\faro.h" />
+    <ClInclude Include="Integrantes\Isra\gato_gigante.h" />
+    <ClInclude Include="Integrantes\Isra\grunt.h" />
+    <ClInclude Include="Integrantes\Isra\maquina_vapor.h" />
+    <ClInclude Include="Integrantes\Isra\torreforerunner.h" />
+    <ClInclude Include="Integrantes\Isra\vias_tren.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
