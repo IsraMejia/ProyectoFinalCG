@@ -36,6 +36,10 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/vias_tren.h"
 #include "Integrantes/Isra/estacion_tren.h"
 #include "Integrantes/Isra/torreforerunner.h"
+#include "Integrantes/Isra/elite.h"
+#include "Integrantes/Isra/grunt.h"
+#include "Integrantes/Isra/maquina_vapor.h"
+#include "Integrantes/Isra/faro.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -59,6 +63,18 @@ EstacionTren estacionTren;
 
 // Forerunner (modulo Isra)
 HaloForerunner haloForerunner;
+
+// Elite de Halo (modulo Isra)
+EliteHalo eliteHalo;
+
+// Grunt de Halo (modulo Isra)
+GruntHalo gruntHalo;
+
+// Maquina de vapor (modulo Isra)
+MaquinaVapor maquinaVapor;
+
+// Faro (modulo Isra)
+Faro faro;
 
 Skybox skybox;
 
@@ -93,7 +109,14 @@ int main()
 	mainWindow.Initialise();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+
+	//Posicion inicial de la camara
+	camera = Camera(
+		glm::vec3(0.0f, 0.0f, 0.0f),  //Posicion inicial 
+		//glm::vec3(30.0f, 5.0f, 90.0f),  //Posicion Halo 
+		glm::vec3(0.0f, 1.0f, 0.0f), 
+		-60.0f, 0.0f, 0.3f, 0.5f
+	);
 
 	// Cargar modelo del oceano
 	oceanModel.LoadModel("Models/ocean.obj");
@@ -109,6 +132,18 @@ int main()
 
 	// Inicializar forerunner
 	haloForerunner.Initialize();
+
+	// Inicializar Elite de Halo
+	eliteHalo.Initialize();
+
+	// Inicializar Grunt de Halo
+	gruntHalo.Initialize();
+
+	// Inicializar maquina de vapor
+	maquinaVapor.Initialize();
+
+	// Inicializar faro
+	faro.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -240,6 +275,18 @@ int main()
 
 		// Forerunner en el cuadrante sur-este de la isla
 		haloForerunner.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Elite de Halo entre estacion y torre forerunner
+		eliteHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Grunt de Halo al lado del Elite
+		gruntHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Maquina de vapor frente a la estacion
+		maquinaVapor.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Faro
+		faro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
