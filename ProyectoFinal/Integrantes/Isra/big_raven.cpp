@@ -3,7 +3,7 @@
 BigRaven::BigRaven()
 {
 	// Posicion especificada por el usuario
-	position = glm::vec3(10.0f, 8.50f, -140.0f);
+	position = glm::vec3(10.0f, 8.0f, -140.0f);
 	scale = glm::vec3(100.0f, 100.0f, 100.0f);  // Cuervo grande
 	rotationY = -103.0f; // Sin rotacion inicial
 	initialized = false;
