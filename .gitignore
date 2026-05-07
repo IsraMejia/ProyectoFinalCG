@@ -31,10 +31,7 @@ ipch/
 # ============================================================
 # NOTA: Los archivos .obj de modelos 3D SI deben versionarse
 # Solo ignoramos .obj en carpetas de build
-ARM64/**/*.obj
-x64/**/*.obj
-Debug/**/*.obj
-Release/**/*.obj
+ARM64/**/*.obj 
 *.pdb
 *.ilk
 *.exp
