@@ -20,7 +20,7 @@ void BigRaven::Initialize()
 {
 	if (!initialized)
 	{
-		ravenModel.LoadModel("Integrantes/Isra/modelos/big_raven/raven.obj");
+		ravenModel.LoadModel("Models/raven.obj");
 		initialized = true;
 	}
 }

@@ -22,7 +22,7 @@ void Faro::Initialize()
 {
 	if (!initialized)
 	{
-		faroModel.LoadModel("Integrantes/Isra/modelos/faro/faro.obj");
+		faroModel.LoadModel("Models/faro.obj");
 		initialized = true;
 	}
 }

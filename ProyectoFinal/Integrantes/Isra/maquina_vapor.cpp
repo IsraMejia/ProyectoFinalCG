@@ -22,7 +22,7 @@ void MaquinaVapor::Initialize()
 {
 	if (!initialized)
 	{
-		maquinaModel.LoadModel("Integrantes/Isra/modelos/maquinaVapor/maquina_vapor.obj");
+		maquinaModel.LoadModel("Models/maquina_vapor.obj");
 		initialized = true;
 	}
 }

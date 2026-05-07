@@ -17,10 +17,10 @@ void GruntHalo::Initialize()
 	if (initialized) return;
 
 	// Cargar modelos jerarquicos del Grunt
-	gruntCuerpo.LoadModel("Integrantes/Isra/modelos/grunt/grunt_cuerpo.obj");
-	gruntRostro.LoadModel("Integrantes/Isra/modelos/grunt/grunt_rostro.obj");
-	gruntBrazoDer.LoadModel("Integrantes/Isra/modelos/grunt/grunt_brazo_der.obj");
-	gruntBrazoIzq.LoadModel("Integrantes/Isra/modelos/grunt/grunt_brazo_izq.obj");    
+	gruntCuerpo.LoadModel("Models/grunt_cuerpo.obj");
+	gruntRostro.LoadModel("Models/grunt_rostro.obj");
+	gruntBrazoDer.LoadModel("Models/grunt_brazo_der.obj");
+	gruntBrazoIzq.LoadModel("Models/grunt_brazo_izq.obj");    
 
 	// Material con brillo moderado
 	material = Material(0.5f, 32);

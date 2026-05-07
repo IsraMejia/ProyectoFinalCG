@@ -17,10 +17,10 @@ void EliteHalo::Initialize()
 	if (initialized) return;
 
 	// Cargar modelos jerarquicos del Elite
-	eliteCuerpo.LoadModel("Integrantes/Isra/modelos/eliteHalo/elite_cuerpo.obj");
-	eliteRostro.LoadModel("Integrantes/Isra/modelos/eliteHalo/elite_rostro.obj");
-	eliteBrazoDer.LoadModel("Integrantes/Isra/modelos/eliteHalo/elite_brazo_der.obj");
-	eliteBrazoIzq.LoadModel("Integrantes/Isra/modelos/eliteHalo/elite_brazo_izq.obj");
+	eliteCuerpo.LoadModel("Models/elite_cuerpo.obj");
+	eliteRostro.LoadModel("Models/elite_rostro.obj");
+	eliteBrazoDer.LoadModel("Models/elite_brazo_der.obj");
+	eliteBrazoIzq.LoadModel("Models/elite_brazo_izq.obj");
 
 	// Material con brillo moderado
 	material = Material(0.5f, 32);

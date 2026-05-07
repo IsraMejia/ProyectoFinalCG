@@ -21,7 +21,7 @@ void GatoGigante::Initialize()
 {
 	if (!initialized)
 	{
-		gatoModel.LoadModel("Integrantes/Isra/modelos/gato_sentado/gato.obj");
+		gatoModel.LoadModel("Models/gato.obj");
 		initialized = true;
 	}
 }

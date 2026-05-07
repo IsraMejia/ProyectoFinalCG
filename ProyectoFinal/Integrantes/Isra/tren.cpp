@@ -65,8 +65,8 @@ void Tren::Initialize()
 {
 	if (!initialized)
 	{
-		trenModel.LoadModel("Integrantes/Isra/modelos/tren/tren.obj");
-		vagonModel.LoadModel("Integrantes/Isra/modelos/vagon_tren/vagon.obj");
+		trenModel.LoadModel("Models/tren.obj");
+		vagonModel.LoadModel("Models/vagon.obj");
 		initialized = true;
 	}
 }

@@ -20,7 +20,7 @@ void EstacionTren::Initialize()
 {
 	if (!initialized)
 	{
-		estacionModel.LoadModel("Integrantes/Isra/modelos/EstacionTren/estacion_tren.obj");
+		estacionModel.LoadModel("Models/estacion_tren.obj");
 		initialized = true;
 	}
 }

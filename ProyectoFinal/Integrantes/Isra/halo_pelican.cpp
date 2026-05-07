@@ -22,7 +22,7 @@ void HaloPelican::Initialize()
 {
 	if (!initialized)
 	{
-		pelicanModel.LoadModel("Integrantes/Isra/modelos/pelican_halo/pelican.obj");
+		pelicanModel.LoadModel("Models/pelican.obj");
 		initialized = true;
 	}
 }
