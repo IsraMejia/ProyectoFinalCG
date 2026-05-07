@@ -20,7 +20,7 @@ void GruntHalo::Initialize()
 	gruntCuerpo.LoadModel("Integrantes/Isra/modelos/grunt/grunt_cuerpo.obj");
 	gruntRostro.LoadModel("Integrantes/Isra/modelos/grunt/grunt_rostro.obj");
 	gruntBrazoDer.LoadModel("Integrantes/Isra/modelos/grunt/grunt_brazo_der.obj");
-	gruntBrazoIzq.LoadModel("Integrantes/Isra/modelos/grunt/grunt_brazo_izq.obj");
+	gruntBrazoIzq.LoadModel("Integrantes/Isra/modelos/grunt/grunt_brazo_izq.obj");    
 
 	// Material con brillo moderado
 	material = Material(0.5f, 32);
