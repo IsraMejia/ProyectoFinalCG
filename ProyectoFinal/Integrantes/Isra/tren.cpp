@@ -42,6 +42,19 @@ Tren::Tren()
 
 	// Material con especularidad moderada para superficie metalica del tren
 	material = Material(0.6f, 32);
+	
+	// Calcular el offset relativo del vagon respecto al tren
+	// El vagon debe estar detras del tren, a la misma altura y centrado en los rieles
+	// 
+	// Offset en espacio local del tren:
+	// X negativo = detras del tren (en la direccion opuesta al frente)
+	// Y = misma altura que el tren (0 para mantener la altura)
+	// Z = centrado en los rieles (0 para seguir la misma linea)
+	vagonOffset = glm::vec3(-14.0f, 0.0f, -1.0);
+	
+	// Rotacion adicional del vagon para seguir la curva de las vias
+	// Ajuste fino para alinear con la curvatura
+	vagonRotationY = -6.0f;
 }
 
 Tren::~Tren()
@@ -53,6 +66,7 @@ void Tren::Initialize()
 	if (!initialized)
 	{
 		trenModel.LoadModel("Integrantes/Isra/modelos/tren/tren.obj");
+		vagonModel.LoadModel("Integrantes/Isra/modelos/vagon_tren/vagon.obj");
 		initialized = true;
 	}
 }
@@ -70,6 +84,7 @@ void Tren::Render(GLuint uniformModel, GLuint uniformColor,
 	glm::mat4 model(1.0);
 	glm::vec3 color(1.0f, 1.0f, 1.0f);
 
+	// === RENDERIZAR TREN PRINCIPAL ===
 	// Transformaciones: translate -> rotate -> scale
 	model = glm::translate(model, position);
 	model = glm::rotate(model, rotationY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -80,6 +95,29 @@ void Tren::Render(GLuint uniformModel, GLuint uniformColor,
 	glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 	material.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-	// Renderizar
+	// Renderizar tren
 	trenModel.RenderModel();
+	
+	// === RENDERIZAR VAGON (JERARQUICO) ===
+	// Guardar la matriz del tren (sin escala para el offset)
+	glm::mat4 trenTransform(1.0);
+	trenTransform = glm::translate(trenTransform, position);
+	trenTransform = glm::rotate(trenTransform, rotationY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	// Aplicar el offset del vagon en espacio local del tren
+	glm::mat4 vagonTransform = glm::translate(trenTransform, vagonOffset);
+	
+	// Aplicar rotacion adicional del vagon para seguir la curva de las vias
+	vagonTransform = glm::rotate(vagonTransform, vagonRotationY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	// Aplicar la misma escala que el tren
+	vagonTransform = glm::scale(vagonTransform, scale);
+
+	// Enviar uniforms para el vagon
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(vagonTransform));
+	glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+	material.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+	// Renderizar vagon
+	vagonModel.RenderModel();
 }
