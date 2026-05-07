@@ -30,6 +30,10 @@ public:
 	// Guardar posicion actual al archivo
 	void SavePosition();
 
+	// Habilitar/deshabilitar el tracker (para evitar conflictos con sistema de keyframes)
+	void SetEnabled(bool enabled);
+	bool IsEnabled() const;
+
 private:
 	Camera camera;
 	glm::vec3 lastPosition;
@@ -37,6 +41,7 @@ private:
 	GLfloat lastPitch;
 	GLfloat timeSinceLastMove;
 	bool hasMovedSinceLastPrint;
+	bool enabled;  // Flag para habilitar/deshabilitar el tracker
 	const GLfloat PRINT_DELAY = 0.5f; // 0.5 segundos
 	const std::string SAVE_FILE = "camera_position.txt";
 

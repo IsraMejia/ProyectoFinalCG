@@ -7,6 +7,7 @@ CameraPositionTracker::CameraPositionTracker()
 	lastPitch = 0.0f;
 	timeSinceLastMove = 0.0f;
 	hasMovedSinceLastPrint = false;
+	enabled = true;  // Habilitado por defecto
 }
 
 CameraPositionTracker::~CameraPositionTracker()
@@ -62,6 +63,14 @@ void CameraPositionTracker::Initialize(glm::vec3 startPosition, glm::vec3 startU
 
 void CameraPositionTracker::Update(bool* keys, GLfloat xChange, GLfloat yChange, GLfloat deltaTime)
 {
+	// Si el tracker está deshabilitado, solo actualizar la cámara sin tracking
+	if (!enabled)
+	{
+		camera.keyControl(keys, deltaTime);
+		camera.mouseControl(xChange, yChange);
+		return;
+	}
+
 	// Guardar posicion antes del movimiento
 	glm::vec3 positionBefore = camera.getCameraPosition();
 
@@ -168,4 +177,22 @@ bool CameraPositionTracker::LoadPosition(glm::vec3& outPosition, GLfloat& outYaw
 	}
 	
 	return false;
+}
+
+
+void CameraPositionTracker::SetEnabled(bool enable)
+{
+	enabled = enable;
+	
+	if (!enabled)
+	{
+		// Al deshabilitar, resetear el estado de tracking
+		timeSinceLastMove = 0.0f;
+		hasMovedSinceLastPrint = false;
+	}
+}
+
+bool CameraPositionTracker::IsEnabled() const
+{
+	return enabled;
 }

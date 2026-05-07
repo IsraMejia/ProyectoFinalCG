@@ -21,11 +21,15 @@ public:
 		GLuint uniformSpecularIntensity, GLuint uniformShininess,
 		const float toRadians);
 
+	// Public transformation variables for external animation system
+	glm::vec3 position;
+	float rotationX;  // pitch
+	float rotationY;  // yaw
+	float rotationZ;  // roll
+
 private:
 	Model pelicanModel;
 	Material material;
-	glm::vec3 position;
 	glm::vec3 scale;
-	float rotationY;
 	bool initialized;
 };

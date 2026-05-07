@@ -45,6 +45,8 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/halo_pelican.h"
 #include "Integrantes/Isra/tren.h"
 #include "Integrantes/Isra/camara_position.h"
+#include "Integrantes/Isra/animacion_KF.h"
+#include "Integrantes/Isra/animKFcamara.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -92,6 +94,10 @@ HaloPelican haloPelican;
 
 // Tren (modulo Isra)
 Tren tren;
+
+// Keyframe animation system (modulo Isra)
+Keyframe_System animSystem(100);
+Animation_Camera animCamera;
 
 Skybox skybox;
 
@@ -174,6 +180,10 @@ int main()
 	// Inicializar tren
 	tren.Initialize();
 
+	// Inicializar sistema de animacion por keyframes
+	animSystem.setCameraPositionTracker(&cameraTracker);
+	animSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_code.kf");
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
@@ -244,9 +254,89 @@ int main()
 		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		Camera* camera = cameraTracker.GetCamera();
 
+		// Keyboard input handling for keyframe animation system
+		static bool kKeyPressed = false;
+		static bool spaceKeyPressed = false;
+		static bool zeroKeyPressed = false;
+
+		// Toggle recording mode with 'K' key
+		if (mainWindow.getsKeys()[GLFW_KEY_K] && !kKeyPressed)
+		{
+			kKeyPressed = true;
+			animSystem.toggleRecordingMode();
+			
+			// Save keyframes when exiting recording mode
+			if (!animSystem.isRecording() && animSystem.getKeyframeCount() > 0)
+			{
+				animSystem.saveKeyframesToFile("Integrantes/Isra/pelican_halo_runtime.kf");
+			}
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_K])
+		{
+			kKeyPressed = false;
+		}
+
+		// Toggle playback mode with SPACE key
+		if (mainWindow.getsKeys()[GLFW_KEY_SPACE] && !spaceKeyPressed)
+		{
+			spaceKeyPressed = true;
+			animSystem.togglePlaybackMode();
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_SPACE])
+		{
+			spaceKeyPressed = false;
+		}
+
+		// Reset animation with '0' key
+		if (mainWindow.getsKeys()[GLFW_KEY_0] && !zeroKeyPressed)
+		{
+			zeroKeyPressed = true;
+			animSystem.resetAnimation();
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_0])
+		{
+			zeroKeyPressed = false;
+		}
+
+		// Handle recording mode input (arrow keys, N, M, L, P keys)
+		if (animSystem.isRecording())
+		{
+			animSystem.handleRecordingInput(mainWindow.getsKeys(), 0.0f, 0.0f, deltaTime,
+				haloPelican.position, haloPelican.rotationX, haloPelican.rotationY, haloPelican.rotationZ);
+		}
+
+		// Update playback animation
+		animSystem.updatePlayback(deltaTime);
+		animSystem.applyTransformationToModel(haloPelican.position, haloPelican.rotationX, 
+			haloPelican.rotationY, haloPelican.rotationZ);
+
+		// Switch camera based on recording mode
+		glm::mat4 viewMatrix;
+		glm::vec3 eyePosition;
+		
+		if (animSystem.isRecording())
+		{
+			// Usar cámara fija en posición específica durante captura
+			glm::vec3 fixedCameraPos(-198.46f, 37.29f, -94.11f);
+			glm::vec3 fixedCameraFront(0.93f, -0.07f, 0.36f);
+			glm::vec3 fixedCameraUp(0.0f, 1.0f, 0.0f);
+			
+			// Calcular el punto al que mira la cámara
+			glm::vec3 fixedCameraTarget = fixedCameraPos + fixedCameraFront;
+			
+			viewMatrix = glm::lookAt(fixedCameraPos, fixedCameraTarget, fixedCameraUp);
+			eyePosition = fixedCameraPos;
+		}
+		else
+		{
+			// Usar cámara principal
+			viewMatrix = camera->calculateViewMatrix();
+			eyePosition = camera->getCameraPosition();
+		}
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera->calculateViewMatrix(), projection);
+		skybox.DrawSkybox(viewMatrix, projection);
 
 		shaderList[0].UseShader();
 		uniformModel             = shaderList[0].GetModelLocation();
@@ -258,11 +348,8 @@ int main()
 		uniformShininess         = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(camera->calculateViewMatrix()));
-		glUniform3f(uniformEyePosition,
-			camera->getCameraPosition().x,
-			camera->getCameraPosition().y,
-			camera->getCameraPosition().z);
+		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
+		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
