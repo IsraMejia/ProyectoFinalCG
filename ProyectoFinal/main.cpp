@@ -182,7 +182,7 @@ int main()
 
 	// Inicializar sistema de animacion por keyframes
 	animSystem.setCameraPositionTracker(&cameraTracker);
-	animSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_code.kf");
+	animSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_runtime.kf");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");

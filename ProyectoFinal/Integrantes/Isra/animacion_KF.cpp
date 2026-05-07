@@ -82,6 +82,28 @@ public:
 
 		if (outFrameCount > 0)
 		{
+			// Si los keyframes no tienen timestamps (archivos antiguos), asignar timestamps distribuidos uniformemente
+			bool hasTimestamps = false;
+			for (int i = 0; i < outFrameCount; i++)
+			{
+				if (keyframes[i].timestamp > 0.0f)
+				{
+					hasTimestamps = true;
+					break;
+				}
+			}
+			
+			if (!hasTimestamps && outFrameCount > 1)
+			{
+				std::cout << "Archivo sin timestamps detectado. Asignando timestamps distribuidos uniformemente..." << std::endl;
+				// Distribuir uniformemente en 60 segundos
+				float timeStep = 60.0f / (outFrameCount - 1);
+				for (int i = 0; i < outFrameCount; i++)
+				{
+					keyframes[i].timestamp = i * timeStep;
+				}
+			}
+			
 			std::cout << "Successfully loaded " << outFrameCount << " keyframes from " << filename << std::endl;
 			return true;
 		}
@@ -113,9 +135,10 @@ private:
 
 	bool extractTransformationData(const std::string& line, Keyframe& outKeyframe)
 	{
-		// Expected format: "posX=value posY=value posZ=value rotX=value rotY=value rotZ=value"
+		// Expected format: "posX=value posY=value posZ=value rotX=value rotY=value rotZ=value [timestamp=value]"
 		float posX = 0.0f, posY = 0.0f, posZ = 0.0f;
 		float rotX = 0.0f, rotY = 0.0f, rotZ = 0.0f;
+		float timestamp = 0.0f;
 
 		posX = parseFloatValue(line, "posX");
 		posY = parseFloatValue(line, "posY");
@@ -123,6 +146,12 @@ private:
 		rotX = parseFloatValue(line, "rotX");
 		rotY = parseFloatValue(line, "rotY");
 		rotZ = parseFloatValue(line, "rotZ");
+		
+		// Timestamp es opcional (para compatibilidad con archivos antiguos)
+		if (line.find("timestamp=") != std::string::npos)
+		{
+			timestamp = parseFloatValue(line, "timestamp");
+		}
 
 		// Store values
 		outKeyframe.posX = posX;
@@ -131,6 +160,7 @@ private:
 		outKeyframe.rotX = rotX;
 		outKeyframe.rotY = rotY;
 		outKeyframe.rotZ = rotZ;
+		outKeyframe.timestamp = timestamp;
 
 		return true;
 	}
@@ -213,7 +243,8 @@ private:
 		file << "posZ=" << formatFloat(kf.posZ) << " ";
 		file << "rotX=" << formatFloat(kf.rotX) << " ";
 		file << "rotY=" << formatFloat(kf.rotY) << " ";
-		file << "rotZ=" << formatFloat(kf.rotZ) << "\n";
+		file << "rotZ=" << formatFloat(kf.rotZ) << " ";
+		file << "timestamp=" << formatFloat(kf.timestamp) << "\n";
 		file << "\n";
 	}
 
@@ -256,6 +287,7 @@ Keyframe_System::Keyframe_System(int maxKeyframes)
 	recordingMode = false;
 	playbackMode = false;
 	canSaveFrame = true;  // Start with ability to save
+	framesCalculated = false;  // No frames calculated yet
 
 	animationTimer = 0.0f;
 	frameRate = 12.0f;  // 12 FPS
@@ -303,6 +335,38 @@ void Keyframe_System::toggleRecordingMode()
 	{
 		// Entering recording mode
 		playbackMode = false;  // Disable playback
+		
+		// LIMPIAR KEYFRAMES Y FRAMES CALCULADOS PREVIAMENTE
+		std::cout << "\n========================================" << std::endl;
+		std::cout << "INICIANDO NUEVA CAPTURA" << std::endl;
+		std::cout << "Limpiando keyframes anteriores..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		// Resetear todo el sistema
+		frameCount = 0;
+		currentPlayIndex = 0;
+		currentInterpolationStep = 0;
+		framesCalculated = false;
+		animationTimer = 0.0f;
+		
+		// Limpiar todos los keyframes
+		for (int i = 0; i < MAX_FRAMES; i++)
+		{
+			keyframes[i].posX = 0.0f;
+			keyframes[i].posY = 0.0f;
+			keyframes[i].posZ = 0.0f;
+			keyframes[i].rotX = 0.0f;
+			keyframes[i].rotY = 0.0f;
+			keyframes[i].rotZ = 0.0f;
+			keyframes[i].timestamp = 0.0f;
+			keyframes[i].posXInc = 0.0f;
+			keyframes[i].posYInc = 0.0f;
+			keyframes[i].posZInc = 0.0f;
+			keyframes[i].rotXInc = 0.0f;
+			keyframes[i].rotYInc = 0.0f;
+			keyframes[i].rotZInc = 0.0f;
+		}
+		
 		recordingStartTime = (float)glfwGetTime();  // Capturar tiempo de inicio
 		
 		// Deshabilitar CameraPositionTracker si está configurado
@@ -317,6 +381,7 @@ void Keyframe_System::toggleRecordingMode()
 	{
 		// Exiting recording mode
 		totalRecordingTime = (float)glfwGetTime() - recordingStartTime;  // Calcular duración total
+		framesCalculated = false;  // Resetear flag - necesitamos recalcular frames para nueva animación
 		
 		// Rehabilitar CameraPositionTracker si está configurado
 		if (cameraTracker != nullptr)
@@ -352,12 +417,26 @@ void Keyframe_System::togglePlaybackMode()
 
 	if (playbackMode)
 	{
-		// Starting playback
-		std::cout << "\n=== MODO REPRODUCCION INICIADO ===\n";
-		std::cout << "Reproduciendo " << frameCount << " keyframes\n";
-		std::cout << "Duracion original: " << totalRecordingTime << " segundos\n";
-		std::cout << "Duracion objetivo: 60 segundos (loop infinito)\n";
-		std::cout << "Frame rate: 12 FPS (720 frames totales)\n" << std::endl;
+		// Si los frames no han sido calculados, calcularlos primero
+		if (!framesCalculated)
+		{
+			std::cout << "\n========================================" << std::endl;
+			std::cout << "CALCULANDO FRAMES INTERMEDIOS..." << std::endl;
+			std::cout << "Por favor espera..." << std::endl;
+			std::cout << "========================================\n" << std::endl;
+			
+			calculateAllFrames();
+			
+			std::cout << "\n========================================" << std::endl;
+			std::cout << "CALCULO COMPLETADO!" << std::endl;
+			std::cout << "Iniciando animacion automaticamente..." << std::endl;
+			std::cout << "========================================\n" << std::endl;
+		}
+		else
+		{
+			// Los frames ya fueron calculados, solo mostrar mensaje de inicio
+			std::cout << "\n=== REPRODUCCION REANUDADA ===\n" << std::endl;
+		}
 
 		// Reset to first keyframe
 		currentPlayIndex = 0;
@@ -371,85 +450,6 @@ void Keyframe_System::togglePlaybackMode()
 		currentRotX = keyframes[0].rotX;
 		currentRotY = keyframes[0].rotY;
 		currentRotZ = keyframes[0].rotZ;
-
-		// SISTEMA DE DISTRIBUCION BASADO EN PORCENTAJES
-		// Calcular el porcentaje de posición de cada keyframe en la captura original
-		// y mapear ese porcentaje a 60 segundos (720 frames a 12 FPS)
-		
-		const float TARGET_DURATION = 60.0f;  // 60 segundos
-		const float TOTAL_FRAMES = TARGET_DURATION * frameRate;  // 720 frames
-		
-		std::cout << "=== DISTRIBUCION BASADA EN PORCENTAJES ===\n";
-		
-		// Calcular frames objetivo para cada keyframe basado en su porcentaje
-		int targetFrames[MAX_FRAMES];
-		for (int i = 0; i < frameCount; i++)
-		{
-			// Calcular porcentaje de este keyframe en la captura original
-			float percentage = (totalRecordingTime > 0.0f) ? (keyframes[i].timestamp / totalRecordingTime) : 0.0f;
-			
-			// Mapear ese porcentaje a 720 frames
-			targetFrames[i] = (int)(percentage * TOTAL_FRAMES);
-			
-			std::cout << "Keyframe " << i << ": " 
-				<< std::fixed << std::setprecision(2) << (percentage * 100.0f) << "% "
-				<< "-> Frame " << targetFrames[i] << " (segundo " << (targetFrames[i] / frameRate) << ")\n";
-		}
-		
-		std::cout << "\n=== CALCULO DE FRAMES POR SEGMENTO ===\n";
-		
-		int totalFramesCalculated = 0;
-		
-		// Calcular frames entre keyframes consecutivos
-		for (int i = 0; i < frameCount - 1; i++)
-		{
-			// Frames entre este keyframe y el siguiente
-			int framesInSegment = targetFrames[i + 1] - targetFrames[i];
-			if (framesInSegment < 1) framesInSegment = 1;
-			
-			framesPerSegment[i] = framesInSegment;
-			totalFramesCalculated += framesInSegment;
-			
-			// Calcular incrementos para interpolación lineal
-			keyframes[i].posXInc = (keyframes[i + 1].posX - keyframes[i].posX) / framesInSegment;
-			keyframes[i].posYInc = (keyframes[i + 1].posY - keyframes[i].posY) / framesInSegment;
-			keyframes[i].posZInc = (keyframes[i + 1].posZ - keyframes[i].posZ) / framesInSegment;
-			keyframes[i].rotXInc = (keyframes[i + 1].rotX - keyframes[i].rotX) / framesInSegment;
-			keyframes[i].rotYInc = (keyframes[i + 1].rotY - keyframes[i].rotY) / framesInSegment;
-			keyframes[i].rotZInc = (keyframes[i + 1].rotZ - keyframes[i].rotZ) / framesInSegment;
-			
-			float segmentDuration = framesInSegment / frameRate;
-			std::cout << "Segmento " << i << " -> " << (i+1) << ": " 
-				<< framesInSegment << " frames (" 
-				<< std::fixed << std::setprecision(2) << segmentDuration << "s)\n";
-		}
-		
-		// Loop back: último keyframe al primero (completar los 720 frames)
-		if (frameCount > 1)
-		{
-			int framesInSegment = (int)TOTAL_FRAMES - targetFrames[frameCount - 1];
-			if (framesInSegment < 1) framesInSegment = 1;
-			
-			framesPerSegment[frameCount - 1] = framesInSegment;
-			totalFramesCalculated += framesInSegment;
-			
-			keyframes[frameCount - 1].posXInc = (keyframes[0].posX - keyframes[frameCount - 1].posX) / framesInSegment;
-			keyframes[frameCount - 1].posYInc = (keyframes[0].posY - keyframes[frameCount - 1].posY) / framesInSegment;
-			keyframes[frameCount - 1].posZInc = (keyframes[0].posZ - keyframes[frameCount - 1].posZ) / framesInSegment;
-			keyframes[frameCount - 1].rotXInc = (keyframes[0].rotX - keyframes[frameCount - 1].rotX) / framesInSegment;
-			keyframes[frameCount - 1].rotYInc = (keyframes[0].rotY - keyframes[frameCount - 1].rotY) / framesInSegment;
-			keyframes[frameCount - 1].rotZInc = (keyframes[0].rotZ - keyframes[frameCount - 1].rotZ) / framesInSegment;
-			
-			float segmentDuration = framesInSegment / frameRate;
-			std::cout << "Segmento loop " << (frameCount-1) << " -> 0: " 
-				<< framesInSegment << " frames (" 
-				<< std::fixed << std::setprecision(2) << segmentDuration << "s)\n";
-		}
-		
-		std::cout << "\n=== RESUMEN ===\n";
-		std::cout << "Total frames calculados: " << totalFramesCalculated << " / " << (int)TOTAL_FRAMES << "\n";
-		std::cout << "Duracion total: " << std::fixed << std::setprecision(2) << (totalFramesCalculated / frameRate) << " segundos\n";
-		std::cout << "\nAnimacion lista para reproducir!\n" << std::endl;
 	}
 	else
 	{
@@ -492,6 +492,7 @@ void Keyframe_System::clearKeyframes()
 	currentInterpolationStep = 0;
 	playbackMode = false;
 	recordingMode = false;
+	framesCalculated = false;  // Resetear flag
 
 	std::cout << "All keyframes cleared. Animation reset." << std::endl;
 }
@@ -790,6 +791,34 @@ bool Keyframe_System::loadKeyframesFromFile(const std::string& filename)
 	if (success && loadedCount > 0)
 	{
 		frameCount = loadedCount;
+		
+		// Calcular automáticamente los frames intermedios
+		std::cout << "\n========================================" << std::endl;
+		std::cout << "CALCULANDO FRAMES INTERMEDIOS..." << std::endl;
+		std::cout << "Por favor espera..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		calculateAllFrames();
+		
+		std::cout << "\n========================================" << std::endl;
+		std::cout << "CALCULO COMPLETADO!" << std::endl;
+		std::cout << "Iniciando animacion automaticamente..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		// Activar playback automáticamente
+		playbackMode = true;
+		currentPlayIndex = 0;
+		currentInterpolationStep = 0;
+		animationTimer = 0.0f;
+		
+		// Set initial transformation from first keyframe
+		currentPosition.x = keyframes[0].posX;
+		currentPosition.y = keyframes[0].posY;
+		currentPosition.z = keyframes[0].posZ;
+		currentRotX = keyframes[0].rotX;
+		currentRotY = keyframes[0].rotY;
+		currentRotZ = keyframes[0].rotZ;
+		
 		return true;
 	}
 
@@ -824,4 +853,98 @@ bool Keyframe_System::saveKeyframesToFile(const std::string& filename)
 void Keyframe_System::setCameraPositionTracker(CameraPositionTracker* tracker)
 {
 	cameraTracker = tracker;
+}
+
+void Keyframe_System::calculateAllFrames()
+{
+	if (frameCount < 2)
+	{
+		std::cout << "Error: Need at least 2 keyframes to calculate frames." << std::endl;
+		return;
+	}
+	
+	// SISTEMA DE DISTRIBUCION BASADO EN PORCENTAJES
+	// Calcular el porcentaje de posición de cada keyframe en la captura original
+	// y mapear ese porcentaje a 60 segundos (720 frames a 12 FPS)
+	
+	const float TARGET_DURATION = 60.0f;  // 60 segundos
+	const float TOTAL_FRAMES = TARGET_DURATION * frameRate;  // 720 frames
+	
+	std::cout << "=== DISTRIBUCION BASADA EN PORCENTAJES ===\n";
+	
+	// Calcular frames objetivo para cada keyframe basado en su porcentaje
+	int targetFrames[MAX_FRAMES];
+	
+	// Para archivos cargados, necesitamos calcular totalRecordingTime desde los timestamps
+	totalRecordingTime = keyframes[frameCount - 1].timestamp;
+	
+	for (int i = 0; i < frameCount; i++)
+	{
+		// Calcular porcentaje de este keyframe en la captura original
+		float percentage = (totalRecordingTime > 0.0f) ? (keyframes[i].timestamp / totalRecordingTime) : 0.0f;
+		
+		// Mapear ese porcentaje a 720 frames
+		targetFrames[i] = (int)(percentage * TOTAL_FRAMES);
+		
+		std::cout << "Keyframe " << i << ": " 
+			<< std::fixed << std::setprecision(2) << (percentage * 100.0f) << "% "
+			<< "-> Frame " << targetFrames[i] << " (segundo " << (targetFrames[i] / frameRate) << ")\n";
+	}
+	
+	std::cout << "\n=== CALCULO DE FRAMES POR SEGMENTO ===\n";
+	
+	int totalFramesCalculated = 0;
+	
+	// Calcular frames entre keyframes consecutivos
+	for (int i = 0; i < frameCount - 1; i++)
+	{
+		// Frames entre este keyframe y el siguiente
+		int framesInSegment = targetFrames[i + 1] - targetFrames[i];
+		if (framesInSegment < 1) framesInSegment = 1;
+		
+		framesPerSegment[i] = framesInSegment;
+		totalFramesCalculated += framesInSegment;
+		
+		// Calcular incrementos para interpolación lineal
+		keyframes[i].posXInc = (keyframes[i + 1].posX - keyframes[i].posX) / framesInSegment;
+		keyframes[i].posYInc = (keyframes[i + 1].posY - keyframes[i].posY) / framesInSegment;
+		keyframes[i].posZInc = (keyframes[i + 1].posZ - keyframes[i].posZ) / framesInSegment;
+		keyframes[i].rotXInc = (keyframes[i + 1].rotX - keyframes[i].rotX) / framesInSegment;
+		keyframes[i].rotYInc = (keyframes[i + 1].rotY - keyframes[i].rotY) / framesInSegment;
+		keyframes[i].rotZInc = (keyframes[i + 1].rotZ - keyframes[i].rotZ) / framesInSegment;
+		
+		float segmentDuration = framesInSegment / frameRate;
+		std::cout << "Segmento " << i << " -> " << (i+1) << ": " 
+			<< framesInSegment << " frames (" 
+			<< std::fixed << std::setprecision(2) << segmentDuration << "s)\n";
+	}
+	
+	// Loop back: último keyframe al primero (completar los 720 frames)
+	if (frameCount > 1)
+	{
+		int framesInSegment = (int)TOTAL_FRAMES - targetFrames[frameCount - 1];
+		if (framesInSegment < 1) framesInSegment = 1;
+		
+		framesPerSegment[frameCount - 1] = framesInSegment;
+		totalFramesCalculated += framesInSegment;
+		
+		keyframes[frameCount - 1].posXInc = (keyframes[0].posX - keyframes[frameCount - 1].posX) / framesInSegment;
+		keyframes[frameCount - 1].posYInc = (keyframes[0].posY - keyframes[frameCount - 1].posY) / framesInSegment;
+		keyframes[frameCount - 1].posZInc = (keyframes[0].posZ - keyframes[frameCount - 1].posZ) / framesInSegment;
+		keyframes[frameCount - 1].rotXInc = (keyframes[0].rotX - keyframes[frameCount - 1].rotX) / framesInSegment;
+		keyframes[frameCount - 1].rotYInc = (keyframes[0].rotY - keyframes[frameCount - 1].rotY) / framesInSegment;
+		keyframes[frameCount - 1].rotZInc = (keyframes[0].rotZ - keyframes[frameCount - 1].rotZ) / framesInSegment;
+		
+		float segmentDuration = framesInSegment / frameRate;
+		std::cout << "Segmento loop " << (frameCount-1) << " -> 0: " 
+			<< framesInSegment << " frames (" 
+			<< std::fixed << std::setprecision(2) << segmentDuration << "s)\n";
+	}
+	
+	std::cout << "\n=== RESUMEN ===\n";
+	std::cout << "Total frames calculados: " << totalFramesCalculated << " / " << (int)TOTAL_FRAMES << "\n";
+	std::cout << "Duracion total: " << std::fixed << std::setprecision(2) << (totalFramesCalculated / frameRate) << " segundos\n";
+	
+	// Marcar que los frames ya fueron calculados
+	framesCalculated = true;
 }

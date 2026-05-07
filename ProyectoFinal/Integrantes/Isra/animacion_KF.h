@@ -86,6 +86,7 @@ private:
 	bool recordingMode;
 	bool playbackMode;
 	bool canSaveFrame;
+	bool framesCalculated;  // Flag para indicar si los frames intermedios ya fueron calculados
 
 	// Timing variables
 	float animationTimer;
@@ -105,4 +106,5 @@ private:
 	// Helper methods
 	void calculateInterpolation(int fromIndex, int toIndex);
 	void printRecordingMenu();
+	void calculateAllFrames();  // Calcular todos los frames intermedios para playback
 };
