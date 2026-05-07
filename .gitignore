@@ -29,8 +29,6 @@ ipch/
 # ============================================================
 # Archivos intermedios de compilacion MSVC
 # ============================================================
-# NOTA: Los archivos .obj de modelos 3D SI deben versionarse
-# Solo ignoramos .obj en carpetas de build
 ARM64/**/*.obj 
 *.pdb
 *.ilk
@@ -57,6 +55,34 @@ ARM64/**/*.obj
 *.log
 *.lastbuildstate
 unsuccessfulbuild
+
+# ============================================================
+# Modelos 3D y Texturas (archivos pesados)
+# ============================================================
+# Excluir todos los modelos 3D (.obj, .mtl, .3ds)
+ProyectoFinal/Models/
+ProyectoFinal/Textures/
+
+# Excluir archivos de modelos 3D en cualquier ubicacion
+*.obj
+*.mtl
+*.3ds
+*.fbx
+*.blend
+*.blend1
+
+# Excluir archivos de texturas comunes
+*.jpg
+*.jpeg
+*.png
+*.tga
+*.bmp
+*.dds
+
+# EXCEPCION: Permitir texturas de documentacion si existen
+!ProyectoFinal/documentacion/**/*.jpg
+!ProyectoFinal/documentacion/**/*.jpeg
+!ProyectoFinal/documentacion/**/*.png
 
 # ============================================================
 # IntelliSense / Browse info
