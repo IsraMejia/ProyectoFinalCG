@@ -54,6 +54,8 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Andrea/farola.h"
 #include "Integrantes/Andrea/arbol1.h"
 #include "Integrantes/Andrea/entrada.h"
+#include "Integrantes/Isra/animacion_KF.h"
+#include "Integrantes/Isra/animKFcamara.h"
 #include "Integrantes/Isra/KF_por_codigo.h"
 
 const float toRadians = 3.14159265f / 180.0f;
@@ -359,7 +361,7 @@ int main()
 		activeModel = ACTIVE_NONE;
 		std::cout << "Ningun modelo con animacion cargada" << std::endl;
 	}
-	
+	 
 	std::cout << "\nCONTROLES:" << std::endl;
 	std::cout << "  K     : Capturar nuevos keyframes" << std::endl;
 	std::cout << "  SPACE : Pausar/Reanudar animacion" << std::endl;
@@ -824,11 +826,8 @@ int main()
 		uniformShininess         = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(camera->calculateViewMatrix()));
-		glUniform3f(uniformEyePosition,
-			camera->getCameraPosition().x,
-			camera->getCameraPosition().y,
-			camera->getCameraPosition().z);
+		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
+		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
 		// Control de luces de faroles con tecla L
 		// Si están encendidos, usar intensidad normal; si están apagados, intensidad 0
