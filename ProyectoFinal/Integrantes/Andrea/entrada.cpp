@@ -22,7 +22,7 @@ Entrada::~Entrada()
 
 void Entrada::Initialize()
 {
-	modelo.LoadModel("Integrantes/Andrea/modelos/Entrada/Entrada.obj");
+	modelo.LoadModel("Models/Entrada.obj");
 }
 
 void Entrada::Render(GLuint uniformModel, GLuint uniformColor,

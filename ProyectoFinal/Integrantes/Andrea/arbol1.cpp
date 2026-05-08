@@ -22,7 +22,7 @@ Arbol1::~Arbol1()
 
 void Arbol1::Initialize()
 {
-	modelo.LoadModel("Integrantes/Andrea/modelos/Arbol1/Arbol1.obj");
+	modelo.LoadModel("Models/Arbol1.obj");
 }
 
 void Arbol1::Render(GLuint uniformModel, GLuint uniformColor,
