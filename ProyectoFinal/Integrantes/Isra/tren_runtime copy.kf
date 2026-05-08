@@ -1,103 +1,198 @@
 # Animation: tren_runtime
-# Created: 2026-05-07 21:53:57
-# Total Keyframes: 33
+# Created: 2026-05-07 21:54:05
+# Total Keyframes: 65
 
 KEYFRAME 0
 posX=42.60 posY=-3.28 posZ=59.52 rotX=0.00 rotY=-699.16 rotZ=0.00 timestamp=28.65
 
 KEYFRAME 1
-posX=60.33 posY=-3.28 posZ=52.17 rotX=0.00 rotY=-699.16 rotZ=0.00 timestamp=38.11
+posX=51.47 posY=-3.28 posZ=55.84 rotX=0.00 rotY=-699.16 rotZ=0.00 timestamp=33.38
 
 KEYFRAME 2
-posX=73.27 posY=-3.28 posZ=45.85 rotX=0.00 rotY=-687.16 rotZ=0.00 timestamp=50.62
+posX=60.33 posY=-3.28 posZ=52.17 rotX=0.00 rotY=-699.16 rotZ=0.00 timestamp=38.11
 
 KEYFRAME 3
-posX=88.38 posY=-3.28 posZ=30.83 rotX=0.00 rotY=-1031.16 rotZ=0.00 timestamp=57.67
+posX=66.80 posY=-3.28 posZ=49.01 rotX=0.00 rotY=-693.16 rotZ=0.00 timestamp=44.36
 
 KEYFRAME 4
-posX=101.66 posY=-3.28 posZ=12.02 rotX=0.00 rotY=-1381.16 rotZ=0.00 timestamp=73.06
+posX=73.27 posY=-3.28 posZ=45.85 rotX=0.00 rotY=-687.16 rotZ=0.00 timestamp=50.62
 
 KEYFRAME 5
-posX=106.21 posY=-3.28 posZ=-6.19 rotX=0.00 rotY=-1363.16 rotZ=0.00 timestamp=86.55
+posX=80.82 posY=-3.28 posZ=38.34 rotX=0.00 rotY=-679.16 rotZ=0.00 timestamp=54.14
 
 KEYFRAME 6
-posX=103.86 posY=-3.28 posZ=-26.65 rotX=0.00 rotY=-1343.16 rotZ=0.00 timestamp=101.33
+posX=88.38 posY=-3.28 posZ=30.83 rotX=0.00 rotY=-671.16 rotZ=0.00 timestamp=57.67
 
 KEYFRAME 7
-posX=95.98 posY=-3.28 posZ=-47.13 rotX=0.00 rotY=-955.16 rotZ=0.00 timestamp=113.64
+posX=95.02 posY=-3.28 posZ=21.42 rotX=0.00 rotY=-666.16 rotZ=0.00 timestamp=65.37
 
 KEYFRAME 8
-posX=90.43 posY=-3.28 posZ=-55.43 rotX=0.00 rotY=-593.16 rotZ=0.00 timestamp=128.41
+posX=101.66 posY=-3.28 posZ=12.02 rotX=0.00 rotY=-661.16 rotZ=0.00 timestamp=73.06
 
 KEYFRAME 9
-posX=72.13 posY=-3.28 posZ=-69.56 rotX=0.00 rotY=-575.16 rotZ=0.00 timestamp=142.17
+posX=103.94 posY=-3.28 posZ=2.91 rotX=0.00 rotY=-652.16 rotZ=0.00 timestamp=79.81
 
 KEYFRAME 10
-posX=52.98 posY=-3.28 posZ=-81.42 rotX=0.00 rotY=-561.16 rotZ=0.00 timestamp=149.76
+posX=106.21 posY=-3.28 posZ=-6.19 rotX=0.00 rotY=-643.16 rotZ=0.00 timestamp=86.55
 
 KEYFRAME 11
-posX=39.39 posY=-3.28 posZ=-87.19 rotX=0.00 rotY=-917.16 rotZ=0.00 timestamp=185.94
+posX=105.03 posY=-3.28 posZ=-16.42 rotX=0.00 rotY=-633.16 rotZ=0.00 timestamp=93.94
 
 KEYFRAME 12
-posX=18.80 posY=-3.28 posZ=-91.08 rotX=0.00 rotY=-1271.16 rotZ=0.00 timestamp=195.63
+posX=103.86 posY=-3.28 posZ=-26.65 rotX=0.00 rotY=-623.16 rotZ=0.00 timestamp=101.33
 
 KEYFRAME 13
-posX=2.85 posY=-3.28 posZ=-91.46 rotX=0.00 rotY=-897.16 rotZ=0.00 timestamp=211.39
+posX=99.92 posY=-3.28 posZ=-36.89 rotX=0.00 rotY=-609.16 rotZ=0.00 timestamp=107.48
 
 KEYFRAME 14
-posX=-17.02 posY=-3.28 posZ=-90.64 rotX=0.00 rotY=-1253.16 rotZ=0.00 timestamp=235.45
+posX=95.98 posY=-3.28 posZ=-47.13 rotX=0.00 rotY=-595.16 rotZ=0.00 timestamp=113.64
 
 KEYFRAME 15
-posX=-40.37 posY=-3.28 posZ=-85.63 rotX=0.00 rotY=-1597.16 rotZ=0.00 timestamp=245.36
+posX=93.21 posY=-3.28 posZ=-51.28 rotX=0.00 rotY=-594.16 rotZ=0.00 timestamp=121.03
 
 KEYFRAME 16
-posX=-54.98 posY=-3.28 posZ=-80.69 rotX=0.00 rotY=-1237.16 rotZ=0.00 timestamp=262.92
+posX=90.43 posY=-3.28 posZ=-55.43 rotX=0.00 rotY=-593.16 rotZ=0.00 timestamp=128.41
 
 KEYFRAME 17
-posX=-69.71 posY=-3.28 posZ=-71.77 rotX=0.00 rotY=-1229.16 rotZ=0.00 timestamp=276.38
+posX=81.28 posY=-3.28 posZ=-62.50 rotX=0.00 rotY=-584.16 rotZ=0.00 timestamp=135.29
 
 KEYFRAME 18
-posX=-86.36 posY=-3.28 posZ=-60.27 rotX=0.00 rotY=-1219.16 rotZ=0.00 timestamp=296.65
+posX=72.13 posY=-3.28 posZ=-69.56 rotX=0.00 rotY=-575.16 rotZ=0.00 timestamp=142.17
 
 KEYFRAME 19
-posX=-96.77 posY=-3.28 posZ=-46.53 rotX=0.00 rotY=-1203.16 rotZ=0.00 timestamp=306.33
+posX=62.55 posY=-3.28 posZ=-75.49 rotX=0.00 rotY=-568.16 rotZ=0.00 timestamp=145.96
 
 KEYFRAME 20
-posX=-101.04 posY=-3.28 posZ=-36.20 rotX=0.00 rotY=-1195.16 rotZ=0.00 timestamp=321.92
+posX=52.98 posY=-3.28 posZ=-81.42 rotX=0.00 rotY=-561.16 rotZ=0.00 timestamp=149.76
 
 KEYFRAME 21
-posX=-104.83 posY=-3.28 posZ=-21.32 rotX=0.00 rotY=-1185.16 rotZ=0.00 timestamp=331.55
+posX=46.19 posY=-3.28 posZ=-84.31 rotX=0.00 rotY=-559.16 rotZ=0.00 timestamp=167.85
 
 KEYFRAME 22
-posX=-104.48 posY=-3.28 posZ=-10.32 rotX=0.00 rotY=-1169.16 rotZ=0.00 timestamp=365.40
+posX=39.39 posY=-3.28 posZ=-87.19 rotX=0.00 rotY=-557.16 rotZ=0.00 timestamp=185.94
 
 KEYFRAME 23
-posX=-102.02 posY=-3.28 posZ=7.72 rotX=0.00 rotY=-1151.16 rotZ=0.00 timestamp=380.37
+posX=29.09 posY=-3.28 posZ=-89.13 rotX=0.00 rotY=-554.16 rotZ=0.00 timestamp=190.78
 
 KEYFRAME 24
-posX=-95.09 posY=-3.28 posZ=22.13 rotX=0.00 rotY=-1137.16 rotZ=0.00 timestamp=389.80
+posX=18.80 posY=-3.28 posZ=-91.08 rotX=0.00 rotY=-551.16 rotZ=0.00 timestamp=195.63
 
 KEYFRAME 25
-posX=-81.51 posY=-3.28 posZ=38.15 rotX=0.00 rotY=-1123.16 rotZ=0.00 timestamp=410.16
+posX=10.83 posY=-3.28 posZ=-91.27 rotX=0.00 rotY=-544.16 rotZ=0.00 timestamp=203.51
 
 KEYFRAME 26
-posX=-69.40 posY=-3.28 posZ=48.08 rotX=0.00 rotY=-1115.16 rotZ=0.00 timestamp=421.75
+posX=2.85 posY=-3.28 posZ=-91.46 rotX=0.00 rotY=-537.16 rotZ=0.00 timestamp=211.39
 
 KEYFRAME 27
-posX=-51.91 posY=-3.28 posZ=56.56 rotX=0.00 rotY=-1103.16 rotZ=0.00 timestamp=430.82
+posX=-7.08 posY=-3.28 posZ=-91.05 rotX=0.00 rotY=-535.16 rotZ=0.00 timestamp=223.42
 
 KEYFRAME 28
-posX=-36.58 posY=-3.28 posZ=62.63 rotX=0.00 rotY=-741.16 rotZ=0.00 timestamp=452.06
+posX=-17.02 posY=-3.28 posZ=-90.64 rotX=0.00 rotY=-533.16 rotZ=0.00 timestamp=235.45
 
 KEYFRAME 29
-posX=-23.60 posY=-3.28 posZ=64.94 rotX=0.00 rotY=-729.16 rotZ=0.00 timestamp=461.45
+posX=-28.70 posY=-3.28 posZ=-88.13 rotX=0.00 rotY=-525.16 rotZ=0.00 timestamp=240.41
 
 KEYFRAME 30
-posX=-2.68 posY=-3.28 posZ=66.46 rotX=0.00 rotY=-1083.16 rotZ=0.00 timestamp=475.59
+posX=-40.37 posY=-3.28 posZ=-85.63 rotX=0.00 rotY=-517.16 rotZ=0.00 timestamp=245.36
 
 KEYFRAME 31
-posX=12.01 posY=-3.28 posZ=66.12 rotX=0.00 rotY=-1075.16 rotZ=0.00 timestamp=482.51
+posX=-47.67 posY=-3.28 posZ=-83.16 rotX=0.00 rotY=-517.16 rotZ=0.00 timestamp=254.14
 
 KEYFRAME 32
-posX=24.98 posY=-3.28 posZ=65.37 rotX=0.00 rotY=-1075.16 rotZ=0.00 timestamp=493.58
+posX=-54.98 posY=-3.28 posZ=-80.69 rotX=0.00 rotY=-517.16 rotZ=0.00 timestamp=262.92
 
+KEYFRAME 33
+posX=-62.34 posY=-3.28 posZ=-76.23 rotX=0.00 rotY=-513.16 rotZ=0.00 timestamp=269.65
+
+KEYFRAME 34
+posX=-69.71 posY=-3.28 posZ=-71.77 rotX=0.00 rotY=-509.16 rotZ=0.00 timestamp=276.38
+
+KEYFRAME 35
+posX=-78.03 posY=-3.28 posZ=-66.02 rotX=0.00 rotY=-504.16 rotZ=0.00 timestamp=286.51
+
+KEYFRAME 36
+posX=-86.36 posY=-3.28 posZ=-60.27 rotX=0.00 rotY=-499.16 rotZ=0.00 timestamp=296.65
+
+KEYFRAME 37
+posX=-91.56 posY=-3.28 posZ=-53.40 rotX=0.00 rotY=-491.16 rotZ=0.00 timestamp=301.49
+
+KEYFRAME 38
+posX=-96.77 posY=-3.28 posZ=-46.53 rotX=0.00 rotY=-483.16 rotZ=0.00 timestamp=306.33
+
+KEYFRAME 39
+posX=-98.91 posY=-3.28 posZ=-41.37 rotX=0.00 rotY=-479.16 rotZ=0.00 timestamp=314.12
+
+KEYFRAME 40
+posX=-101.04 posY=-3.28 posZ=-36.20 rotX=0.00 rotY=-475.16 rotZ=0.00 timestamp=321.92
+
+KEYFRAME 41
+posX=-102.94 posY=-3.28 posZ=-28.76 rotX=0.00 rotY=-470.16 rotZ=0.00 timestamp=326.74
+
+KEYFRAME 42
+posX=-104.83 posY=-3.28 posZ=-21.32 rotX=0.00 rotY=-465.16 rotZ=0.00 timestamp=331.55
+
+KEYFRAME 43
+posX=-104.66 posY=-3.28 posZ=-15.82 rotX=0.00 rotY=-457.16 rotZ=0.00 timestamp=348.48
+
+KEYFRAME 44
+posX=-104.48 posY=-3.28 posZ=-10.32 rotX=0.00 rotY=-449.16 rotZ=0.00 timestamp=365.40
+
+KEYFRAME 45
+posX=-103.25 posY=-3.28 posZ=-1.30 rotX=0.00 rotY=-440.16 rotZ=0.00 timestamp=372.88
+
+KEYFRAME 46
+posX=-102.02 posY=-3.28 posZ=7.72 rotX=0.00 rotY=-431.16 rotZ=0.00 timestamp=380.37
+
+KEYFRAME 47
+posX=-98.56 posY=-3.28 posZ=14.92 rotX=0.00 rotY=-424.16 rotZ=0.00 timestamp=385.09
+
+KEYFRAME 48
+posX=-95.09 posY=-3.28 posZ=22.13 rotX=0.00 rotY=-417.16 rotZ=0.00 timestamp=389.80
+
+KEYFRAME 49
+posX=-88.30 posY=-3.28 posZ=30.14 rotX=0.00 rotY=-410.16 rotZ=0.00 timestamp=399.98
+
+KEYFRAME 50
+posX=-81.51 posY=-3.28 posZ=38.15 rotX=0.00 rotY=-403.16 rotZ=0.00 timestamp=410.16
+
+KEYFRAME 51
+posX=-75.46 posY=-3.28 posZ=43.11 rotX=0.00 rotY=-399.16 rotZ=0.00 timestamp=415.96
+
+KEYFRAME 52
+posX=-69.40 posY=-3.28 posZ=48.08 rotX=0.00 rotY=-395.16 rotZ=0.00 timestamp=421.75
+
+KEYFRAME 53
+posX=-60.66 posY=-3.28 posZ=52.32 rotX=0.00 rotY=-389.16 rotZ=0.00 timestamp=426.28
+
+KEYFRAME 54
+posX=-51.91 posY=-3.28 posZ=56.56 rotX=0.00 rotY=-383.16 rotZ=0.00 timestamp=430.82
+
+KEYFRAME 55
+posX=-44.24 posY=-3.28 posZ=59.59 rotX=0.00 rotY=-382.16 rotZ=0.00 timestamp=441.44
+
+KEYFRAME 56
+posX=-36.58 posY=-3.28 posZ=62.63 rotX=0.00 rotY=-381.16 rotZ=0.00 timestamp=452.06
+
+KEYFRAME 57
+posX=-30.09 posY=-3.28 posZ=63.78 rotX=0.00 rotY=-375.16 rotZ=0.00 timestamp=456.75
+
+KEYFRAME 58
+posX=-23.60 posY=-3.28 posZ=64.94 rotX=0.00 rotY=-369.16 rotZ=0.00 timestamp=461.45
+
+KEYFRAME 59
+posX=-13.14 posY=-3.28 posZ=65.70 rotX=0.00 rotY=-366.16 rotZ=0.00 timestamp=468.52
+
+KEYFRAME 60
+posX=-2.68 posY=-3.28 posZ=66.46 rotX=0.00 rotY=-363.16 rotZ=0.00 timestamp=475.59
+
+KEYFRAME 61
+posX=4.67 posY=-3.28 posZ=66.29 rotX=0.00 rotY=-359.16 rotZ=0.00 timestamp=479.05
+
+KEYFRAME 62
+posX=12.01 posY=-3.28 posZ=66.12 rotX=0.00 rotY=-355.16 rotZ=0.00 timestamp=482.51
+
+KEYFRAME 63
+posX=18.50 posY=-3.28 posZ=65.75 rotX=0.00 rotY=-355.16 rotZ=0.00 timestamp=488.04
+
+KEYFRAME 64
+posX=24.98 posY=-3.28 posZ=65.37 rotX=0.00 rotY=-355.16 rotZ=0.00 timestamp=493.58
