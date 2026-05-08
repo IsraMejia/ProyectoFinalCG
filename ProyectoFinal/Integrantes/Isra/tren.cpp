@@ -36,7 +36,9 @@ Tren::Tren()
 	
 	// Rotacion para alinear con las vias (ajuste fino)
 	// La posicion original sugiere que el tren esta orientado correctamente
+	rotationX = 0.0f;
 	rotationY = 10.0f;
+	rotationZ = 0.0f;
 	
 	initialized = false;
 

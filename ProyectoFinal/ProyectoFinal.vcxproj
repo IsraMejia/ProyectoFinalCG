@@ -49,6 +49,7 @@
     <ClCompile Include="Integrantes\Isra\gato_gigante.cpp" />
     <ClCompile Include="Integrantes\Isra\grunt.cpp" />
     <ClCompile Include="Integrantes\Isra\halo_pelican.cpp" />
+    <ClCompile Include="Integrantes\Isra\KF_por_codigo.cpp" />
     <ClCompile Include="Integrantes\Isra\maquina_vapor.cpp" />
     <ClCompile Include="Integrantes\Isra\torreforerunner.cpp" />
     <ClCompile Include="Integrantes\Isra\tren.cpp" />

@@ -21,13 +21,17 @@ public:
 		GLuint uniformSpecularIntensity, GLuint uniformShininess,
 		const float toRadians);
 
+	// Transformation variables (public for animation system access)
+	glm::vec3 position;
+	float rotationX;
+	float rotationY;
+	float rotationZ;
+
 private:
 	Model trenModel;
 	Model vagonModel;
 	Material material;
-	glm::vec3 position;
 	glm::vec3 scale;
-	float rotationY;
 	bool initialized;
 	
 	// Offset relativo del vagon respecto al tren (en espacio local del tren)
