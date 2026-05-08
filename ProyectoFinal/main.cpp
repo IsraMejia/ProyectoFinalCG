@@ -228,31 +228,64 @@ int main()
 		std::cout << "[--] Tren: Sin animacion guardada" << std::endl;
 	}
 	
+	// Auto-start animations if keyframes are loaded
+	if (pelicanLoaded || trainLoaded)
+	{
+		std::cout << "\n========================================" << std::endl;
+		std::cout << "INICIANDO ANIMACIONES AUTOMATICAMENTE..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		if (pelicanLoaded)
+		{
+			pelicanAnimSystem.togglePlaybackMode();
+		}
+		
+		if (trainLoaded)
+		{
+			trenAnimSystem.togglePlaybackMode();
+		}
+		
+		std::cout << ">>> Reproduciendo animaciones del ";
+		if (pelicanLoaded && trainLoaded)
+		{
+			std::cout << "Pelican y Tren <<<" << std::endl;
+		}
+		else if (pelicanLoaded)
+		{
+			std::cout << "Pelican <<<" << std::endl;
+		}
+		else
+		{
+			std::cout << "Tren <<<" << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	
 	// Establecer modelo activo predeterminado
 	if (pelicanLoaded && trainLoaded)
 	{
 		activeModel = ACTIVE_PELICAN;
-		std::cout << "\nModelo activo: Pelican (presiona 1 o 2 para cambiar)" << std::endl;
+		std::cout << "Modelo activo: Pelican (presiona 1 o 2 para cambiar)" << std::endl;
 	}
 	else if (trainLoaded)
 	{
 		activeModel = ACTIVE_TRAIN;
-		std::cout << "\nModelo activo: Tren" << std::endl;
+		std::cout << "Modelo activo: Tren" << std::endl;
 	}
 	else if (pelicanLoaded)
 	{
 		activeModel = ACTIVE_PELICAN;
-		std::cout << "\nModelo activo: Pelican" << std::endl;
+		std::cout << "Modelo activo: Pelican" << std::endl;
 	}
 	else
 	{
 		activeModel = ACTIVE_NONE;
-		std::cout << "\nNingun modelo con animacion cargada" << std::endl;
+		std::cout << "Ningun modelo con animacion cargada" << std::endl;
 	}
 	
 	std::cout << "\nCONTROLES:" << std::endl;
 	std::cout << "  K     : Capturar nuevos keyframes" << std::endl;
-	std::cout << "  SPACE : Reproducir animacion" << std::endl;
+	std::cout << "  SPACE : Pausar/Reanudar animacion" << std::endl;
 	std::cout << "  1     : Cargar animacion del Pelican" << std::endl;
 	std::cout << "  2     : Cargar animacion del Tren" << std::endl;
 	std::cout << "  0     : Resetear animacion" << std::endl;
