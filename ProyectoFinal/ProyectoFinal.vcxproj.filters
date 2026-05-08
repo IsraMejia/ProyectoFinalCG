@@ -117,6 +117,18 @@
     <ClCompile Include="Integrantes\Andrea\speakers.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Integrantes\Andrea\arbol1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Andrea\entrada.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Isra\KF_por_codigo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Isra\keyframes_main.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencias\Camera.h">
@@ -195,6 +207,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Integrantes\Isra\vias_tren.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\arbol1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\cage_ballora.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\cage_freddy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\entrada.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\escenario.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\farola.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\funtime_foxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\sala_monitores.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Integrantes\Andrea\speakers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
