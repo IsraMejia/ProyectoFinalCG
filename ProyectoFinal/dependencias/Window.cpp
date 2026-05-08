@@ -17,6 +17,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	mueveMustang = 8.0f;
 	mueveHelicoptero = 0.0f;
 	lamparaEncendida = true;
+	farolesEncendidos = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -164,6 +165,11 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
 	{
 		theWindow->lamparaEncendida = !theWindow->lamparaEncendida;
+	}
+	// L: toggle faroles
+	if (key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		theWindow->farolesEncendidos = !theWindow->farolesEncendidos;
 	}
 
 
