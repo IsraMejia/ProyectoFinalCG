@@ -111,3 +111,8 @@ cmake_install.cmake
 # Scripts de limpieza temporal
 # ============================================================
 ejecutar_limpieza.ps1
+
+# ============================================================
+# Archivos de cache de animacion (generados automaticamente)
+# ============================================================
+*_interpolated.kf
