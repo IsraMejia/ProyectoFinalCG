@@ -23,7 +23,9 @@ public:
 
 	// Transformation variables (public for animation system access)
 	glm::vec3 position;
+	float rotationX;
 	float rotationY;
+	float rotationZ;
 
 private:
 	Model trenModel;

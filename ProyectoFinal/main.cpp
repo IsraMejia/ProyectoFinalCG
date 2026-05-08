@@ -100,8 +100,18 @@ Tren tren;
 Train_Keyframe_System trainAnimSystem;
 
 // Keyframe animation system (modulo Isra)
-Keyframe_System animSystem(100);
+// Dos instancias separadas: una para Pelican, otra para Tren
+Keyframe_System pelicanAnimSystem(100);
+Keyframe_System trenAnimSystem(100);
 Animation_Camera animCamera;
+
+// Variable para rastrear qué modelo está activo para reproducción
+enum ActiveModel {
+	ACTIVE_NONE = 0,
+	ACTIVE_PELICAN = 1,
+	ACTIVE_TRAIN = 2
+};
+ActiveModel activeModel = ACTIVE_NONE;
 
 Skybox skybox;
 
@@ -185,8 +195,68 @@ int main()
 	tren.Initialize();
 
 	// Inicializar sistema de animacion por keyframes
-	animSystem.setCameraPositionTracker(&cameraTracker);
-	animSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_runtime.kf");
+	pelicanAnimSystem.setCameraPositionTracker(&cameraTracker);
+	trenAnimSystem.setCameraPositionTracker(&cameraTracker);
+	
+	// Intentar cargar archivos de keyframes si existen
+	std::cout << "\n========================================" << std::endl;
+	std::cout << "CARGANDO ANIMACIONES EXISTENTES..." << std::endl;
+	std::cout << "========================================" << std::endl;
+	
+	bool pelicanLoaded = false;
+	bool trainLoaded = false;
+	
+	// Cargar animación del Pelican en su sistema dedicado
+	if (pelicanAnimSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_runtime.kf"))
+	{
+		pelicanLoaded = true;
+		std::cout << "[OK] Pelican: Animacion cargada" << std::endl;
+	}
+	else
+	{
+		std::cout << "[--] Pelican: Sin animacion guardada" << std::endl;
+	}
+	
+	// Cargar animación del Tren en su sistema dedicado
+	if (trenAnimSystem.loadKeyframesFromFile("Integrantes/Isra/tren_runtime.kf"))
+	{
+		trainLoaded = true;
+		std::cout << "[OK] Tren: Animacion cargada" << std::endl;
+	}
+	else
+	{
+		std::cout << "[--] Tren: Sin animacion guardada" << std::endl;
+	}
+	
+	// Establecer modelo activo predeterminado
+	if (pelicanLoaded && trainLoaded)
+	{
+		activeModel = ACTIVE_PELICAN;
+		std::cout << "\nModelo activo: Pelican (presiona 1 o 2 para cambiar)" << std::endl;
+	}
+	else if (trainLoaded)
+	{
+		activeModel = ACTIVE_TRAIN;
+		std::cout << "\nModelo activo: Tren" << std::endl;
+	}
+	else if (pelicanLoaded)
+	{
+		activeModel = ACTIVE_PELICAN;
+		std::cout << "\nModelo activo: Pelican" << std::endl;
+	}
+	else
+	{
+		activeModel = ACTIVE_NONE;
+		std::cout << "\nNingun modelo con animacion cargada" << std::endl;
+	}
+	
+	std::cout << "\nCONTROLES:" << std::endl;
+	std::cout << "  K     : Capturar nuevos keyframes" << std::endl;
+	std::cout << "  SPACE : Reproducir animacion" << std::endl;
+	std::cout << "  1     : Cargar animacion del Pelican" << std::endl;
+	std::cout << "  2     : Cargar animacion del Tren" << std::endl;
+	std::cout << "  0     : Resetear animacion" << std::endl;
+	std::cout << "========================================\n" << std::endl;
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -262,29 +332,197 @@ int main()
 		static bool kKeyPressed = false;
 		static bool spaceKeyPressed = false;
 		static bool zeroKeyPressed = false;
+		static bool key1Pressed = false;
+		static bool key2Pressed = false;
+
+		// Cambiar a animación del Pelican con tecla 1 (solo si no está grabando)
+		if (mainWindow.getsKeys()[GLFW_KEY_1] && !key1Pressed && 
+		    !pelicanAnimSystem.isRecording() && !trenAnimSystem.isRecording())
+		{
+			key1Pressed = true;
+			if (pelicanAnimSystem.getKeyframeCount() > 0)
+			{
+				activeModel = ACTIVE_PELICAN;
+				std::cout << "\n>>> Cambiado a animacion del PELICAN <<<" << std::endl;
+				std::cout << "Presiona SPACE para reproducir\n" << std::endl;
+			}
+			else
+			{
+				std::cout << "\n>>> ERROR: No hay animacion del Pelican cargada <<<\n" << std::endl;
+			}
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_1])
+		{
+			key1Pressed = false;
+		}
+
+		// Cambiar a animación del Tren con tecla 2 (solo si no está grabando)
+		if (mainWindow.getsKeys()[GLFW_KEY_2] && !key2Pressed && 
+		    !pelicanAnimSystem.isRecording() && !trenAnimSystem.isRecording())
+		{
+			key2Pressed = true;
+			if (trenAnimSystem.getKeyframeCount() > 0)
+			{
+				activeModel = ACTIVE_TRAIN;
+				std::cout << "\n>>> Cambiado a animacion del TREN <<<" << std::endl;
+				std::cout << "Presiona SPACE para reproducir\n" << std::endl;
+			}
+			else
+			{
+				std::cout << "\n>>> ERROR: No hay animacion del Tren cargada <<<\n" << std::endl;
+			}
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_2])
+		{
+			key2Pressed = false;
+		}
 
 		// Toggle recording mode with 'K' key
+		static bool waitingForRecordingModelSelection = false;
+		static bool recordingKey1Pressed = false;
+		static bool recordingKey2Pressed = false;
+		
 		if (mainWindow.getsKeys()[GLFW_KEY_K] && !kKeyPressed)
 		{
 			kKeyPressed = true;
-			animSystem.toggleRecordingMode();
 			
-			// Save keyframes when exiting recording mode
-			if (!animSystem.isRecording() && animSystem.getKeyframeCount() > 0)
+			// Si algún sistema está grabando, salir del modo grabación
+			if (pelicanAnimSystem.isRecording())
 			{
-				animSystem.saveKeyframesToFile("Integrantes/Isra/pelican_halo_runtime.kf");
+				pelicanAnimSystem.toggleRecordingMode();
+				
+				// Save keyframes when exiting recording mode
+				if (!pelicanAnimSystem.isRecording() && pelicanAnimSystem.getKeyframeCount() > 0)
+				{
+					pelicanAnimSystem.saveKeyframesToFile("Integrantes/Isra/pelican_halo_runtime.kf");
+				}
+				waitingForRecordingModelSelection = false;
+			}
+			else if (trenAnimSystem.isRecording())
+			{
+				trenAnimSystem.toggleRecordingMode();
+				
+				// Save keyframes when exiting recording mode
+				if (!trenAnimSystem.isRecording() && trenAnimSystem.getKeyframeCount() > 0)
+				{
+					trenAnimSystem.saveKeyframesToFile("Integrantes/Isra/tren_runtime.kf");
+				}
+				waitingForRecordingModelSelection = false;
+			}
+			// Si estamos esperando selección, cancelar
+			else if (waitingForRecordingModelSelection)
+			{
+				waitingForRecordingModelSelection = false;
+				std::cout << "\n>>> SELECCION CANCELADA <<<\n" << std::endl;
+			}
+			// Si no hay grabación activa, mostrar menú de selección
+			else
+			{
+				waitingForRecordingModelSelection = true;
+				std::cout << "\n========================================" << std::endl;
+				std::cout << "=== SELECCION DE MODELO ===" << std::endl;
+				std::cout << "========================================" << std::endl;
+				std::cout << "Selecciona el modelo a animar:" << std::endl;
+				std::cout << "  1 : Pelican de Halo" << std::endl;
+				std::cout << "  2 : Tren" << std::endl;
+				std::cout << "  K : Cancelar y salir" << std::endl;
+				std::cout << "========================================\n" << std::endl;
 			}
 		}
 		else if (!mainWindow.getsKeys()[GLFW_KEY_K])
 		{
 			kKeyPressed = false;
 		}
+		
+		// Handle model selection for recording mode (solo cuando estamos esperando selección)
+		if (waitingForRecordingModelSelection)
+		{
+			// Opción 1: Pelican
+			if (mainWindow.getsKeys()[GLFW_KEY_1] && !recordingKey1Pressed)
+			{
+				recordingKey1Pressed = true;
+				waitingForRecordingModelSelection = false;
+				
+				std::cout << "\n>>> PELICAN DE HALO SELECCIONADO <<<\n" << std::endl;
+				
+				// Activar modo grabación del Pelican
+				activeModel = ACTIVE_PELICAN;
+				pelicanAnimSystem.toggleRecordingMode();
+				// La selección interna se manejará automáticamente en el siguiente frame
+			}
+			else if (!mainWindow.getsKeys()[GLFW_KEY_1])
+			{
+				recordingKey1Pressed = false;
+			}
+			
+			// Opción 2: Tren
+			if (mainWindow.getsKeys()[GLFW_KEY_2] && !recordingKey2Pressed)
+			{
+				recordingKey2Pressed = true;
+				waitingForRecordingModelSelection = false;
+				
+				std::cout << "\n>>> TREN SELECCIONADO <<<\n" << std::endl;
+				
+				// Activar modo grabación del Tren
+				activeModel = ACTIVE_TRAIN;
+				trenAnimSystem.toggleRecordingMode();
+				// La selección interna se manejará automáticamente en el siguiente frame
+			}
+			else if (!mainWindow.getsKeys()[GLFW_KEY_2])
+			{
+				recordingKey2Pressed = false;
+			}
+		}
 
 		// Toggle playback mode with SPACE key
 		if (mainWindow.getsKeys()[GLFW_KEY_SPACE] && !spaceKeyPressed)
 		{
 			spaceKeyPressed = true;
-			animSystem.togglePlaybackMode();
+			
+			// Activar/desactivar playback de AMBOS sistemas si tienen keyframes
+			bool pelicanToggled = false;
+			bool trenToggled = false;
+			
+			if (pelicanAnimSystem.getKeyframeCount() >= 2)
+			{
+				pelicanAnimSystem.togglePlaybackMode();
+				pelicanToggled = true;
+				std::cout << "[DEBUG] Pelican: " << pelicanAnimSystem.getKeyframeCount() << " keyframes, playback=" << (pelicanAnimSystem.isPlaying() ? "ON" : "OFF") << std::endl;
+			}
+			
+			if (trenAnimSystem.getKeyframeCount() >= 2)
+			{
+				trenAnimSystem.togglePlaybackMode();
+				trenToggled = true;
+				std::cout << "[DEBUG] Tren: " << trenAnimSystem.getKeyframeCount() << " keyframes, playback=" << (trenAnimSystem.isPlaying() ? "ON" : "OFF") << std::endl;
+			}
+			
+			// Mostrar mensaje informativo
+			if (pelicanToggled && trenToggled)
+			{
+				if (pelicanAnimSystem.isPlaying() || trenAnimSystem.isPlaying())
+				{
+					std::cout << "\n>>> Reproduciendo animaciones del Pelican y Tren <<<\n" << std::endl;
+				}
+				else
+				{
+					std::cout << "\n>>> Animaciones pausadas <<<\n" << std::endl;
+				}
+			}
+			else if (pelicanToggled)
+			{
+				std::cout << "\n>>> " << (pelicanAnimSystem.isPlaying() ? "Reproduciendo" : "Pausado") << " animacion del Pelican <<<\n" << std::endl;
+			}
+			else if (trenToggled)
+			{
+				std::cout << "\n>>> " << (trenAnimSystem.isPlaying() ? "Reproduciendo" : "Pausado") << " animacion del Tren <<<\n" << std::endl;
+			}
+			else
+			{
+				std::cout << "\n>>> ERROR: No hay animaciones cargadas (necesitas al menos 2 keyframes) <<<\n" << std::endl;
+				std::cout << "[DEBUG] Pelican keyframes: " << pelicanAnimSystem.getKeyframeCount() << std::endl;
+				std::cout << "[DEBUG] Tren keyframes: " << trenAnimSystem.getKeyframeCount() << std::endl;
+			}
 		}
 		else if (!mainWindow.getsKeys()[GLFW_KEY_SPACE])
 		{
@@ -295,45 +533,113 @@ int main()
 		if (mainWindow.getsKeys()[GLFW_KEY_0] && !zeroKeyPressed)
 		{
 			zeroKeyPressed = true;
-			animSystem.resetAnimation();
+			
+			// Resetear AMBOS sistemas si tienen keyframes
+			bool pelicanReset = false;
+			bool trenReset = false;
+			
+			if (pelicanAnimSystem.getKeyframeCount() > 0)
+			{
+				pelicanAnimSystem.resetAnimation();
+				pelicanReset = true;
+			}
+			
+			if (trenAnimSystem.getKeyframeCount() > 0)
+			{
+				trenAnimSystem.resetAnimation();
+				trenReset = true;
+			}
+			
+			if (pelicanReset && trenReset)
+			{
+				std::cout << "\n>>> Ambas animaciones reseteadas <<<\n" << std::endl;
+			}
+			else if (pelicanReset)
+			{
+				std::cout << "\n>>> Animacion del Pelican reseteada <<<\n" << std::endl;
+			}
+			else if (trenReset)
+			{
+				std::cout << "\n>>> Animacion del Tren reseteada <<<\n" << std::endl;
+			}
 		}
 		else if (!mainWindow.getsKeys()[GLFW_KEY_0])
 		{
 			zeroKeyPressed = false;
 		}
 
-		// Handle recording mode input (arrow keys, N, M, L, P keys)
-		if (animSystem.isRecording())
+		// Handle model selection when in recording mode
+		// Auto-completar la selección interna del sistema basándose en la selección del menú principal
+		if (pelicanAnimSystem.isWaitingForModelSelection())
 		{
-			animSystem.handleRecordingInput(mainWindow.getsKeys(), 0.0f, 0.0f, deltaTime,
-				haloPelican.position, haloPelican.rotationX, haloPelican.rotationY, haloPelican.rotationZ);
+			// Simular presión de tecla 1 automáticamente
+			bool autoKeys[1024] = {false};
+			autoKeys[GLFW_KEY_1] = true;
+			pelicanAnimSystem.handleModelSelection(autoKeys);
+		}
+		else if (trenAnimSystem.isWaitingForModelSelection())
+		{
+			// Simular presión de tecla 2 automáticamente
+			bool autoKeys[1024] = {false};
+			autoKeys[GLFW_KEY_2] = true;
+			trenAnimSystem.handleModelSelection(autoKeys);
 		}
 
-		// Update playback animation
-		animSystem.updatePlayback(deltaTime);
-		animSystem.applyTransformationToModel(haloPelican.position, haloPelican.rotationX, 
-			haloPelican.rotationY, haloPelican.rotationZ);
+		// Handle recording mode input (arrow keys, N, M, L, P keys)
+		if (pelicanAnimSystem.isRecording() && !pelicanAnimSystem.isWaitingForModelSelection())
+		{
+			pelicanAnimSystem.handleRecordingInput(mainWindow.getsKeys(), 0.0f, 0.0f, deltaTime,
+				haloPelican.position, haloPelican.rotationX, haloPelican.rotationY, haloPelican.rotationZ);
+		}
+		
+		if (trenAnimSystem.isRecording() && !trenAnimSystem.isWaitingForModelSelection())
+		{
+			trenAnimSystem.handleRecordingInput(mainWindow.getsKeys(), 0.0f, 0.0f, deltaTime,
+				tren.position, tren.rotationX, tren.rotationY, tren.rotationZ);
+		}
 
-		// Update train animation (procedural keyframes)
-		trainAnimSystem.Update(deltaTime);
-		trainAnimSystem.GetCurrentTransform(tren.position, tren.rotationY);
+		// Update playback animation para ambos sistemas
+		pelicanAnimSystem.updatePlayback(deltaTime);
+		trenAnimSystem.updatePlayback(deltaTime);
+		
+		// Aplicar transformación del Pelican si está en playback
+		pelicanAnimSystem.applyTransformationToModel(haloPelican.position, haloPelican.rotationX, 
+			haloPelican.rotationY, haloPelican.rotationZ);
+		
+		// Aplicar transformación del Tren si está en playback
+		trenAnimSystem.applyTransformationToModel(tren.position, tren.rotationX, 
+			tren.rotationY, tren.rotationZ);
+
+		// ANIMACION PROCEDURAL DEL TREN DESHABILITADA
+		// (Ahora se usa el sistema de keyframes por teclado)
+		// trainAnimSystem.Update(deltaTime);
+		// trainAnimSystem.GetCurrentTransform(tren.position, tren.rotationY);
 
 		// Switch camera based on recording mode
 		glm::mat4 viewMatrix;
 		glm::vec3 eyePosition;
 		
-		if (animSystem.isRecording())
+		if (pelicanAnimSystem.isRecording())
 		{
-			// Usar cámara fija en posición específica durante captura
+			// Cámara fija para Pelican
 			glm::vec3 fixedCameraPos(-198.46f, 37.29f, -94.11f);
 			glm::vec3 fixedCameraFront(0.93f, -0.07f, 0.36f);
 			glm::vec3 fixedCameraUp(0.0f, 1.0f, 0.0f);
 			
-			// Calcular el punto al que mira la cámara
 			glm::vec3 fixedCameraTarget = fixedCameraPos + fixedCameraFront;
-			
 			viewMatrix = glm::lookAt(fixedCameraPos, fixedCameraTarget, fixedCameraUp);
 			eyePosition = fixedCameraPos;
+		}
+		else if (trenAnimSystem.isRecording())
+		{
+			// Cámara aérea para Tren (vista desde arriba)
+			glm::vec3 trainCameraPos(6.67f, 231.10f, -19.99f);
+			glm::vec3 trainCameraFront(0.00f, -1.00f, -0.03f);
+			glm::vec3 trainCameraUp(0.0f, 1.0f, 0.0f);
+			
+			glm::vec3 trainCameraTarget = trainCameraPos + trainCameraFront;
+			viewMatrix = glm::lookAt(trainCameraPos, trainCameraTarget, trainCameraUp);
+			eyePosition = trainCameraPos;
 		}
 		else
 		{

@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <ctime>
 #include <glfw3.h>
+#include <sys/stat.h>  // For file modification time checking
 
 // ============================================================================
 // Forward declarations for internal classes
@@ -288,11 +289,14 @@ Keyframe_System::Keyframe_System(int maxKeyframes)
 	playbackMode = false;
 	canSaveFrame = true;  // Start with ability to save
 	framesCalculated = false;  // No frames calculated yet
+	waitingForModelSelection = false;  // No esperando selección
+	selectedModel = MODEL_NONE;  // Sin modelo seleccionado
 
 	animationTimer = 0.0f;
-	frameRate = 12.0f;  // 12 FPS
+	frameRate = 24.0f;  // 24 FPS (cambiado de 12 FPS)
 	recordingStartTime = 0.0f;
 	totalRecordingTime = 0.0f;
+	lastUpdateTime = 0.0;  // Initialize timing for updatePlayback
 
 	// Initialize current transformation state
 	currentPosition = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -302,6 +306,10 @@ Keyframe_System::Keyframe_System(int maxKeyframes)
 
 	// Initialize camera tracker reference
 	cameraTracker = nullptr;
+	
+	// Initialize key press states
+	key1PressedState = false;
+	key2PressedState = false;
 
 	// Initialize keyframe array with default values
 	for (int i = 0; i < MAX_FRAMES; i++)
@@ -329,53 +337,26 @@ Keyframe_System::~Keyframe_System()
 
 void Keyframe_System::toggleRecordingMode()
 {
+	// Si estamos esperando selección de modelo, cancelar y salir
+	if (waitingForModelSelection)
+	{
+		waitingForModelSelection = false;
+		recordingMode = false;
+		selectedModel = MODEL_NONE;
+		std::cout << "\n>>> SELECCION CANCELADA <<<\n" << std::endl;
+		return;
+	}
+
 	recordingMode = !recordingMode;
 
 	if (recordingMode)
 	{
-		// Entering recording mode
+		// Entering recording mode - mostrar menú de selección de modelo
 		playbackMode = false;  // Disable playback
+		waitingForModelSelection = true;
+		selectedModel = MODEL_NONE;
 		
-		// LIMPIAR KEYFRAMES Y FRAMES CALCULADOS PREVIAMENTE
-		std::cout << "\n========================================" << std::endl;
-		std::cout << "INICIANDO NUEVA CAPTURA" << std::endl;
-		std::cout << "Limpiando keyframes anteriores..." << std::endl;
-		std::cout << "========================================\n" << std::endl;
-		
-		// Resetear todo el sistema
-		frameCount = 0;
-		currentPlayIndex = 0;
-		currentInterpolationStep = 0;
-		framesCalculated = false;
-		animationTimer = 0.0f;
-		
-		// Limpiar todos los keyframes
-		for (int i = 0; i < MAX_FRAMES; i++)
-		{
-			keyframes[i].posX = 0.0f;
-			keyframes[i].posY = 0.0f;
-			keyframes[i].posZ = 0.0f;
-			keyframes[i].rotX = 0.0f;
-			keyframes[i].rotY = 0.0f;
-			keyframes[i].rotZ = 0.0f;
-			keyframes[i].timestamp = 0.0f;
-			keyframes[i].posXInc = 0.0f;
-			keyframes[i].posYInc = 0.0f;
-			keyframes[i].posZInc = 0.0f;
-			keyframes[i].rotXInc = 0.0f;
-			keyframes[i].rotYInc = 0.0f;
-			keyframes[i].rotZInc = 0.0f;
-		}
-		
-		recordingStartTime = (float)glfwGetTime();  // Capturar tiempo de inicio
-		
-		// Deshabilitar CameraPositionTracker si está configurado
-		if (cameraTracker != nullptr)
-		{
-			cameraTracker->SetEnabled(false);
-		}
-		
-		printRecordingMenu();
+		printModelSelectionMenu();
 	}
 	else
 	{
@@ -394,6 +375,10 @@ void Keyframe_System::toggleRecordingMode()
 		std::cout << "Keyframes capturados: " << frameCount << std::endl;
 		std::cout << "Duracion de captura: " << totalRecordingTime << " segundos" << std::endl;
 		std::cout << "========================================\n" << std::endl;
+		
+		// Resetear selección
+		waitingForModelSelection = false;
+		selectedModel = MODEL_NONE;
 	}
 }
 
@@ -417,20 +402,54 @@ void Keyframe_System::togglePlaybackMode()
 
 	if (playbackMode)
 	{
-		// Si los frames no han sido calculados, calcularlos primero
+		// Si los frames no han sido calculados, intentar cargar desde caché primero
 		if (!framesCalculated)
 		{
-			std::cout << "\n========================================" << std::endl;
-			std::cout << "CALCULANDO FRAMES INTERMEDIOS..." << std::endl;
-			std::cout << "Por favor espera..." << std::endl;
-			std::cout << "========================================\n" << std::endl;
+			// Generate interpolated filename
+			std::string interpolatedFilename = getInterpolatedFilename(sourceFilename);
 			
-			calculateAllFrames();
+			// Check if we need to recalculate (runtime file changed or interpolated doesn't exist)
+			bool needsCalc = needsRecalculation(sourceFilename, interpolatedFilename);
 			
-			std::cout << "\n========================================" << std::endl;
-			std::cout << "CALCULO COMPLETADO!" << std::endl;
-			std::cout << "Iniciando animacion automaticamente..." << std::endl;
-			std::cout << "========================================\n" << std::endl;
+			if (!needsCalc)
+			{
+				// Try to load from cache
+				std::cout << "\n========================================" << std::endl;
+				std::cout << "CARGANDO FRAMES DESDE CACHE..." << std::endl;
+				std::cout << "========================================\n" << std::endl;
+				
+				if (loadInterpolatedFramesFromFile(interpolatedFilename))
+				{
+					std::cout << "\n========================================" << std::endl;
+					std::cout << "[CACHE] Frames cargados exitosamente!" << std::endl;
+					std::cout << "[CACHE] Tiempo de calculo ahorrado!" << std::endl;
+					std::cout << "Iniciando animacion automaticamente..." << std::endl;
+					std::cout << "========================================\n" << std::endl;
+				}
+				else
+				{
+					needsCalc = true;  // Cache load failed, need to calculate
+				}
+			}
+			
+			// If cache doesn't exist or is outdated, calculate and save
+			if (needsCalc)
+			{
+				std::cout << "\n========================================" << std::endl;
+				std::cout << "CALCULANDO FRAMES INTERMEDIOS..." << std::endl;
+				std::cout << "Por favor espera..." << std::endl;
+				std::cout << "========================================\n" << std::endl;
+				
+				calculateAllFrames();
+				
+				// Save to cache for next time
+				saveInterpolatedFramesToFile(interpolatedFilename);
+				
+				std::cout << "\n========================================" << std::endl;
+				std::cout << "CALCULO COMPLETADO!" << std::endl;
+				std::cout << "Iniciando animacion automaticamente..." << std::endl;
+				std::cout << "========================================\n" << std::endl;
+			}
 		}
 		else
 		{
@@ -442,6 +461,7 @@ void Keyframe_System::togglePlaybackMode()
 		currentPlayIndex = 0;
 		currentInterpolationStep = 0;
 		animationTimer = 0.0f;
+		lastUpdateTime = 0.0;  // Reset timing for this instance
 
 		// Set initial transformation from first keyframe
 		currentPosition.x = keyframes[0].posX;
@@ -464,6 +484,7 @@ void Keyframe_System::resetAnimation()
 	currentInterpolationStep = 0;
 	playbackMode = false;
 	animationTimer = 0.0f;
+	lastUpdateTime = 0.0;  // Reset timing
 
 	// Reset to first keyframe if keyframes exist
 	if (frameCount > 0)
@@ -562,6 +583,138 @@ void Keyframe_System::printRecordingMenu()
 	std::cout << "========================================\n" << std::endl;
 }
 
+void Keyframe_System::printModelSelectionMenu()
+{
+	std::cout << "\n========================================" << std::endl;
+	std::cout << "=== SELECCION DE MODELO ===" << std::endl;
+	std::cout << "========================================" << std::endl;
+	std::cout << "Selecciona el modelo a animar:" << std::endl;
+	std::cout << "  1 : Pelican de Halo" << std::endl;
+	std::cout << "  2 : Tren" << std::endl;
+	std::cout << "  K : Cancelar y salir" << std::endl;
+	std::cout << "========================================\n" << std::endl;
+}
+
+void Keyframe_System::handleModelSelection(bool* keys)
+{
+	if (!waitingForModelSelection)
+		return;
+
+	// Usar variables de instancia en lugar de static para evitar conflictos entre sistemas
+
+	// Tecla 1: Seleccionar Pelican
+	if (keys[GLFW_KEY_1] && !key1PressedState)
+	{
+		key1PressedState = true;
+		selectedModel = MODEL_PELICAN;
+		waitingForModelSelection = false;
+		
+		std::cout << "\n>>> PELICAN DE HALO SELECCIONADO <<<\n" << std::endl;
+		
+		// Iniciar captura
+		// LIMPIAR KEYFRAMES Y FRAMES CALCULADOS PREVIAMENTE
+		std::cout << "========================================" << std::endl;
+		std::cout << "INICIANDO NUEVA CAPTURA" << std::endl;
+		std::cout << "Limpiando keyframes anteriores..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		// Resetear todo el sistema
+		frameCount = 0;
+		currentPlayIndex = 0;
+		currentInterpolationStep = 0;
+		framesCalculated = false;
+		animationTimer = 0.0f;
+		
+		// Limpiar todos los keyframes
+		for (int i = 0; i < MAX_FRAMES; i++)
+		{
+			keyframes[i].posX = 0.0f;
+			keyframes[i].posY = 0.0f;
+			keyframes[i].posZ = 0.0f;
+			keyframes[i].rotX = 0.0f;
+			keyframes[i].rotY = 0.0f;
+			keyframes[i].rotZ = 0.0f;
+			keyframes[i].timestamp = 0.0f;
+			keyframes[i].posXInc = 0.0f;
+			keyframes[i].posYInc = 0.0f;
+			keyframes[i].posZInc = 0.0f;
+			keyframes[i].rotXInc = 0.0f;
+			keyframes[i].rotYInc = 0.0f;
+			keyframes[i].rotZInc = 0.0f;
+		}
+		
+		recordingStartTime = (float)glfwGetTime();  // Capturar tiempo de inicio
+		
+		// Deshabilitar CameraPositionTracker si está configurado
+		if (cameraTracker != nullptr)
+		{
+			cameraTracker->SetEnabled(false);
+		}
+		
+		printRecordingMenu();
+	}
+	else if (!keys[GLFW_KEY_1])
+	{
+		key1PressedState = false;
+	}
+
+	// Tecla 2: Seleccionar Tren
+	if (keys[GLFW_KEY_2] && !key2PressedState)
+	{
+		key2PressedState = true;
+		selectedModel = MODEL_TRAIN;
+		waitingForModelSelection = false;
+		
+		std::cout << "\n>>> TREN SELECCIONADO <<<\n" << std::endl;
+		
+		// Iniciar captura
+		// LIMPIAR KEYFRAMES Y FRAMES CALCULADOS PREVIAMENTE
+		std::cout << "========================================" << std::endl;
+		std::cout << "INICIANDO NUEVA CAPTURA" << std::endl;
+		std::cout << "Limpiando keyframes anteriores..." << std::endl;
+		std::cout << "========================================\n" << std::endl;
+		
+		// Resetear todo el sistema
+		frameCount = 0;
+		currentPlayIndex = 0;
+		currentInterpolationStep = 0;
+		framesCalculated = false;
+		animationTimer = 0.0f;
+		
+		// Limpiar todos los keyframes
+		for (int i = 0; i < MAX_FRAMES; i++)
+		{
+			keyframes[i].posX = 0.0f;
+			keyframes[i].posY = 0.0f;
+			keyframes[i].posZ = 0.0f;
+			keyframes[i].rotX = 0.0f;
+			keyframes[i].rotY = 0.0f;
+			keyframes[i].rotZ = 0.0f;
+			keyframes[i].timestamp = 0.0f;
+			keyframes[i].posXInc = 0.0f;
+			keyframes[i].posYInc = 0.0f;
+			keyframes[i].posZInc = 0.0f;
+			keyframes[i].rotXInc = 0.0f;
+			keyframes[i].rotYInc = 0.0f;
+			keyframes[i].rotZInc = 0.0f;
+		}
+		
+		recordingStartTime = (float)glfwGetTime();  // Capturar tiempo de inicio
+		
+		// Deshabilitar CameraPositionTracker si está configurado
+		if (cameraTracker != nullptr)
+		{
+			cameraTracker->SetEnabled(false);
+		}
+		
+		printRecordingMenu();
+	}
+	else if (!keys[GLFW_KEY_2])
+	{
+		key2PressedState = false;
+	}
+}
+
 void Keyframe_System::calculateInterpolation(int fromIndex, int toIndex)
 {
 	if (maxInterpolationSteps <= 0)
@@ -591,6 +744,9 @@ void Keyframe_System::handleRecordingInput(bool* keys, float mouseX, float mouse
 	float yawRadians = modelRotY * (3.14159265f / 180.0f);
 	
 	// Calcular vectores de dirección basados en la rotación Y del modelo
+	// Para el tren desde vista aérea:
+	// - forwardX/forwardZ representa el movimiento "adelante" del tren
+	// - rightX/rightZ representa el movimiento "lateral" del tren
 	float forwardX = sin(yawRadians);
 	float forwardZ = cos(yawRadians);
 	float rightX = cos(yawRadians);
@@ -598,14 +754,14 @@ void Keyframe_System::handleRecordingInput(bool* keys, float mouseX, float mouse
 
 	// CONTROLES DE MOVIMIENTO DIRECCIONAL (basados en rotación Y)
 	
-	// UP Arrow: Avanzar hacia adelante
+	// UP Arrow: Mover en dirección "adelante" según la rotación del modelo
 	if (keys[GLFW_KEY_UP])
 	{
 		modelPosition.x += forwardX * moveSpeed;
 		modelPosition.z += forwardZ * moveSpeed;
 	}
 
-	// DOWN Arrow: Retroceder
+	// DOWN Arrow: Mover en dirección "atrás" según la rotación del modelo
 	if (keys[GLFW_KEY_DOWN])
 	{
 		modelPosition.x -= forwardX * moveSpeed;
@@ -707,7 +863,6 @@ void Keyframe_System::updatePlayback(float deltaTime)
 
 	// Usar tiempo real en lugar de deltaTime del programa
 	// Esto asegura que la animación vaya a 12 FPS independientemente del framerate del programa
-	static double lastUpdateTime = 0.0;
 	double currentTime = glfwGetTime();
 	
 	// Primera vez que se llama después de iniciar playback
@@ -792,21 +947,16 @@ bool Keyframe_System::loadKeyframesFromFile(const std::string& filename)
 	{
 		frameCount = loadedCount;
 		
-		// Calcular automáticamente los frames intermedios
-		std::cout << "\n========================================" << std::endl;
-		std::cout << "CALCULANDO FRAMES INTERMEDIOS..." << std::endl;
-		std::cout << "Por favor espera..." << std::endl;
-		std::cout << "========================================\n" << std::endl;
+		// Store source filename for cache management
+		sourceFilename = filename;
 		
-		calculateAllFrames();
+		// NO calcular frames intermedios aquí - se hará bajo demanda
+		// Marcar que los frames NO están calculados
+		framesCalculated = false;
 		
-		std::cout << "\n========================================" << std::endl;
-		std::cout << "CALCULO COMPLETADO!" << std::endl;
-		std::cout << "Iniciando animacion automaticamente..." << std::endl;
-		std::cout << "========================================\n" << std::endl;
+		std::cout << "Cargados " << frameCount << " keyframes desde " << filename << std::endl;
+		std::cout << "(Los frames intermedios se calcularan cuando inicies la reproduccion)" << std::endl;
 		
-		// Activar playback automáticamente
-		playbackMode = true;
 		currentPlayIndex = 0;
 		currentInterpolationStep = 0;
 		animationTimer = 0.0f;
@@ -850,6 +1000,33 @@ bool Keyframe_System::saveKeyframesToFile(const std::string& filename)
 	return printer.writeToFile(filename, keyframes, frameCount, animName);
 }
 
+bool Keyframe_System::loadModelKeyframes(ModelType model)
+{
+	std::string filename;
+	
+	switch (model)
+	{
+		case MODEL_PELICAN:
+			filename = "Integrantes/Isra/pelican_halo_runtime.kf";
+			break;
+		case MODEL_TRAIN:
+			filename = "Integrantes/Isra/tren_runtime.kf";
+			break;
+		default:
+			std::cout << "Error: Modelo no válido" << std::endl;
+			return false;
+	}
+	
+	bool success = loadKeyframesFromFile(filename);
+	if (success)
+	{
+		selectedModel = model;
+		std::cout << "Modelo seleccionado: " << (model == MODEL_PELICAN ? "Pelican" : "Tren") << std::endl;
+	}
+	
+	return success;
+}
+
 void Keyframe_System::setCameraPositionTracker(CameraPositionTracker* tracker)
 {
 	cameraTracker = tracker;
@@ -865,12 +1042,15 @@ void Keyframe_System::calculateAllFrames()
 	
 	// SISTEMA DE DISTRIBUCION BASADO EN PORCENTAJES
 	// Calcular el porcentaje de posición de cada keyframe en la captura original
-	// y mapear ese porcentaje a 60 segundos (720 frames a 12 FPS)
+	// y mapear ese porcentaje a 60 segundos (1440 frames a 24 FPS)
 	
 	const float TARGET_DURATION = 60.0f;  // 60 segundos
-	const float TOTAL_FRAMES = TARGET_DURATION * frameRate;  // 720 frames
+	const float TOTAL_FRAMES = TARGET_DURATION * frameRate;  // 1440 frames a 24 FPS
 	
 	std::cout << "=== DISTRIBUCION BASADA EN PORCENTAJES ===\n";
+	std::cout << "Frame rate: " << frameRate << " FPS\n";
+	std::cout << "Duracion objetivo: " << TARGET_DURATION << " segundos\n";
+	std::cout << "Total frames objetivo: " << (int)TOTAL_FRAMES << " frames\n\n";
 	
 	// Calcular frames objetivo para cada keyframe basado en su porcentaje
 	int targetFrames[MAX_FRAMES];
@@ -947,4 +1127,234 @@ void Keyframe_System::calculateAllFrames()
 	
 	// Marcar que los frames ya fueron calculados
 	framesCalculated = true;
+}
+
+std::string Keyframe_System::getInterpolatedFilename(const std::string& runtimeFilename)
+{
+	// Convert "pelican_halo_runtime.kf" to "pelican_halo_runtime_interpolated.kf"
+	// Convert "tren_runtime.kf" to "tren_runtime_interpolated.kf"
+	
+	size_t dotPos = runtimeFilename.find_last_of('.');
+	if (dotPos != std::string::npos)
+	{
+		std::string baseName = runtimeFilename.substr(0, dotPos);
+		std::string extension = runtimeFilename.substr(dotPos);
+		return baseName + "_interpolated" + extension;
+	}
+	
+	return runtimeFilename + "_interpolated";
+}
+
+// ============================================================================
+// Interpolated Frames Cache System
+// ============================================================================
+
+bool Keyframe_System::saveInterpolatedFramesToFile(const std::string& filename)
+{
+	if (!framesCalculated || frameCount < 2)
+	{
+		std::cout << "Error: No interpolated frames to save. Calculate frames first." << std::endl;
+		return false;
+	}
+
+	std::ofstream file(filename);
+	if (!file.is_open())
+	{
+		std::cout << "Error: Could not create interpolated frames file: " << filename << std::endl;
+		return false;
+	}
+
+	// Write header with metadata
+	file << "# Interpolated Animation Frames\n";
+	file << "# Generated from keyframe interpolation\n";
+	file << "# Base Keyframes: " << frameCount << "\n";
+	file << "# Frame Rate: " << frameRate << " FPS\n";
+	file << "# Total Recording Time: " << totalRecordingTime << " seconds\n";
+	file << "# DO NOT EDIT - This file is auto-generated\n\n";
+
+	// Write keyframes with interpolation data
+	for (int i = 0; i < frameCount; i++)
+	{
+		file << "KEYFRAME " << i << "\n";
+		file << std::fixed << std::setprecision(2);
+		file << "posX=" << keyframes[i].posX << " ";
+		file << "posY=" << keyframes[i].posY << " ";
+		file << "posZ=" << keyframes[i].posZ << " ";
+		file << "rotX=" << keyframes[i].rotX << " ";
+		file << "rotY=" << keyframes[i].rotY << " ";
+		file << "rotZ=" << keyframes[i].rotZ << " ";
+		file << "timestamp=" << keyframes[i].timestamp << "\n";
+		
+		// Write interpolation increments
+		file << "INTERPOLATION\n";
+		file << "posXInc=" << keyframes[i].posXInc << " ";
+		file << "posYInc=" << keyframes[i].posYInc << " ";
+		file << "posZInc=" << keyframes[i].posZInc << " ";
+		file << "rotXInc=" << keyframes[i].rotXInc << " ";
+		file << "rotYInc=" << keyframes[i].rotYInc << " ";
+		file << "rotZInc=" << keyframes[i].rotZInc << " ";
+		file << "framesInSegment=" << framesPerSegment[i] << "\n\n";
+	}
+
+	file.close();
+	
+	std::cout << "[CACHE] Saved interpolated frames to: " << filename << std::endl;
+	return true;
+}
+
+bool Keyframe_System::loadInterpolatedFramesFromFile(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		return false;  // File doesn't exist, will need to calculate
+	}
+
+	std::string line;
+	int currentKeyframeIndex = -1;
+	bool expectingInterpolation = false;
+	int loadedCount = 0;
+
+	while (std::getline(file, line))
+	{
+		// Skip empty lines and comments
+		if (line.empty() || line[0] == '#')
+			continue;
+
+		// Check for keyframe header
+		if (line.find("KEYFRAME") == 0)
+		{
+			// Parse keyframe index
+			size_t spacePos = line.find(' ');
+			if (spacePos != std::string::npos)
+			{
+				currentKeyframeIndex = std::stoi(line.substr(spacePos + 1));
+				expectingInterpolation = false;
+			}
+		}
+		else if (line.find("INTERPOLATION") == 0)
+		{
+			expectingInterpolation = true;
+		}
+		else if (currentKeyframeIndex >= 0 && currentKeyframeIndex < MAX_FRAMES)
+		{
+			if (!expectingInterpolation)
+			{
+				// Parse keyframe data
+				std::istringstream iss(line);
+				std::string token;
+				
+				while (iss >> token)
+				{
+					size_t eqPos = token.find('=');
+					if (eqPos != std::string::npos)
+					{
+						std::string key = token.substr(0, eqPos);
+						float value = std::stof(token.substr(eqPos + 1));
+						
+						if (key == "posX") keyframes[currentKeyframeIndex].posX = value;
+						else if (key == "posY") keyframes[currentKeyframeIndex].posY = value;
+						else if (key == "posZ") keyframes[currentKeyframeIndex].posZ = value;
+						else if (key == "rotX") keyframes[currentKeyframeIndex].rotX = value;
+						else if (key == "rotY") keyframes[currentKeyframeIndex].rotY = value;
+						else if (key == "rotZ") keyframes[currentKeyframeIndex].rotZ = value;
+						else if (key == "timestamp") keyframes[currentKeyframeIndex].timestamp = value;
+					}
+				}
+				
+				if (currentKeyframeIndex >= loadedCount)
+				{
+					loadedCount = currentKeyframeIndex + 1;
+				}
+			}
+			else
+			{
+				// Parse interpolation data
+				std::istringstream iss(line);
+				std::string token;
+				
+				while (iss >> token)
+				{
+					size_t eqPos = token.find('=');
+					if (eqPos != std::string::npos)
+					{
+						std::string key = token.substr(0, eqPos);
+						
+						if (key == "framesInSegment")
+						{
+							framesPerSegment[currentKeyframeIndex] = std::stoi(token.substr(eqPos + 1));
+						}
+						else
+						{
+							float value = std::stof(token.substr(eqPos + 1));
+							
+							if (key == "posXInc") keyframes[currentKeyframeIndex].posXInc = value;
+							else if (key == "posYInc") keyframes[currentKeyframeIndex].posYInc = value;
+							else if (key == "posZInc") keyframes[currentKeyframeIndex].posZInc = value;
+							else if (key == "rotXInc") keyframes[currentKeyframeIndex].rotXInc = value;
+							else if (key == "rotYInc") keyframes[currentKeyframeIndex].rotYInc = value;
+							else if (key == "rotZInc") keyframes[currentKeyframeIndex].rotZInc = value;
+						}
+					}
+				}
+				
+				expectingInterpolation = false;
+			}
+		}
+	}
+
+	file.close();
+
+	if (loadedCount > 0)
+	{
+		frameCount = loadedCount;
+		framesCalculated = true;
+		
+		std::cout << "[CACHE] Loaded interpolated frames from: " << filename << std::endl;
+		std::cout << "[CACHE] " << frameCount << " keyframes with pre-calculated interpolations" << std::endl;
+		return true;
+	}
+
+	return false;
+}
+
+bool Keyframe_System::needsRecalculation(const std::string& runtimeFilename, const std::string& interpolatedFilename)
+{
+	// Check if interpolated file exists
+	std::ifstream interpolatedFile(interpolatedFilename);
+	if (!interpolatedFile.is_open())
+	{
+		return true;  // Interpolated file doesn't exist, need to calculate
+	}
+	interpolatedFile.close();
+
+	// Check if runtime file exists
+	std::ifstream runtimeFile(runtimeFilename);
+	if (!runtimeFile.is_open())
+	{
+		return true;  // Runtime file doesn't exist, something is wrong
+	}
+	runtimeFile.close();
+
+	// Get file modification times (Windows-specific using stat)
+	struct stat runtimeStat, interpolatedStat;
+	
+	if (stat(runtimeFilename.c_str(), &runtimeStat) != 0)
+	{
+		return true;  // Can't get runtime file info
+	}
+	
+	if (stat(interpolatedFilename.c_str(), &interpolatedStat) != 0)
+	{
+		return true;  // Can't get interpolated file info
+	}
+
+	// If runtime file is newer than interpolated file, need to recalculate
+	if (runtimeStat.st_mtime > interpolatedStat.st_mtime)
+	{
+		std::cout << "[CACHE] Runtime file has been modified, recalculating interpolations..." << std::endl;
+		return true;
+	}
+
+	return false;  // Interpolated file is up-to-date
 }
