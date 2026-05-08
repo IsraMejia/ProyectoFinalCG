@@ -47,6 +47,7 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/camara_position.h"
 #include "Integrantes/Isra/animacion_KF.h"
 #include "Integrantes/Isra/animKFcamara.h"
+#include "Integrantes/Isra/KF_por_codigo.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -94,6 +95,9 @@ HaloPelican haloPelican;
 
 // Tren (modulo Isra)
 Tren tren;
+
+// Train animation system (modulo Isra)
+Train_Keyframe_System trainAnimSystem;
 
 // Keyframe animation system (modulo Isra)
 Keyframe_System animSystem(100);
@@ -309,6 +313,10 @@ int main()
 		animSystem.updatePlayback(deltaTime);
 		animSystem.applyTransformationToModel(haloPelican.position, haloPelican.rotationX, 
 			haloPelican.rotationY, haloPelican.rotationZ);
+
+		// Update train animation (procedural keyframes)
+		trainAnimSystem.Update(deltaTime);
+		trainAnimSystem.GetCurrentTransform(tren.position, tren.rotationY);
 
 		// Switch camera based on recording mode
 		glm::mat4 viewMatrix;
