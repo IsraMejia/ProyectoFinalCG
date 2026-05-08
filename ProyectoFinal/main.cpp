@@ -52,6 +52,8 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Andrea/sala_monitores.h"
 #include "Integrantes/Andrea/funtime_foxy.h"
 #include "Integrantes/Andrea/farola.h"
+#include "Integrantes/Andrea/arbol1.h"
+#include "Integrantes/Andrea/entrada.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -126,6 +128,17 @@ Farola farola2(glm::vec3(10.94f, -3.0f, 81.13f), 0.0f, false);  // Sin cámara
 Farola farola3(glm::vec3(-26.55f, -3.0f, -66.53f), 0.0f, true);   // Con cámara
 Farola farola4(glm::vec3(93.23f, -3.0f, 44.67f), 0.0f, false);   // Sin cámara
 Farola farola5(glm::vec3(22.57f, -3.0f, -0.40f), 0.0f, true);    // Con cámara
+
+// Arbol1 (modulo Andrea)
+Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol4(glm::vec3(-20.0f, -3.0f, 70.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+
+// Entrada (modulo Andrea) - Debajo del cuervo
+Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
 Skybox skybox;
 
@@ -230,6 +243,17 @@ int main()
 	// Inicializar Farolas (modulo Andrea) - Cargar modelos compartidos una sola vez
 	farola1.Initialize();
 	// Las demás farolas comparten los mismos modelos estáticos ya cargados
+
+	// Inicializar Arbol1 (modulo Andrea)
+	arbol1.Initialize();
+	arbol2.Initialize();
+	arbol3.Initialize();
+	arbol4.Initialize();
+	arbol5.Initialize();
+	arbol6.Initialize();
+
+	// Inicializar Entrada (modulo Andrea)
+	entrada.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");     // Right (Derecha)
@@ -454,8 +478,11 @@ int main()
 		// Gato gigante en el centro de las vias
 		gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-		// Cuervo gigante
+		// Cuervo gigante - Ahora sobre la entrada
 		bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Entrada (modulo Andrea) - Debajo del cuervo
+		entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Pelican de Halo
 		haloPelican.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
@@ -488,6 +515,14 @@ int main()
 		farola3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		farola4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		farola5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Arbol1 (modulo Andrea)
+		arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
