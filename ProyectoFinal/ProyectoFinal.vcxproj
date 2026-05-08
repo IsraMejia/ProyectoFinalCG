@@ -45,6 +45,7 @@
     <ClCompile Include="Integrantes\Andrea\entrada.cpp" />
     <ClCompile Include="Integrantes\Andrea\escenario.cpp" />
     <ClCompile Include="Integrantes\Andrea\farola.cpp" />
+    <ClCompile Include="Integrantes\Andrea\farolas.cpp" />
     <ClCompile Include="Integrantes\Andrea\funtime_foxy.cpp" />
     <ClCompile Include="Integrantes\Andrea\sala_monitores.cpp" />
     <ClCompile Include="Integrantes\Andrea\speakers.cpp" />

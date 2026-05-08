@@ -52,6 +52,7 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Andrea/sala_monitores.h"
 #include "Integrantes/Andrea/funtime_foxy.h"
 #include "Integrantes/Andrea/farola.h"
+#include "Integrantes/Andrea/farolas.h"
 #include "Integrantes/Andrea/arbol1.h"
 #include "Integrantes/Andrea/entrada.h"
 #include "Integrantes/Isra/KF_por_codigo.h"
@@ -126,19 +127,14 @@ SalaMonitores salaMonitores;
 // FuntimeFoxy (modulo Andrea)
 FuntimeFoxy funtimeFoxy;
 
-// Farolas (modulo Andrea) - Distribuidas por el mapa
-// Algunas con cámara de vigilancia que rota
-Farola farola1(glm::vec3(-69.55f, -3.0f, 19.05f), 0.0f, true);   // Con cámara
-Farola farola2(glm::vec3(10.94f, -3.0f, 81.13f), 0.0f, false);  // Sin cámara
-Farola farola3(glm::vec3(-26.55f, -3.0f, -66.53f), 0.0f, true);   // Con cámara
-Farola farola4(glm::vec3(93.23f, -3.0f, 44.67f), 0.0f, false);   // Sin cámara
-Farola farola5(glm::vec3(22.57f, -3.0f, -0.40f), 0.0f, true);    // Con cámara
+// Farolas Manager (modulo Andrea) - Maneja todas las farolas del mapa
+FarolasManager farolasManager;
 
 // Arbol1 (modulo Andrea)
 Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-Arbol1 arbol4(glm::vec3(-20.0f, -3.0f, 70.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol4(glm::vec3(41.0f, -3.0f, 130.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));  
 Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 
@@ -248,9 +244,8 @@ int main()
 	// Inicializar FuntimeFoxy (modulo Andrea)
 	funtimeFoxy.Initialize();
 
-	// Inicializar Farolas (modulo Andrea) - Cargar modelos compartidos una sola vez
-	farola1.Initialize();
-	// Las demás farolas comparten los mismos modelos estáticos ya cargados
+	// Inicializar Farolas Manager (modulo Andrea)
+	farolasManager.Initialize();
 
 	// Inicializar Arbol1 (modulo Andrea)
 	arbol1.Initialize();
@@ -285,56 +280,8 @@ int main()
 
 	unsigned int spotLightCount = 0;
 	
-	// Spotlights en cada farol (5 faroles)
-	// Farola 1: posición (-69.55f, -3.0f, 19.05f)
-	spotLights[0] = SpotLight(
-		1.0f, 0.9f, 0.7f,      // color amarillo cálido (luz de farol)
-		0.0f, 1.5f,             // ambient bajo, diffuse fuerte
-		-69.55f, 5.0f, 19.05f,  // posición (altura de la cámara ~8u sobre base)
-		0.0f, -1.0f, 0.0f,      // dirección hacia abajo
-		1.0f, 0.01f, 0.001f,    // atenuación (constante, lineal, cuadrática)
-		15.0f);                 // ángulo del cono (edge)
-	spotLightCount++;
-
-	// Farola 2: posición (10.94f, -3.0f, 81.13f)
-	spotLights[1] = SpotLight(
-		1.0f, 0.9f, 0.7f,
-		0.0f, 1.5f,
-		10.94f, 5.0f, 81.13f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.01f, 0.001f,
-		15.0f);
-	spotLightCount++;
-
-	// Farola 3: posición (-26.55f, -3.0f, -66.53f)
-	spotLights[2] = SpotLight(
-		1.0f, 0.9f, 0.7f,
-		0.0f, 1.5f,
-		-26.55f, 5.0f, -66.53f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.01f, 0.001f,
-		15.0f);
-	spotLightCount++;
-
-	// Farola 4: posición (93.23f, -3.0f, 44.67f)
-	spotLights[3] = SpotLight(
-		1.0f, 0.9f, 0.7f,
-		0.0f, 1.5f,
-		93.23f, 5.0f, 44.67f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.01f, 0.001f,
-		15.0f);
-	spotLightCount++;
-
-	// Farola 5: posición (22.57f, -3.0f, -0.40f)
-	spotLights[4] = SpotLight(
-		1.0f, 0.9f, 0.7f,
-		0.0f, 1.5f,
-		22.57f, 5.0f, -0.40f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.01f, 0.001f,
-		15.0f);
-	spotLightCount++;
+	// Configurar spotlights de las farolas (modulo Andrea)
+	farolasManager.SetupSpotLights(spotLights, spotLightCount, true);
 
 	// linterna ligada a la camara (desactivada)
 	/*
@@ -415,28 +362,9 @@ int main()
 		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
-		// Control de luces de faroles con tecla L
-		// Si están encendidos, usar intensidad normal; si están apagados, intensidad 0
-		GLfloat farolIntensity = mainWindow.getFarolesEncendidos() ? 1.5f : 0.0f;
-		
-		// Actualizar intensidad de cada spotlight de farol
-		for (int i = 0; i < 5; i++)
-		{
-			// Crear spotlight temporal con la intensidad actualizada
-			glm::vec3 pos = (i == 0) ? glm::vec3(-69.55f, 5.0f, 19.05f) :
-			                (i == 1) ? glm::vec3(10.94f, 5.0f, 81.13f) :
-			                (i == 2) ? glm::vec3(-26.55f, 5.0f, -66.53f) :
-			                (i == 3) ? glm::vec3(93.23f, 5.0f, 44.67f) :
-			                           glm::vec3(22.57f, 5.0f, -0.40f);
-			
-			spotLights[i] = SpotLight(
-				1.0f, 0.9f, 0.7f,
-				0.0f, farolIntensity,
-				pos.x, pos.y, pos.z,
-				0.0f, -1.0f, 0.0f,
-				1.0f, 0.01f, 0.001f,
-				15.0f);
-		}
+		// Actualizar luces de faroles según estado (tecla L)
+		unsigned int currentSpotLightCount = 0;
+		farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
@@ -527,12 +455,8 @@ int main()
 		// FuntimeFoxy (modulo Andrea)
 		funtimeFoxy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-		// Farolas (modulo Andrea) - Con cámaras rotando jerárquicamente
-		farola1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		farola2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		farola3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		farola4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		farola5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		// Farolas (modulo Andrea)
+		farolasManager.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Arbol1 (modulo Andrea)
 		arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
