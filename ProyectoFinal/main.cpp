@@ -45,8 +45,13 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Isra/halo_pelican.h"
 #include "Integrantes/Isra/tren.h"
 #include "Integrantes/Isra/camara_position.h"
-#include "Integrantes/Isra/animacion_KF.h"
-#include "Integrantes/Isra/animKFcamara.h"
+#include "Integrantes/Andrea/escenario.h"
+#include "Integrantes/Andrea/cage_freddy.h"
+#include "Integrantes/Andrea/cage_ballora.h"
+#include "Integrantes/Andrea/speakers.h"
+#include "Integrantes/Andrea/sala_monitores.h"
+#include "Integrantes/Andrea/funtime_foxy.h"
+#include "Integrantes/Andrea/farola.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -95,9 +100,32 @@ HaloPelican haloPelican;
 // Tren (modulo Isra)
 Tren tren;
 
-// Keyframe animation system (modulo Isra)
-Keyframe_System animSystem(100);
-Animation_Camera animCamera;
+// Escenario (modulo Andrea)
+Escenario escenario;
+
+// CageFreddy (modulo Andrea)
+CageFreddy cageFreddy;
+
+// CageBallora (modulo Andrea)
+CageBallora cageBallora;
+
+// Speakers (modulo Andrea)
+Speakers speakers;
+Speakers speakers2(glm::vec3(-76.58f, -3.0f, -8.39f));
+
+// SalaMonitores (modulo Andrea)
+SalaMonitores salaMonitores;
+
+// FuntimeFoxy (modulo Andrea)
+FuntimeFoxy funtimeFoxy;
+
+// Farolas (modulo Andrea) - Distribuidas por el mapa
+// Algunas con cámara de vigilancia que rota
+Farola farola1(glm::vec3(-69.55f, -3.0f, 19.05f), 0.0f, true);   // Con cámara
+Farola farola2(glm::vec3(10.94f, -3.0f, 81.13f), 0.0f, false);  // Sin cámara
+Farola farola3(glm::vec3(-26.55f, -3.0f, -66.53f), 0.0f, true);   // Con cámara
+Farola farola4(glm::vec3(93.23f, -3.0f, 44.67f), 0.0f, false);   // Sin cámara
+Farola farola5(glm::vec3(22.57f, -3.0f, -0.40f), 0.0f, true);    // Con cámara
 
 Skybox skybox;
 
@@ -180,17 +208,35 @@ int main()
 	// Inicializar tren
 	tren.Initialize();
 
-	// Inicializar sistema de animacion por keyframes
-	animSystem.setCameraPositionTracker(&cameraTracker);
-	animSystem.loadKeyframesFromFile("Integrantes/Isra/pelican_halo_runtime.kf");
+	// Inicializar escenario (modulo Andrea)
+	escenario.Initialize();
+
+	// Inicializar CageFreddy (modulo Andrea)
+	cageFreddy.Initialize();
+
+	// Inicializar CageBallora (modulo Andrea)
+	cageBallora.Initialize();
+
+		// Inicializar Speakers (modulo Andrea)
+	speakers.Initialize();
+	speakers2.Initialize();
+
+	// Inicializar SalaMonitores (modulo Andrea)
+	salaMonitores.Initialize();
+
+	// Inicializar FuntimeFoxy (modulo Andrea)
+	funtimeFoxy.Initialize();
+
+	// Inicializar Farolas (modulo Andrea) - Se inicializan automáticamente al renderizarse (lazy initialization)
+	// Los modelos se cargan una sola vez y se comparten entre todas las farolas
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
+	skyboxFaces.push_back("Textures/Skybox/CubemapPiso.png");     // Down (Abajo)
+	skyboxFaces.push_back("Textures/Skybox/CubemapTecho.png");   // Up (Arriba)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL4.png");     // Back (Atrás)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL2.png");     // Front (Frente)
 	skybox = Skybox(skyboxFaces);
 
 	Material_opaco = Material(0.3f, 4);
@@ -202,6 +248,58 @@ int main()
 		0.0f, -1.0f, 0.0f); // apunta hacia abajo (luz viene desde arriba)
 
 	unsigned int spotLightCount = 0;
+	
+	// Spotlights en cada farol (5 faroles)
+	// Farola 1: posición (-69.55f, -3.0f, 19.05f)
+	spotLights[0] = SpotLight(
+		1.0f, 0.9f, 0.7f,      // color amarillo cálido (luz de farol)
+		0.0f, 1.5f,             // ambient bajo, diffuse fuerte
+		-69.55f, 5.0f, 19.05f,  // posición (altura de la cámara ~8u sobre base)
+		0.0f, -1.0f, 0.0f,      // dirección hacia abajo
+		1.0f, 0.01f, 0.001f,    // atenuación (constante, lineal, cuadrática)
+		15.0f);                 // ángulo del cono (edge)
+	spotLightCount++;
+
+	// Farola 2: posición (10.94f, -3.0f, 81.13f)
+	spotLights[1] = SpotLight(
+		1.0f, 0.9f, 0.7f,
+		0.0f, 1.5f,
+		10.94f, 5.0f, 81.13f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.01f, 0.001f,
+		15.0f);
+	spotLightCount++;
+
+	// Farola 3: posición (-26.55f, -3.0f, -66.53f)
+	spotLights[2] = SpotLight(
+		1.0f, 0.9f, 0.7f,
+		0.0f, 1.5f,
+		-26.55f, 5.0f, -66.53f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.01f, 0.001f,
+		15.0f);
+	spotLightCount++;
+
+	// Farola 4: posición (93.23f, -3.0f, 44.67f)
+	spotLights[3] = SpotLight(
+		1.0f, 0.9f, 0.7f,
+		0.0f, 1.5f,
+		93.23f, 5.0f, 44.67f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.01f, 0.001f,
+		15.0f);
+	spotLightCount++;
+
+	// Farola 5: posición (22.57f, -3.0f, -0.40f)
+	spotLights[4] = SpotLight(
+		1.0f, 0.9f, 0.7f,
+		0.0f, 1.5f,
+		22.57f, 5.0f, -0.40f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.01f, 0.001f,
+		15.0f);
+	spotLightCount++;
+
 	// linterna ligada a la camara (desactivada)
 	/*
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
@@ -254,89 +352,9 @@ int main()
 		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		Camera* camera = cameraTracker.GetCamera();
 
-		// Keyboard input handling for keyframe animation system
-		static bool kKeyPressed = false;
-		static bool spaceKeyPressed = false;
-		static bool zeroKeyPressed = false;
-
-		// Toggle recording mode with 'K' key
-		if (mainWindow.getsKeys()[GLFW_KEY_K] && !kKeyPressed)
-		{
-			kKeyPressed = true;
-			animSystem.toggleRecordingMode();
-			
-			// Save keyframes when exiting recording mode
-			if (!animSystem.isRecording() && animSystem.getKeyframeCount() > 0)
-			{
-				animSystem.saveKeyframesToFile("Integrantes/Isra/pelican_halo_runtime.kf");
-			}
-		}
-		else if (!mainWindow.getsKeys()[GLFW_KEY_K])
-		{
-			kKeyPressed = false;
-		}
-
-		// Toggle playback mode with SPACE key
-		if (mainWindow.getsKeys()[GLFW_KEY_SPACE] && !spaceKeyPressed)
-		{
-			spaceKeyPressed = true;
-			animSystem.togglePlaybackMode();
-		}
-		else if (!mainWindow.getsKeys()[GLFW_KEY_SPACE])
-		{
-			spaceKeyPressed = false;
-		}
-
-		// Reset animation with '0' key
-		if (mainWindow.getsKeys()[GLFW_KEY_0] && !zeroKeyPressed)
-		{
-			zeroKeyPressed = true;
-			animSystem.resetAnimation();
-		}
-		else if (!mainWindow.getsKeys()[GLFW_KEY_0])
-		{
-			zeroKeyPressed = false;
-		}
-
-		// Handle recording mode input (arrow keys, N, M, L, P keys)
-		if (animSystem.isRecording())
-		{
-			animSystem.handleRecordingInput(mainWindow.getsKeys(), 0.0f, 0.0f, deltaTime,
-				haloPelican.position, haloPelican.rotationX, haloPelican.rotationY, haloPelican.rotationZ);
-		}
-
-		// Update playback animation
-		animSystem.updatePlayback(deltaTime);
-		animSystem.applyTransformationToModel(haloPelican.position, haloPelican.rotationX, 
-			haloPelican.rotationY, haloPelican.rotationZ);
-
-		// Switch camera based on recording mode
-		glm::mat4 viewMatrix;
-		glm::vec3 eyePosition;
-		
-		if (animSystem.isRecording())
-		{
-			// Usar cámara fija en posición específica durante captura
-			glm::vec3 fixedCameraPos(-198.46f, 37.29f, -94.11f);
-			glm::vec3 fixedCameraFront(0.93f, -0.07f, 0.36f);
-			glm::vec3 fixedCameraUp(0.0f, 1.0f, 0.0f);
-			
-			// Calcular el punto al que mira la cámara
-			glm::vec3 fixedCameraTarget = fixedCameraPos + fixedCameraFront;
-			
-			viewMatrix = glm::lookAt(fixedCameraPos, fixedCameraTarget, fixedCameraUp);
-			eyePosition = fixedCameraPos;
-		}
-		else
-		{
-			// Usar cámara principal
-			viewMatrix = camera->calculateViewMatrix();
-			eyePosition = camera->getCameraPosition();
-		}
-
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(viewMatrix, projection);
+		skybox.DrawSkybox(camera->calculateViewMatrix(), projection);
 
 		shaderList[0].UseShader();
 		uniformModel             = shaderList[0].GetModelLocation();
@@ -348,8 +366,34 @@ int main()
 		uniformShininess         = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
-		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
+		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(camera->calculateViewMatrix()));
+		glUniform3f(uniformEyePosition,
+			camera->getCameraPosition().x,
+			camera->getCameraPosition().y,
+			camera->getCameraPosition().z);
+
+		// Control de luces de faroles con tecla L
+		// Si están encendidos, usar intensidad normal; si están apagados, intensidad 0
+		GLfloat farolIntensity = mainWindow.getFarolesEncendidos() ? 1.5f : 0.0f;
+		
+		// Actualizar intensidad de cada spotlight de farol
+		for (int i = 0; i < 5; i++)
+		{
+			// Crear spotlight temporal con la intensidad actualizada
+			glm::vec3 pos = (i == 0) ? glm::vec3(-69.55f, 5.0f, 19.05f) :
+			                (i == 1) ? glm::vec3(10.94f, 5.0f, 81.13f) :
+			                (i == 2) ? glm::vec3(-26.55f, 5.0f, -66.53f) :
+			                (i == 3) ? glm::vec3(93.23f, 5.0f, 44.67f) :
+			                           glm::vec3(22.57f, 5.0f, -0.40f);
+			
+			spotLights[i] = SpotLight(
+				1.0f, 0.9f, 0.7f,
+				0.0f, farolIntensity,
+				pos.x, pos.y, pos.z,
+				0.0f, -1.0f, 0.0f,
+				1.0f, 0.01f, 0.001f,
+				15.0f);
+		}
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
@@ -417,6 +461,32 @@ int main()
 
 		// Tren
 		tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Escenario (modulo Andrea)
+		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// CageFreddy (modulo Andrea)
+		cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// CageBallora (modulo Andrea)
+		cageBallora.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Speakers (modulo Andrea)
+		speakers.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		speakers2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// SalaMonitores (modulo Andrea)
+		salaMonitores.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// FuntimeFoxy (modulo Andrea)
+		funtimeFoxy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Farolas (modulo Andrea) - Con cámaras rotando jerárquicamente
+		farola1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}

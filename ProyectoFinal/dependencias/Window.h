@@ -20,6 +20,7 @@ public:
 	GLfloat getmueveHelicoptero() { return mueveHelicoptero; }
 
 	bool getLamparaEncendida() { return lamparaEncendida; }
+	bool getFarolesEncendidos() { return farolesEncendidos; }
 
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
@@ -42,6 +43,7 @@ private:
 	GLfloat mueveMustang;
 	GLfloat mueveHelicoptero;
 	bool lamparaEncendida;
+	bool farolesEncendidos;
 
 	bool mouseFirstMoved;
 
