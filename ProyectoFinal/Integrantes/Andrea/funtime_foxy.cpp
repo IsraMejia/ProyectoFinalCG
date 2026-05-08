@@ -19,7 +19,7 @@ void FuntimeFoxy::Initialize()
 {
 	if (!initialized)
 	{
-		foxyModel.LoadModel("Integrantes/Andrea/modelos/FuntimeFoxy/FuntimeFoxyOptimizado.obj");
+		foxyModel.LoadModel("Models/FuntimeFoxyOptimizado.obj");
 		initialized = true;
 	}
 }

@@ -17,7 +17,7 @@ void Escenario::Initialize()
 {
 	if (!initialized)
 	{
-		escenarioModel.LoadModel("Integrantes/Andrea/modelos/Escenario/EscenarioCompleto.obj");
+		escenarioModel.LoadModel("Models/EscenarioCompleto.obj");
 		initialized = true;
 	}
 }

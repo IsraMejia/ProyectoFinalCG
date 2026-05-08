@@ -26,7 +26,7 @@ void Speakers::Initialize()
 {
 	if (!initialized)
 	{
-		speakersModel.LoadModel("Integrantes/Andrea/modelos/Speakers/Speakers.obj");
+		speakersModel.LoadModel("Models/Speakers.obj");
 		initialized = true;
 	}
 }

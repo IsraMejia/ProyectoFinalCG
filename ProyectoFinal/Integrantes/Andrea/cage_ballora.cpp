@@ -17,7 +17,7 @@ void CageBallora::Initialize()
 {
 	if (!initialized)
 	{
-		balloraModel.LoadModel("Integrantes/Andrea/modelos/CageBallora/CageBallora.obj");
+		balloraModel.LoadModel("Models/CageBallora.obj");
 		initialized = true;
 	}
 }

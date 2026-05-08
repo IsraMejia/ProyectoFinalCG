@@ -17,7 +17,7 @@ void CageFreddy::Initialize()
 {
 	if (!initialized)
 	{
-		cageModel.LoadModel("Integrantes/Andrea/modelos/CageFreddy/CageFreddy.obj");
+		cageModel.LoadModel("Models/CageFreddy.obj");
 		initialized = true;
 	}
 }

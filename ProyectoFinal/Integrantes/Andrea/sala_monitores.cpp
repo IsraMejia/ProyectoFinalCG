@@ -17,7 +17,7 @@ void SalaMonitores::Initialize()
 {
 	if (!initialized)
 	{
-		salaModel.LoadModel("Integrantes/Andrea/modelos/SalaMonitores/SalaMonitores.obj");
+		salaModel.LoadModel("Models/SalaMonitores.obj");
 		initialized = true;
 	}
 }

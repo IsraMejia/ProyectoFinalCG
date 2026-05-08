@@ -49,8 +49,8 @@ void Farola::Initialize()
 			camaraModel = new Model();
 		}
 		
-		farolaModel->LoadModel("Integrantes/Andrea/modelos/FarolYCam/FarolOptimizado.obj");
-		camaraModel->LoadModel("Integrantes/Andrea/modelos/FarolYCam/SecCamaraOptimizada.obj");
+		farolaModel->LoadModel("Models/FarolOptimizado.obj");
+		camaraModel->LoadModel("Models/SecCamaraOptimizada.obj");
 		modelsLoaded = true;
 	}
 }

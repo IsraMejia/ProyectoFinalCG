@@ -39,6 +39,13 @@
     <ClCompile Include="dependencias\SpotLight.cpp" />
     <ClCompile Include="dependencias\Texture.cpp" />
     <ClCompile Include="dependencias\Window.cpp" />
+    <ClCompile Include="Integrantes\Andrea\cage_ballora.cpp" />
+    <ClCompile Include="Integrantes\Andrea\cage_freddy.cpp" />
+    <ClCompile Include="Integrantes\Andrea\escenario.cpp" />
+    <ClCompile Include="Integrantes\Andrea\farola.cpp" />
+    <ClCompile Include="Integrantes\Andrea\funtime_foxy.cpp" />
+    <ClCompile Include="Integrantes\Andrea\sala_monitores.cpp" />
+    <ClCompile Include="Integrantes\Andrea\speakers.cpp" />
     <ClCompile Include="Integrantes\Isra\animacion_KF.cpp" />
     <ClCompile Include="Integrantes\Isra\animKFcamara.cpp" />
     <ClCompile Include="Integrantes\Isra\big_raven.cpp" />

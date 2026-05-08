@@ -227,16 +227,17 @@ int main()
 	// Inicializar FuntimeFoxy (modulo Andrea)
 	funtimeFoxy.Initialize();
 
-	// Inicializar Farolas (modulo Andrea) - Se inicializan automáticamente al renderizarse (lazy initialization)
-	// Los modelos se cargan una sola vez y se comparten entre todas las farolas
+	// Inicializar Farolas (modulo Andrea) - Cargar modelos compartidos una sola vez
+	farola1.Initialize();
+	// Las demás farolas comparten los mismos modelos estáticos ya cargados
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
-	skyboxFaces.push_back("Textures/Skybox/CubemapPiso.png");     // Down (Abajo)
-	skyboxFaces.push_back("Textures/Skybox/CubemapTecho.png");   // Up (Arriba)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL4.png");     // Back (Atrás)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL2.png");     // Front (Frente)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");     // Right (Derecha)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");     // Left (Izquierda)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");     // Down (Abajo)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");     // Up (Arriba)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");     // Back (Atrás)
+	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");     // Front (Frente)
 	skybox = Skybox(skyboxFaces);
 
 	Material_opaco = Material(0.3f, 4);
