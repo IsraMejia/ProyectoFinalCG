@@ -132,6 +132,18 @@
     <ClCompile Include="Integrantes\Andrea\farolas.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Integrantes\Ceci\caliope.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Ceci\escenario_M.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Ceci\gramofono.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Ceci\manometro.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencias\Camera.h">

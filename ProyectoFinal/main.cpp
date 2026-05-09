@@ -1,7 +1,4 @@
-/*
-Pr�ctica 7: Iluminaci�n 1 
-*/
-//para cargar imagen
+
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
@@ -25,7 +22,7 @@ Pr�ctica 7: Iluminaci�n 1
 #include "dependencias/Skybox.h"
 #include "dependencias/Model.h"
 
-//para iluminaci�n
+//para iluminación
 #include "dependencias/CommonValues.h"
 #include "dependencias/DirectionalLight.h"
 #include "dependencias/PointLight.h"
@@ -57,6 +54,10 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Andrea/entrada.h"
 #include "Integrantes/Isra/KF_por_codigo.h"
 #include "Integrantes/Isra/keyframes_main.h"
+#include "Integrantes/Ceci/escenario_M.h"
+#include "Integrantes/Ceci/caliope.h"
+#include "Integrantes/Ceci/manometro.h"
+#include "Integrantes/Ceci/gramofono.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -143,6 +144,21 @@ Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.
 
 // Keyframe Manager (modulo Isra) - Maneja todas las animaciones por keyframes
 KeyframeManager keyframeManager;
+
+// Escenario (modulo Ceci)
+Escenario_M escenario_m;
+
+// Caliope (modulo Ceci)
+Caliope caliope;
+
+// Manometro (modulo Ceci)
+Manometro manometro;
+
+// Gramofonos (modulo Ceci) - 4 instancias
+Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
+Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
+Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
+Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
 
 Skybox skybox;
 
@@ -260,6 +276,21 @@ int main()
 
 	// Inicializar sistema de animacion por keyframes (modulo Isra)
 	keyframeManager.Initialize(&cameraTracker, &haloPelican, &tren);
+
+	// Inicializar escenario (modulo Ceci)
+	escenario_m.Initialize();
+
+	// Inicializar caliope (modulo Ceci)
+	caliope.Initialize();
+
+	// Inicializar manometro (modulo Ceci)
+	manometro.Initialize();
+
+	// Inicializar gramofonos (modulo Ceci)
+	gramofono1.Initialize();
+	gramofono2.Initialize();
+	gramofono3.Initialize();
+	gramofono4.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
@@ -438,6 +469,21 @@ int main()
 
 		// Escenario (modulo Andrea)
 		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Escenario (modulo Ceci)
+		escenario_m.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Caliope (modulo Ceci)
+		caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Manometro (modulo Ceci)
+		manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Gramofonos (modulo Ceci)
+		gramofono1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// CageFreddy (modulo Andrea)
 		cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
