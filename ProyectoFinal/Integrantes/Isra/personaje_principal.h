@@ -20,6 +20,12 @@ public:
 		const float toRadians);
 
 	glm::vec3 GetPosition() const { return position; }
+	void SetPosition(const glm::vec3& newPosition) { position = newPosition; }
+	float GetRotationY() const { return rotationY; }
+	void SetRotationY(float newRotation) { rotationY = newRotation; }
+
+	// Mover el personaje en una direccion (solo plano XZ)
+	void Move(const glm::vec3& direction, float deltaTime, float speed);
 
 private:
 	// Modelos de cada parte del cuerpo

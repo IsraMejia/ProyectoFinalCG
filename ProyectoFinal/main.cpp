@@ -398,9 +398,85 @@ int main()
 
 		glfwPollEvents();
 		
+		// ========== SISTEMA DE CAMARAS ==========
 		// Actualizar camara con tracking de posicion
-		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
-		Camera* camera = cameraTracker.GetCamera();
+		// Pasar la posicion del personaje para la camara en tercera persona
+		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), 
+			deltaTime, masterChief.GetPosition());
+		
+		// Obtener modo de camara actual
+		CameraMode cameraMode = cameraTracker.GetCameraMode();
+		
+		// ========== MOVIMIENTO DEL PERSONAJE ==========
+		// Solo mover el personaje cuando la camara en tercera persona esta activa
+		if (cameraMode == CameraMode::THIRD_PERSON)
+		{
+			ThirdPersonCamera* tpCamera = cameraTracker.GetThirdPersonCamera();
+			
+			// IMPORTANTE: El yaw de la cámara ES el yaw del personaje
+			// El mouse horizontal rota al personaje directamente
+			float characterYaw = tpCamera->GetYaw();
+			masterChief.SetRotationY(characterYaw);
+			
+			// Calcular el vector forward del personaje basado en su yaw
+			// Debe coincidir con la fórmula de la cámara
+			float yawRadians = glm::radians(characterYaw);
+			glm::vec3 characterForward(-sin(yawRadians), 0.0f, -cos(yawRadians));
+			glm::vec3 characterRight = glm::normalize(glm::cross(characterForward, glm::vec3(0.0f, 1.0f, 0.0f)));
+			
+			// Variables de movimiento
+			glm::vec3 moveDirection(0.0f);
+			bool isMoving = false;
+			
+			// Teclas de flecha para mover el personaje
+			// El movimiento es relativo a la orientación del personaje
+			if (mainWindow.getsKeys()[GLFW_KEY_UP])
+			{
+				// Avanzar en la dirección que mira el personaje
+				moveDirection += characterForward;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_DOWN])
+			{
+				// Retroceder
+				moveDirection -= characterForward;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
+			{
+				// Strafe izquierda
+				moveDirection -= characterRight;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
+			{
+				// Strafe derecha
+				moveDirection += characterRight;
+				isMoving = true;
+			}
+			
+			// Normalizar direccion si hay movimiento diagonal
+			if (isMoving && glm::length(moveDirection) > 0.0f)
+			{
+				moveDirection = glm::normalize(moveDirection);
+				
+				// Mover el personaje (velocidad similar a la camara de desarrollo: 0.3f)
+				masterChief.Move(moveDirection, deltaTime, 0.3f);
+			}
+			
+			// Actualizar animacion del personaje (camina si se presiona alguna flecha)
+			masterChief.Update(isMoving, deltaTime);
+		}
+		else
+		{
+			// En modo desarrollo, la animacion se activa con flecha arriba (comportamiento original)
+			bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
+			masterChief.Update(isWalkingKeyPressed, deltaTime);
+		}
+		
+		// Obtener transformación de cámara activa
+		glm::mat4 viewMatrix = cameraTracker.GetViewMatrix();
+		glm::vec3 eyePosition = cameraTracker.GetCameraPosition();
 
 		// ============ ACTUALIZACIONES DESACTIVADAS ============
 		/*
@@ -431,18 +507,9 @@ int main()
 		// Actualizar ciclo dia/noche (modulo Isra)
 		cicloDiaNoche.Actualizar(deltaTime);
 
-		// Actualizar animacion del Jefe Maestro (modulo Isra)
-		// La tecla flecha arriba activa la animacion de caminata
-		bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
-		masterChief.Update(isWalkingKeyPressed, deltaTime);
-
-		// Obtener transformación de cámara (sin keyframes activos, usa la cámara normal)
-		glm::mat4 viewMatrix = camera->calculateViewMatrix();
-		glm::vec3 eyePosition = camera->getCameraPosition();
-
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera->calculateViewMatrix(), projection);
+		skybox.DrawSkybox(viewMatrix, projection);
 
 		shaderList[0].UseShader();
 		uniformModel             = shaderList[0].GetModelLocation();

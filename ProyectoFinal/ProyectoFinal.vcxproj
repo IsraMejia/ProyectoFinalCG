@@ -67,6 +67,7 @@
     <ClCompile Include="Integrantes\Isra\keyframes_main.cpp" />
     <ClCompile Include="Integrantes\Isra\KF_por_codigo.cpp" />
     <ClCompile Include="Integrantes\Isra\maquina_vapor.cpp" />
+    <ClCompile Include="Integrantes\Isra\personaje_camara.cpp" />
     <ClCompile Include="Integrantes\Isra\personaje_principal.cpp" />
     <ClCompile Include="Integrantes\Isra\torreforerunner.cpp" />
     <ClCompile Include="Integrantes\Isra\tren.cpp" />

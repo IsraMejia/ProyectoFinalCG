@@ -150,6 +150,9 @@
     <ClCompile Include="Integrantes\Isra\personaje_principal.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Integrantes\Isra\personaje_camara.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencias\Camera.h">

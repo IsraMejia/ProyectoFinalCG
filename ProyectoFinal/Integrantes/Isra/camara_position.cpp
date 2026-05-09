@@ -8,6 +8,9 @@ CameraPositionTracker::CameraPositionTracker()
 	timeSinceLastMove = 0.0f;
 	hasMovedSinceLastPrint = false;
 	enabled = true;  // Habilitado por defecto
+	currentMode = CameraMode::DEVELOPMENT;  // Iniciar en modo desarrollo
+	key1Pressed = false;
+	key2Pressed = false;
 }
 
 CameraPositionTracker::~CameraPositionTracker()
@@ -25,7 +28,8 @@ void CameraPositionTracker::Initialize(glm::vec3 startPosition, glm::vec3 startU
 	this->moveSpeed = startMoveSpeed;
 	this->turnSpeed = startTurnSpeed;
 
-	// Intentar cargar posicion guardada
+	// ========== INICIALIZAR CAMARA DE DESARROLLO ==========
+	// Intentar cargar posicion guardada desde camera_position.txt
 	glm::vec3 loadedPosition;
 	GLfloat loadedYaw, loadedPitch;
 	bool loaded = LoadPosition(loadedPosition, loadedYaw, loadedPitch);
@@ -39,7 +43,7 @@ void CameraPositionTracker::Initialize(glm::vec3 startPosition, glm::vec3 startU
 		lastPitch = loadedPitch;
 
 		std::cout << "\n========================================" << std::endl;
-		std::cout << "POSICION CARGADA DESDE ARCHIVO" << std::endl;
+		std::cout << "CAMARA DESARROLLO - POSICION CARGADA" << std::endl;
 		std::cout << "========================================" << std::endl;
 		PrintCameraInfo();
 	}
@@ -52,60 +56,153 @@ void CameraPositionTracker::Initialize(glm::vec3 startPosition, glm::vec3 startU
 		lastPitch = startPitch;
 
 		std::cout << "\n========================================" << std::endl;
-		std::cout << "POSICION INICIAL DE LA CAMARA" << std::endl;
+		std::cout << "CAMARA DESARROLLO - POSICION INICIAL" << std::endl;
 		std::cout << "========================================" << std::endl;
 		PrintCameraInfo();
 	}
+
+	// ========== INICIALIZAR CAMARA EN TERCERA PERSONA ==========
+	// Usar los mismos parametros de velocidad y sensibilidad
+	thirdPersonCamera.Initialize(startYaw, startPitch, startMoveSpeed, startTurnSpeed);
 
 	timeSinceLastMove = 0.0f;
 	hasMovedSinceLastPrint = false;
 }
 
-void CameraPositionTracker::Update(bool* keys, GLfloat xChange, GLfloat yChange, GLfloat deltaTime)
+void CameraPositionTracker::Update(bool* keys, GLfloat xChange, GLfloat yChange, GLfloat deltaTime,
+	const glm::vec3& characterPosition)
 {
+	// ========== MANEJO DE CAMBIO DE CAMARA ==========
+	// Tecla 1: Cambiar a camara de desarrollo
+	if (keys[GLFW_KEY_1] && !key1Pressed)
+	{
+		key1Pressed = true;
+		if (currentMode != CameraMode::DEVELOPMENT)
+		{
+			currentMode = CameraMode::DEVELOPMENT;
+			std::cout << "\n>>> CAMARA DE DESARROLLO ACTIVADA (WASD) <<<\n" << std::endl;
+		}
+	}
+	else if (!keys[GLFW_KEY_1])
+	{
+		key1Pressed = false;
+	}
+
+	// Tecla 2: Cambiar a camara en tercera persona
+	if (keys[GLFW_KEY_2] && !key2Pressed)
+	{
+		key2Pressed = true;
+		if (currentMode != CameraMode::THIRD_PERSON)
+		{
+			currentMode = CameraMode::THIRD_PERSON;
+			std::cout << "\n>>> CAMARA TERCERA PERSONA ACTIVADA (FLECHAS) <<<\n" << std::endl;
+		}
+	}
+	else if (!keys[GLFW_KEY_2])
+	{
+		key2Pressed = false;
+	}
+
 	// Si el tracker está deshabilitado, solo actualizar la cámara sin tracking
 	if (!enabled)
 	{
-		camera.keyControl(keys, deltaTime);
-		camera.mouseControl(xChange, yChange);
+		if (currentMode == CameraMode::DEVELOPMENT)
+		{
+			camera.keyControl(keys, deltaTime);
+			camera.mouseControl(xChange, yChange);
+		}
+		else
+		{
+			thirdPersonCamera.Update(keys, xChange, yChange, deltaTime, characterPosition);
+		}
 		return;
 	}
 
-	// Guardar posicion antes del movimiento
-	glm::vec3 positionBefore = camera.getCameraPosition();
-
-	// Actualizar camara con controles
-	camera.keyControl(keys, deltaTime);
-	camera.mouseControl(xChange, yChange);
-
-	// Verificar si hubo movimiento
-	if (HasCameraMoved())
+	// ========== ACTUALIZAR CAMARA ACTIVA ==========
+	if (currentMode == CameraMode::DEVELOPMENT)
 	{
-		timeSinceLastMove = 0.0f;
-		hasMovedSinceLastPrint = true;
-		lastPosition = camera.getCameraPosition();
-	}
-	else
-	{
-		// Acumular tiempo sin movimiento
-		timeSinceLastMove += deltaTime;
+		// Guardar posicion antes del movimiento
+		glm::vec3 positionBefore = camera.getCameraPosition();
 
-		// Si ha pasado el tiempo suficiente y hubo movimiento previo, imprimir y guardar
-		if (timeSinceLastMove >= PRINT_DELAY && hasMovedSinceLastPrint)
+		// Actualizar camara con controles
+		camera.keyControl(keys, deltaTime);
+		camera.mouseControl(xChange, yChange);
+
+		// Verificar si hubo movimiento
+		if (HasCameraMoved())
 		{
-			std::cout << "\n========================================" << std::endl;
-			std::cout << "CAMARA DETENIDA - POSICION ACTUAL" << std::endl;
-			std::cout << "========================================" << std::endl;
-			PrintCameraInfo();
-			SavePosition();  // Guardar automaticamente
-			hasMovedSinceLastPrint = false;
+			timeSinceLastMove = 0.0f;
+			hasMovedSinceLastPrint = true;
+			lastPosition = camera.getCameraPosition();
 		}
+		else
+		{
+			// Acumular tiempo sin movimiento
+			timeSinceLastMove += deltaTime;
+
+			// Si ha pasado el tiempo suficiente y hubo movimiento previo, imprimir y guardar
+			if (timeSinceLastMove >= PRINT_DELAY && hasMovedSinceLastPrint)
+			{
+				std::cout << "\n========================================" << std::endl;
+				std::cout << "CAMARA DESARROLLO - POSICION ACTUAL" << std::endl;
+				std::cout << "========================================" << std::endl;
+				PrintCameraInfo();
+				SavePosition();  // Guardar automaticamente
+				hasMovedSinceLastPrint = false;
+			}
+		}
+	}
+	else // CameraMode::THIRD_PERSON
+	{
+		// Actualizar camara en tercera persona
+		thirdPersonCamera.Update(keys, xChange, yChange, deltaTime, characterPosition);
 	}
 }
 
 Camera* CameraPositionTracker::GetCamera()
 {
 	return &camera;
+}
+
+ThirdPersonCamera* CameraPositionTracker::GetThirdPersonCamera()
+{
+	return &thirdPersonCamera;
+}
+
+glm::mat4 CameraPositionTracker::GetViewMatrix()
+{
+	if (currentMode == CameraMode::DEVELOPMENT)
+	{
+		return camera.calculateViewMatrix();
+	}
+	else
+	{
+		return thirdPersonCamera.CalculateViewMatrix();
+	}
+}
+
+glm::vec3 CameraPositionTracker::GetCameraPosition()
+{
+	if (currentMode == CameraMode::DEVELOPMENT)
+	{
+		return camera.getCameraPosition();
+	}
+	else
+	{
+		return thirdPersonCamera.GetPosition();
+	}
+}
+
+glm::vec3 CameraPositionTracker::GetCameraDirection()
+{
+	if (currentMode == CameraMode::DEVELOPMENT)
+	{
+		return camera.getCameraDirection();
+	}
+	else
+	{
+		return thirdPersonCamera.GetDirection();
+	}
 }
 
 void CameraPositionTracker::PrintCameraInfo()
@@ -137,22 +234,30 @@ bool CameraPositionTracker::HasCameraMoved()
 
 void CameraPositionTracker::SavePosition()
 {
-	std::ofstream file(SAVE_FILE);
+	std::string filename = (currentMode == CameraMode::DEVELOPMENT) ? SAVE_FILE : SAVE_FILE_THIRD_PERSON;
+	
+	std::ofstream file(filename);
 	if (file.is_open())
 	{
-		glm::vec3 pos = camera.getCameraPosition();
-		
-		// Guardar posicion y orientacion
-		// Nota: Como no tenemos acceso directo a yaw y pitch, guardamos solo la posicion
-		// En la proxima carga, la orientacion sera la por defecto
-		file << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		if (currentMode == CameraMode::DEVELOPMENT)
+		{
+			glm::vec3 pos = camera.getCameraPosition();
+			file << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		}
+		else
+		{
+			// Para la camara en tercera persona, guardar yaw y pitch
+			float yaw = thirdPersonCamera.GetYaw();
+			float pitch = thirdPersonCamera.GetPitch();
+			file << yaw << " " << pitch << std::endl;
+		}
 		
 		file.close();
-		std::cout << "[INFO] Posicion guardada en " << SAVE_FILE << std::endl;
+		std::cout << "[INFO] Posicion guardada en " << filename << std::endl;
 	}
 	else
 	{
-		std::cout << "[ERROR] No se pudo guardar la posicion en " << SAVE_FILE << std::endl;
+		std::cout << "[ERROR] No se pudo guardar la posicion en " << filename << std::endl;
 	}
 }
 

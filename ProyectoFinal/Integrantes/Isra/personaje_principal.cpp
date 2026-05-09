@@ -57,6 +57,15 @@ void MasterChief::Update(bool isWalkingKeyPressed, float deltaTime)
 	UpdateWalkingAnimation(isWalkingKeyPressed, deltaTime);
 }
 
+void MasterChief::Move(const glm::vec3& direction, float deltaTime, float speed)
+{
+	// Mover solo en el plano XZ (sin cambio en Y)
+	glm::vec3 movement = direction * speed * deltaTime;
+	movement.y = 0.0f;  // Forzar Y a 0 para mantener altura constante
+	
+	position += movement;
+}
+
 void MasterChief::UpdateWalkingAnimation(bool isWalking, float deltaTime)
 {
 	// Usar tiempo real de GLFW (independiente del deltaTime del main)
@@ -188,9 +197,9 @@ void MasterChief::Render(GLuint uniformModel, GLuint uniformColor,
 	// Posicion inicial: ajustar posicion para enlazar con el torso
 	glm::mat4 modelBrazoIzq = modelTorso;
 	// Trasladar para posicionar el hombro correctamente (X: hacia centro, Y: altura del hombro)
-	modelBrazoIzq = glm::translate(modelBrazoIzq, glm::vec3(0.25f, 0.15f, 0.0f));
-	// Rotar -45 grados en Z para bajar el brazo izquierdo
-	modelBrazoIzq = glm::rotate(modelBrazoIzq, -45.0f * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelBrazoIzq = glm::translate(modelBrazoIzq, glm::vec3(-0.27f, 0.2f, 0.0f));
+	// Rotar -35 grados en Z para bajar el brazo izquierdo (menos que 45 para mas separacion)
+	modelBrazoIzq = glm::rotate(modelBrazoIzq, -19.0f * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 	// Aplicar movimiento de pendulo (eje X) para la animacion de caminata
 	modelBrazoIzq = glm::rotate(modelBrazoIzq, anguloBrazoIzq * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelBrazoIzq));
@@ -210,9 +219,9 @@ void MasterChief::Render(GLuint uniformModel, GLuint uniformColor,
 	// Posicion inicial: ajustar posicion para enlazar con el torso
 	glm::mat4 modelBrazoDer = modelTorso;
 	// Trasladar para posicionar el hombro correctamente (X: hacia centro, Y: altura del hombro)
-	modelBrazoDer = glm::translate(modelBrazoDer, glm::vec3(-0.25f, 0.15f, 0.0f));
-	// Rotar +45 grados en Z para bajar el brazo derecho
-	modelBrazoDer = glm::rotate(modelBrazoDer, 45.0f * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	modelBrazoDer = glm::translate(modelBrazoDer, glm::vec3(0.27f, 0.2f, 0.0f));
+	// Rotar +35 grados en Z para bajar el brazo derecho (menos que 45 para mas separacion)
+	modelBrazoDer = glm::rotate(modelBrazoDer, 19.0f * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 	// Aplicar movimiento de pendulo (eje X) para la animacion de caminata
 	modelBrazoDer = glm::rotate(modelBrazoDer, anguloBrazoDer * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelBrazoDer));
