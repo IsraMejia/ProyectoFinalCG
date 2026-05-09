@@ -42,6 +42,7 @@
 #include "Integrantes/Isra/halo_pelican.h"
 #include "Integrantes/Isra/tren.h"
 #include "Integrantes/Isra/camara_position.h"
+#include "Integrantes/Isra/iluminacion_dia_noche.h"
 #include "Integrantes/Andrea/escenario.h"
 #include "Integrantes/Andrea/cage_freddy.h"
 #include "Integrantes/Andrea/cage_ballora.h"
@@ -140,10 +141,22 @@ Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f)
 Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 
 // Entrada (modulo Andrea) - Debajo del cuervo
-Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-
+//Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); //glm::vec3(133.87f, -17.14f, -124.92f)
+Entrada entrada(glm::vec3(155.87f, -160.14f, -114.92f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); 
 // Keyframe Manager (modulo Isra) - Maneja todas las animaciones por keyframes
 KeyframeManager keyframeManager;
+
+// Ciclo Dia/Noche (modulo Isra) - Sistema de ciclo dia/noche
+CicloDiaNoche cicloDiaNoche;
+
+// Configuracion del ciclo dia/noche
+// Este valor controla la duracion del DIA (semicirculo superior)
+// El ciclo completo (dia + noche) durara el DOBLE de este valor
+// Ejemplo: duracionDia = 10.0f -> Dia: 10s, Noche: 10s, Total: 20s
+const float DURACION_DIA_SEGUNDOS = 10.0f; 
+
+// Control de tecla Z para pausar/reanudar ciclo dia/noche
+bool teclaZ_Presionada = false;
 
 // Escenario (modulo Ceci)
 Escenario_M escenario_m;
@@ -168,8 +181,7 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime  = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-// luz direccional
-DirectionalLight mainLight;
+// Nota: La luz direccional ahora es manejada por el sistema DayNightCycle
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 PointLight pointLights[MAX_POINT_LIGHTS];
 
@@ -303,11 +315,11 @@ int main()
 
 	Material_opaco = Material(0.3f, 4);
 
-	// luz direccional - simula luz solar desde arriba
-	mainLight = DirectionalLight(
-		1.0f, 1.0f, 1.0f,  // color blanco
-		0.5f, 0.8f,         // ambiente moderada para evitar sombras negras, difusa fuerte tipo sol
-		0.0f, -1.0f, 0.0f); // apunta hacia abajo (luz viene desde arriba)
+	// Inicializar sistema de ciclo dia/noche (modulo Isra)
+	// DURACION_DIA_SEGUNDOS controla solo el recorrido de dia
+	// El ciclo completo (dia + noche) durara el doble
+	// Radio orbital de 300 unidades
+	cicloDiaNoche.Inicializar(DURACION_DIA_SEGUNDOS, 300.0f);
 
 	unsigned int spotLightCount = 0;
 	
@@ -353,11 +365,14 @@ int main()
 	glm::mat4 model(1.0);
 	glm::vec3 color(1.0f, 1.0f, 1.0f);
 
+	// Inicializar lastTime antes del loop para evitar deltaTime enorme en el primer frame
+	lastTime = glfwGetTime();
+
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
-		deltaTime += (now - lastTime) / limitFPS;
+		deltaTime += (now - lastTime) / limitFPS;  // Calculo original que funcionaba
 		lastTime = now;
 
 		glfwPollEvents();
@@ -369,6 +384,28 @@ int main()
 		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
 		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		keyframeManager.Update(deltaTime);
+
+		// Manejar control del ciclo dia/noche con tecla Z (modulo Isra)
+		if (mainWindow.getsKeys()[GLFW_KEY_Z] && !teclaZ_Presionada)
+		{
+			teclaZ_Presionada = true;
+			cicloDiaNoche.PausarReanudar();
+			if (cicloDiaNoche.EstaPausado())
+			{
+				printf("\n>>> CICLO DIA/NOCHE PAUSADO <<<\n");
+			}
+			else
+			{
+				printf("\n>>> CICLO DIA/NOCHE REANUDADO <<<\n");
+			}
+		}
+		else if (!mainWindow.getsKeys()[GLFW_KEY_Z])
+		{
+			teclaZ_Presionada = false;
+		}
+
+		// Actualizar ciclo dia/noche (modulo Isra)
+		cicloDiaNoche.Actualizar(deltaTime);
 
 		// Obtener transformación de cámara según modo de grabación
 		glm::mat4 viewMatrix;
@@ -397,7 +434,8 @@ int main()
 		unsigned int currentSpotLightCount = 0;
 		farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
 
-		shaderList[0].SetDirectionalLight(&mainLight);
+		// Configurar luces en el shader
+		shaderList[0].SetDirectionalLight(cicloDiaNoche.ObtenerLuzDireccional());
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
@@ -408,7 +446,7 @@ int main()
 		// Oceano - por debajo del punto 0 (superficie de la isla)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -25.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 1.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(100.0f, 1.0f, 100.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -439,7 +477,7 @@ int main()
 
 		// Forerunner en el cuadrante sur-este de la isla
 		haloForerunner.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-
+		
 		// Elite de Halo entre estacion y torre forerunner
 		eliteHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
@@ -466,7 +504,8 @@ int main()
 
 		// Tren
 		tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-
+			
+			
 		// Escenario (modulo Andrea)
 		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
@@ -511,7 +550,9 @@ int main()
 		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+			
 
+		
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
 
