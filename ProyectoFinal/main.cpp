@@ -34,8 +34,7 @@
 #include "Integrantes/Isra/iluminacion_dia_noche.h"
 #include "Integrantes/Isra/personaje_principal.h"
 
-// MODULOS DESACTIVADOS PARA COMPILACION RAPIDA
-/*
+// MODULOS ACTIVADOS
 #include "Integrantes/Isra/vias_tren.h"
 #include "Integrantes/Isra/estacion_tren.h"
 #include "Integrantes/Isra/torreforerunner.h"
@@ -63,7 +62,6 @@
 #include "Integrantes/Ceci/caliope.h"
 #include "Integrantes/Ceci/manometro.h"
 #include "Integrantes/Ceci/gramofono.h"
-*/
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -90,15 +88,14 @@ CicloDiaNoche cicloDiaNoche;
 // Este valor controla la duracion del DIA (semicirculo superior)
 // El ciclo completo (dia + noche) durara el DOBLE de este valor
 // Ejemplo: duracionDia = 10.0f -> Dia: 10s, Noche: 10s, Total: 20s
-const float DURACION_DIA_SEGUNDOS = 1000.0f; 
+const float DURACION_DIA_SEGUNDOS = 50.0f; 
 
 // Control de tecla Z para pausar/reanudar ciclo dia/noche
 bool teclaZ_Presionada = false;
 
 Skybox skybox;
 
-// ============ ELEMENTOS DESACTIVADOS ============
-/*
+// ============ ELEMENTOS ACTIVADOS ============
 // Vias del tren (modulo Isra)
 ViasTren viasTren;
 
@@ -185,7 +182,6 @@ Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
 Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
 Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
 Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
-*/
 
 Material Material_opaco;
 
@@ -234,8 +230,7 @@ int main()
 	// Inicializar Jefe Maestro (modulo Isra)
 	masterChief.Initialize();
 
-	// ============ INICIALIZACIONES DESACTIVADAS ============
-	/*
+	// ============ INICIALIZACIONES ACTIVADAS ============
 	// Inicializar vias del tren
 	viasTren.Initialize();
 
@@ -319,7 +314,6 @@ int main()
 	gramofono2.Initialize();
 	gramofono3.Initialize();
 	gramofono4.Initialize();
-	*/
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
@@ -338,8 +332,7 @@ int main()
 	// Radio orbital de 300 unidades
 	cicloDiaNoche.Inicializar(DURACION_DIA_SEGUNDOS, 300.0f);
 
-	// ============ LUCES DESACTIVADAS ============
-	/*
+	// ============ LUCES ACTIVADAS ============
 	unsigned int spotLightCount = 0;
 	
 	// Configurar spotlights de las farolas (modulo Andrea)
@@ -372,10 +365,6 @@ int main()
 		0.0f, 10.0f, 200.0f,  // posicion sur
 		0.3f, 0.02f, 0.001f); // atenuacion
 	pointLightCount++;
-	*/
-
-	unsigned int spotLightCount = 0;
-	unsigned int pointLightCount = 0;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -478,12 +467,10 @@ int main()
 		glm::mat4 viewMatrix = cameraTracker.GetViewMatrix();
 		glm::vec3 eyePosition = cameraTracker.GetCameraPosition();
 
-		// ============ ACTUALIZACIONES DESACTIVADAS ============
-		/*
+		// ============ ACTUALIZACIONES ACTIVADAS ============
 		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
 		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		keyframeManager.Update(deltaTime);
-		*/
 
 		// Manejar control del ciclo dia/noche con tecla Z (modulo Isra)
 		if (mainWindow.getsKeys()[GLFW_KEY_Z] && !teclaZ_Presionada)
@@ -524,12 +511,10 @@ int main()
 		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
-		// ============ LUCES DESACTIVADAS ============
-		/*
+		// ============ LUCES ACTIVADAS ============
 		// Actualizar luces de faroles según estado (tecla L)
 		unsigned int currentSpotLightCount = 0;
 		farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
-		*/
 
 		// Configurar luces en el shader
 		shaderList[0].SetDirectionalLight(cicloDiaNoche.ObtenerLuzDireccional());
@@ -563,8 +548,7 @@ int main()
 		// Jefe Maestro en el centro de la isla
 		masterChief.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-		// ============ RENDERIZADOS DESACTIVADOS ============
-		/*
+		// ============ RENDERIZADOS ACTIVADOS ============
 		// Vias del tren (jerarquicamente sobre la isla)
 		viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
 
@@ -645,7 +629,6 @@ int main()
 		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		*/
 			
 
 		
