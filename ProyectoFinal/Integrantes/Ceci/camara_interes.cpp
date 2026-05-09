@@ -74,7 +74,7 @@ void CamaraInteres::Update(float deltaTime)
 
 	switch (fase)
 	{
-	case 0: // Barrido lento de izquierda a derecha (120 segundos)
+	case 0: // Barrido lento de izquierda a derecha
 	{
 		float t      = tiempoFase / 120.0f;
 		if (t > 1.0f) t = 1.0f;
@@ -107,7 +107,7 @@ void CamaraInteres::Update(float deltaTime)
 		break;
 	}
 
-	case 2: // Pausa en el centro cercano (25 segundos)
+	case 2: // Pausa en el centro cercano
 	{
 		angulo = CENTER;
 		radio  = radioMin;
