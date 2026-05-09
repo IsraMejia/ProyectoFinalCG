@@ -7,29 +7,33 @@
 #include "../../dependencias/Model.h"
 #include "../../dependencias/Material.h"
 
-class Manometro
+class Miku
 {
 public:
-	Manometro();
-	~Manometro();
+	Miku();
+	~Miku();
 
 	void Initialize();
 	void Render(GLuint uniformModel, GLuint uniformColor,
 		GLuint uniformSpecularIntensity, GLuint uniformShininess,
-		GLuint uniformTextureOffset,
-		const float toRadians, float deltaTime);
+		const float toRadians);
 
-	// Permite controlar el ángulo de la flecha desde fuera (animación)
-	void SetFlechaAngulo(float angulo) { flechaAngulo = angulo; }
+	void SetBrazo1Angulo(float angulo) { brazo1Angulo = angulo; }
+	void SetBrazo2Angulo(float angulo) { brazo2Angulo = angulo; }
 
 private:
-	Model manometroModel;
-	Model flechaModel;
+	Model baseModel;
+	Model cabezaModel;
+	Model brazo1Model;
+	Model brazo2Model;
+	Model pierna1Model;
+	Model pierna2Model;
+
 	Material material;
 	glm::vec3 position;
 	glm::vec3 scale;
 	float rotationY;
-	float flechaAngulo;   // rotación de la flecha sobre su eje (jerarquía)
-	float tiempoAnim;     // acumulador de tiempo para oscilación
+	float brazo1Angulo;
+	float brazo2Angulo;
 	bool initialized;
 };

@@ -28,7 +28,7 @@ private:
 	Mesh* cubo;
 	Texture textura;
 	Material material;
-	glm::vec3 position;   // posición base del escenario en el mapa
+	glm::vec3 position;
 	float rotationY;
 	bool initialized;
 };

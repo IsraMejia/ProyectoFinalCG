@@ -7,29 +7,31 @@
 #include "../../dependencias/Model.h"
 #include "../../dependencias/Material.h"
 
-class Manometro
+class Kalen
 {
 public:
-	Manometro();
-	~Manometro();
+	Kalen();
+	~Kalen();
 
 	void Initialize();
 	void Render(GLuint uniformModel, GLuint uniformColor,
 		GLuint uniformSpecularIntensity, GLuint uniformShininess,
-		GLuint uniformTextureOffset,
-		const float toRadians, float deltaTime);
+		const float toRadians);
 
-	// Permite controlar el ángulo de la flecha desde fuera (animación)
-	void SetFlechaAngulo(float angulo) { flechaAngulo = angulo; }
+	void SetBrazoDerAngulo(float angulo) { brazoDerAngulo = angulo; }
+	void SetBrazoIzqAngulo(float angulo) { brazoIzqAngulo = angulo; }
 
 private:
-	Model manometroModel;
-	Model flechaModel;
+	Model cuerpoModel;
+	Model cabezaModel;
+	Model brazoDerModel;
+	Model brazoIzqModel;
+
 	Material material;
 	glm::vec3 position;
 	glm::vec3 scale;
 	float rotationY;
-	float flechaAngulo;   // rotación de la flecha sobre su eje (jerarquía)
-	float tiempoAnim;     // acumulador de tiempo para oscilación
+	float brazoDerAngulo;
+	float brazoIzqAngulo;
 	bool initialized;
 };
