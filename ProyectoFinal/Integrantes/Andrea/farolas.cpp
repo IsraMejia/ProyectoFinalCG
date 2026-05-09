@@ -6,6 +6,8 @@ FarolasManager::FarolasManager()
     , farola3(nullptr)
     , farola4(nullptr)
     , farola5(nullptr)
+    , farola6(nullptr)
+    , farola7(nullptr)
 {
     // Definir posiciones de las farolas
     farolaPositions = {
@@ -13,7 +15,9 @@ FarolasManager::FarolasManager()
         { glm::vec3(10.94f, -3.0f, 81.13f), false },   // Farola 2 - Sin cámara
         { glm::vec3(-26.55f, -3.0f, -66.53f), true },  // Farola 3 - Con cámara
         { glm::vec3(93.23f, -3.0f, 44.67f), false },   // Farola 4 - Sin cámara
-        { glm::vec3(22.57f, -3.0f, -0.40f), true }     // Farola 5 - Con cámara
+        { glm::vec3(4.13f, -3.0f, 4.68f), true },    // Farola 5 - Con cámara
+        { glm::vec3(-15.0f, -3.0f, -12.5f), true },    // Farola 6 - Cerca del gato (izquierda) - Con cámara
+        { glm::vec3(15.0f, -3.0f, -12.5f), true }      // Farola 7 - Cerca del gato (derecha) - Con cámara
     };
 
     // Crear instancias de farolas con sus posiciones y configuraciones
@@ -22,6 +26,8 @@ FarolasManager::FarolasManager()
     farola3 = new Farola(farolaPositions[2].position, 0.0f, farolaPositions[2].hasCamera);
     farola4 = new Farola(farolaPositions[3].position, 0.0f, farolaPositions[3].hasCamera);
     farola5 = new Farola(farolaPositions[4].position, 0.0f, farolaPositions[4].hasCamera);
+    farola6 = new Farola(farolaPositions[5].position, 0.0f, farolaPositions[5].hasCamera);
+    farola7 = new Farola(farolaPositions[6].position, 0.0f, farolaPositions[6].hasCamera);
 }
 
 FarolasManager::~FarolasManager()
@@ -31,6 +37,8 @@ FarolasManager::~FarolasManager()
     if (farola3) delete farola3;
     if (farola4) delete farola4;
     if (farola5) delete farola5;
+    if (farola6) delete farola6;
+    if (farola7) delete farola7;
 }
 
 void FarolasManager::Initialize()
@@ -50,6 +58,8 @@ void FarolasManager::Render(GLuint uniformModel, GLuint uniformColor,
     farola3->Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
     farola4->Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
     farola5->Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+    farola6->Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+    farola7->Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 }
 
 void FarolasManager::SetupSpotLights(SpotLight* spotLights, unsigned int& spotLightCount, bool farolesEncendidos)
@@ -70,7 +80,7 @@ void FarolasManager::SetupSpotLights(SpotLight* spotLights, unsigned int& spotLi
             lightPos.x, lightPos.y, lightPos.z,  // posición
             0.0f, -1.0f, 0.0f,      // dirección hacia abajo
             1.0f, 0.01f, 0.001f,    // atenuación (constante, lineal, cuadrática)
-            15.0f);                 // ángulo del cono (edge)
+            75.0f);                 // ángulo del cono (edge) - cono más grande
         
         spotLightCount++;
     }

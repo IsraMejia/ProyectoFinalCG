@@ -26,12 +26,14 @@ public:
     void SetupSpotLights(SpotLight* spotLights, unsigned int& spotLightCount, bool farolesEncendidos);
 
 private:
-    // Instancias de las 5 farolas distribuidas por el mapa
+    // Instancias de las 7 farolas distribuidas por el mapa
     Farola* farola1;
     Farola* farola2;
     Farola* farola3;
     Farola* farola4;
     Farola* farola5;
+    Farola* farola6;  // Nueva farola cerca del gato
+    Farola* farola7;  // Nueva farola cerca del gato
 
     // Posiciones de las farolas para las luces
     struct FarolaPosition {

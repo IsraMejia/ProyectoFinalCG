@@ -155,12 +155,12 @@ FuntimeFoxy funtimeFoxy;
 FarolasManager farolasManager;
 
 // Arbol1 (modulo Andrea)
-Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-Arbol1 arbol4(glm::vec3(41.0f, -3.0f, 130.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));  
-Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));
+Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));
+Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));
+Arbol1 arbol4(glm::vec3(41.0f, -3.0f, 130.0f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));  
+Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));
+Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(1.5f, 1.5f, 1.5f));
 
 // Entrada (modulo Andrea) - Debajo del cuervo
 Entrada entrada(glm::vec3(155.87f, -160.14f, -114.92f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); 
@@ -315,14 +315,23 @@ int main()
 	gramofono3.Initialize();
 	gramofono4.Initialize();
 
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
-	skyboxFaces.push_back("Textures/Skybox/CubemapPiso.png");   // Down (Abajo)
-	skyboxFaces.push_back("Textures/Skybox/CubemapTecho.png");  // Up (Arriba)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL4.png");     // Back (Atrás)
-	skyboxFaces.push_back("Textures/Skybox/CubemapL2.png");     // Front (Frente)
-	skybox = Skybox(skyboxFaces);
+	std::vector<std::string> skyboxFacesDay;
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapPiso.png");   // Down (Abajo)
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapTecho.png");  // Up (Arriba)
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapL4.png");     // Back (Atrás)
+	skyboxFacesDay.push_back("Textures/Skybox/CubemapL2.png");     // Front (Frente)
+	
+	std::vector<std::string> skyboxFacesNight;
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNL1.png");     // Right (Derecha)
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNL3.png");     // Left (Izquierda)
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNPiso.png");   // Down (Abajo)
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNTecho.png");  // Up (Arriba)
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNL4.png");     // Back (Atrás)
+	skyboxFacesNight.push_back("Textures/Skybox/SkyboxNL2.png");     // Front (Frente)
+	
+	skybox = Skybox(skyboxFacesDay, skyboxFacesNight);
 
 	Material_opaco = Material(0.3f, 4);
 
@@ -496,7 +505,7 @@ int main()
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(viewMatrix, projection);
+		skybox.DrawSkybox(viewMatrix, projection, cicloDiaNoche.EsDeDia());
 
 		shaderList[0].UseShader();
 		uniformModel             = shaderList[0].GetModelLocation();
