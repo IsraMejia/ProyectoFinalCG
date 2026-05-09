@@ -52,6 +52,21 @@ Pr�ctica 7: Iluminaci�n 1
 #include "Integrantes/Andrea/sala_monitores.h"
 #include "Integrantes/Andrea/funtime_foxy.h"
 #include "Integrantes/Andrea/farola.h"
+#include "Integrantes/Andrea/arbol1.h"
+#include "Integrantes/Andrea/entrada.h"
+#include "Integrantes/Isra/KF_por_codigo.h"
+#include "Integrantes/Isra/keyframes_main.h"
+#include "Integrantes/Ceci/escenario_M.h"
+#include "Integrantes/Ceci/caliope.h"
+#include "Integrantes/Ceci/manometro.h"
+#include "Integrantes/Ceci/gramofono.h"
+#include "Integrantes/Andrea/escenario.h"
+#include "Integrantes/Andrea/cage_freddy.h"
+#include "Integrantes/Andrea/cage_ballora.h"
+#include "Integrantes/Andrea/speakers.h"
+#include "Integrantes/Andrea/sala_monitores.h"
+#include "Integrantes/Andrea/funtime_foxy.h"
+#include "Integrantes/Andrea/farola.h"
 #include "Integrantes/Andrea/farolas.h"
 #include "Integrantes/Andrea/arbol1.h"
 #include "Integrantes/Andrea/entrada.h"
@@ -143,6 +158,64 @@ Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.
 
 // Keyframe Manager (modulo Isra) - Maneja todas las animaciones por keyframes
 KeyframeManager keyframeManager;
+// Train animation system (modulo Isra)
+Train_Keyframe_System trainAnimSystem;
+
+// Escenario (modulo Andrea)
+Escenario escenario;
+
+// CageFreddy (modulo Andrea)
+CageFreddy cageFreddy;
+
+// CageBallora (modulo Andrea)
+CageBallora cageBallora;
+
+// Speakers (modulo Andrea)
+Speakers speakers;
+Speakers speakers2(glm::vec3(-76.58f, -3.0f, -8.39f));
+
+// SalaMonitores (modulo Andrea)
+SalaMonitores salaMonitores;
+
+// FuntimeFoxy (modulo Andrea)
+FuntimeFoxy funtimeFoxy;
+
+// Farolas (modulo Andrea) - Distribuidas por el mapa
+// Algunas con cámara de vigilancia que rota
+Farola farola1(glm::vec3(-69.55f, -3.0f, 19.05f), 0.0f, true);   // Con cámara
+Farola farola2(glm::vec3(10.94f, -3.0f, 81.13f), 0.0f, false);  // Sin cámara
+Farola farola3(glm::vec3(-26.55f, -3.0f, -66.53f), 0.0f, true);   // Con cámara
+Farola farola4(glm::vec3(93.23f, -3.0f, 44.67f), 0.0f, false);   // Sin cámara
+Farola farola5(glm::vec3(22.57f, -3.0f, -0.40f), 0.0f, true);    // Con cámara
+
+// Arbol1 (modulo Andrea)
+Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol4(glm::vec3(-20.0f, -3.0f, 70.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+
+// Entrada (modulo Andrea) - Debajo del cuervo
+Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+
+// Keyframe Manager (modulo Isra) - Maneja todas las animaciones por keyframes
+KeyframeManager keyframeManager;
+
+// Escenario (modulo Ceci)
+Escenario_M escenario_m;
+
+// Caliope (modulo Ceci)
+Caliope caliope;
+
+// Manometro (modulo Ceci)
+Manometro manometro;
+
+// Gramofonos (modulo Ceci) - 4 instancias
+Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
+Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
+Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
+Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
 
 Skybox skybox;
 
@@ -260,8 +333,65 @@ int main()
 
 	// Inicializar sistema de animacion por keyframes (modulo Isra)
 	keyframeManager.Initialize(&cameraTracker, &haloPelican, &tren);
+	// Inicializar escenario (modulo Andrea)
+	escenario.Initialize();
+
+	// Inicializar CageFreddy (modulo Andrea)
+	cageFreddy.Initialize();
+
+	// Inicializar CageBallora (modulo Andrea)
+	cageBallora.Initialize();
+
+		// Inicializar Speakers (modulo Andrea)
+	speakers.Initialize();
+	speakers2.Initialize();
+
+	// Inicializar SalaMonitores (modulo Andrea)
+	salaMonitores.Initialize();
+
+	// Inicializar FuntimeFoxy (modulo Andrea)
+	funtimeFoxy.Initialize();
+
+	// Inicializar Farolas (modulo Andrea) - Cargar modelos compartidos una sola vez
+	farola1.Initialize();
+	// Las demás farolas comparten los mismos modelos estáticos ya cargados
+
+	// Inicializar Arbol1 (modulo Andrea)
+	arbol1.Initialize();
+	arbol2.Initialize();
+	arbol3.Initialize();
+	arbol4.Initialize();
+	arbol5.Initialize();
+	arbol6.Initialize();
+
+	// Inicializar Entrada (modulo Andrea)
+	entrada.Initialize();
+
+	// Inicializar sistema de animacion por keyframes (modulo Isra)
+	keyframeManager.Initialize(&cameraTracker, &haloPelican, &tren);
+
+	// Inicializar escenario (modulo Ceci)
+	escenario_m.Initialize();
+
+	// Inicializar caliope (modulo Ceci)
+	caliope.Initialize();
+
+	// Inicializar manometro (modulo Ceci)
+	manometro.Initialize();
+
+	// Inicializar gramofonos (modulo Ceci)
+	gramofono1.Initialize();
+	gramofono2.Initialize();
+	gramofono3.Initialize();
+	gramofono4.Initialize();
 
 	std::vector<std::string> skyboxFaces;
+	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
+	skyboxFaces.push_back("Textures/Skybox/CubemapPiso.png");   // Down (Abajo)
+	skyboxFaces.push_back("Textures/Skybox/CubemapTecho.png");  // Up (Arriba)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL4.png");     // Back (Atrás)
+	skyboxFaces.push_back("Textures/Skybox/CubemapL2.png");     // Front (Frente)
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
 	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
 	skyboxFaces.push_back("Textures/Skybox/CubemapPiso.png");   // Down (Abajo)
@@ -335,6 +465,11 @@ int main()
 		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		Camera* camera = cameraTracker.GetCamera();
 
+		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
+		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
+		keyframeManager.Update(deltaTime);
+
+		// Obtener transformación de cámara según modo de grabación
 		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
 		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		keyframeManager.Update(deltaTime);
@@ -425,7 +560,11 @@ int main()
 		gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Cuervo gigante - Ahora sobre la entrada
+		// Cuervo gigante - Ahora sobre la entrada
 		bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Entrada (modulo Andrea) - Debajo del cuervo
+		entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Entrada (modulo Andrea) - Debajo del cuervo
 		entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
@@ -457,6 +596,55 @@ int main()
 
 		// Farolas (modulo Andrea)
 		farolasManager.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Arbol1 (modulo Andrea)
+		arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Escenario (modulo Andrea)
+		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Escenario (modulo Ceci)
+		escenario_m.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Caliope (modulo Ceci)
+		caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Manometro (modulo Ceci)
+		manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Gramofonos (modulo Ceci)
+		gramofono1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// CageFreddy (modulo Andrea)
+		cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// CageBallora (modulo Andrea)
+		cageBallora.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Speakers (modulo Andrea)
+		speakers.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		speakers2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// SalaMonitores (modulo Andrea)
+		salaMonitores.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// FuntimeFoxy (modulo Andrea)
+		funtimeFoxy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Farolas (modulo Andrea) - Con cámaras rotando jerárquicamente
+		farola1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farola5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Arbol1 (modulo Andrea)
 		arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
