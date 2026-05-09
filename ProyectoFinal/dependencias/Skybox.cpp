@@ -22,13 +22,22 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		unsigned char *texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, 0); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
 		if (!texData)
 		{
-			printf("No se encontró : %s", faceLocations[i].c_str());
+			printf("No se encontrï¿½ : %s\n", faceLocations[i].c_str());
 			return;
 		}
+		
+		// Detectar formato segÃºn nÃºmero de canales
+		GLenum format = GL_RGB;
+		if (bitDepth == 4) {
+			format = GL_RGBA;
+		} else if (bitDepth == 1) {
+			format = GL_RED;
+		}
+		
 		//para cambiar el origen a la esquina inferior izquierda como necesitamos
 		//stbi_set_flip_vertically_on_load(true);
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X +i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData); //SIN CANAL ALPHA A ENOS QUE QUERAMOS AGREGAR EFECTO DE PARALLAX
-		stbi_image_free(texData); //para liberar la información de la imagen
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X +i, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, texData); //SIN CANAL ALPHA A MENOS QUE QUERAMOS AGREGAR EFECTO DE PARALLAX
+		stbi_image_free(texData); //para liberar la informaciï¿½n de la imagen
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

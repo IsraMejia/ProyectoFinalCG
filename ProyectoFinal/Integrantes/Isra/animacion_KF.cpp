@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <ctime>
+#include <glew.h>
 #include <glfw3.h>
 #include <sys/stat.h>  // For file modification time checking
 

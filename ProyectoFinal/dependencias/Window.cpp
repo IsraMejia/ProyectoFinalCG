@@ -6,7 +6,7 @@ Window::Window()
 	height = 600;
 	for (size_t i = 0; i < 1024; i++)
 	{
-		keys[i] = 0;
+		keys[i] = false;
 	}
 }
 Window::Window(GLint windowWidth, GLint windowHeight)
@@ -17,9 +17,10 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	mueveMustang = 8.0f;
 	mueveHelicoptero = 0.0f;
 	lamparaEncendida = true;
+	farolesEncendidos = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
-		keys[i] = 0;
+		keys[i] = false;
 	}
 }
 int Window::Initialise()
@@ -43,8 +44,8 @@ int Window::Initialise()
 	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
 	
 	// Ventana ocupa mitad derecha con 5% de margen arriba y abajo
-	width  = (GLint)(videoMode->width  * 0.5f);  // 50% del ancho (mitad derecha)
-	height = (GLint)(videoMode->height * 0.9f);  // 90% del alto (5% arriba, 5% abajo)
+	width  = (GLint)((float)videoMode->width  * 0.5f);  // 50% del ancho (mitad derecha)
+	height = (GLint)((float)videoMode->height * 0.9f);  // 90% del alto (5% arriba, 5% abajo)
 
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
@@ -93,7 +94,7 @@ int Window::Initialise()
 	int monitorX, monitorY;
 	glfwGetMonitorPos(primaryMonitor, &monitorX, &monitorY);
 	int windowPosX = monitorX + (videoMode->width / 2);  // Mitad derecha
-	int windowPosY = monitorY + (int)(videoMode->height * 0.05f);  // 5% de margen arriba
+	int windowPosY = monitorY + (int)((float)videoMode->height * 0.05f);  // 5% de margen arriba
 	glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
 
 	// Centrar el mouse en la ventana al iniciar
@@ -102,6 +103,8 @@ int Window::Initialise()
 	lastX = (GLfloat)(width / 2.0);
 	lastY = (GLfloat)(height / 2.0);
 	mouseFirstMoved = false;
+	
+	return 0;
 }
 
 void Window::createCallbacks()
@@ -164,6 +167,11 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
 	{
 		theWindow->lamparaEncendida = !theWindow->lamparaEncendida;
+	}
+	// L: toggle faroles
+	if (key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		theWindow->farolesEncendidos = !theWindow->farolesEncendidos;
 	}
 
 

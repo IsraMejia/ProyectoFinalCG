@@ -1,0 +1,342 @@
+# Interpolated Animation Frames
+# Generated from keyframe interpolation
+# Base Keyframes: 67
+# Frame Rate: 24 FPS
+# Total Recording Time: 293.35 seconds
+# DO NOT EDIT - This file is auto-generated
+
+KEYFRAME 0
+posX=-54.15 posY=6.15 posZ=36.37 rotX=0.00 rotY=80.00 rotZ=0.00 timestamp=14.46
+INTERPOLATION
+posXInc=0.30 posYInc=0.25 posZInc=0.05 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=30
+
+KEYFRAME 1
+posX=-45.29 posY=13.75 posZ=37.93 rotX=0.00 rotY=80.00 rotZ=0.00 timestamp=20.48
+INTERPOLATION
+posXInc=0.62 posYInc=0.00 posZInc=-0.18 rotXInc=0.00 rotYInc=1.44 rotZInc=0.00 framesInSegment=18
+
+KEYFRAME 2
+posX=-34.04 posY=13.75 posZ=34.71 rotX=0.00 rotY=106.00 rotZ=0.00 timestamp=24.11
+INTERPOLATION
+posXInc=0.19 posYInc=0.18 posZInc=-0.05 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=73
+
+KEYFRAME 3
+posX=-20.48 posY=26.95 posZ=30.82 rotX=0.00 rotY=106.00 rotZ=0.00 timestamp=39.02
+INTERPOLATION
+posXInc=1.18 posYInc=0.43 posZInc=-0.34 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=38
+
+KEYFRAME 4
+posX=24.50 posY=43.35 posZ=17.92 rotX=0.00 rotY=106.00 rotZ=0.00 timestamp=46.67
+INTERPOLATION
+posXInc=1.90 posYInc=0.00 posZInc=-0.55 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=25
+
+KEYFRAME 5
+posX=72.08 posY=43.35 posZ=4.28 rotX=0.00 rotY=106.00 rotZ=0.00 timestamp=51.94
+INTERPOLATION
+posXInc=1.63 posYInc=0.00 posZInc=0.29 rotXInc=0.00 rotYInc=-1.53 rotZInc=0.00 framesInSegment=17
+
+KEYFRAME 6
+posX=99.86 posY=43.35 posZ=9.18 rotX=0.00 rotY=80.00 rotZ=0.00 timestamp=55.30
+INTERPOLATION
+posXInc=2.01 posYInc=0.35 posZInc=1.25 rotXInc=0.00 rotYInc=-0.67 rotZInc=0.00 framesInSegment=30
+
+KEYFRAME 7
+posX=160.13 posY=53.95 posZ=46.53 rotX=0.00 rotY=60.00 rotZ=0.00 timestamp=61.48
+INTERPOLATION
+posXInc=1.87 posYInc=0.00 posZInc=1.08 rotXInc=0.00 rotYInc=-2.00 rotZInc=0.00 framesInSegment=16
+
+KEYFRAME 8
+posX=190.01 posY=53.95 posZ=63.78 rotX=0.00 rotY=28.00 rotZ=0.00 timestamp=64.70
+INTERPOLATION
+posXInc=1.65 posYInc=0.00 posZInc=3.11 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=11
+
+KEYFRAME 9
+posX=208.18 posY=53.95 posZ=97.95 rotX=0.00 rotY=28.00 rotZ=0.00 timestamp=66.87
+INTERPOLATION
+posXInc=1.01 posYInc=0.00 posZInc=3.62 rotXInc=0.00 rotYInc=-2.33 rotZInc=0.00 framesInSegment=18
+
+KEYFRAME 10
+posX=226.37 posY=53.95 posZ=163.16 rotX=0.00 rotY=-14.00 rotZ=0.00 timestamp=70.68
+INTERPOLATION
+posXInc=-0.57 posYInc=0.00 posZInc=2.28 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=26
+
+KEYFRAME 11
+posX=211.56 posY=53.95 posZ=222.54 rotX=0.00 rotY=-14.00 rotZ=0.00 timestamp=75.79
+INTERPOLATION
+posXInc=-0.37 posYInc=0.00 posZInc=1.48 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 12
+posX=206.77 posY=53.95 posZ=241.75 rotX=0.00 rotY=-14.00 rotZ=0.00 timestamp=78.44
+INTERPOLATION
+posXInc=-2.09 posYInc=0.00 posZInc=-1.41 rotXInc=0.00 rotYInc=-5.50 rotZInc=0.00 framesInSegment=20
+
+KEYFRAME 13
+posX=164.99 posY=53.95 posZ=213.57 rotX=0.00 rotY=-124.00 rotZ=0.00 timestamp=82.68
+INTERPOLATION
+posXInc=-2.25 posYInc=0.88 posZInc=-1.52 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=18
+
+KEYFRAME 14
+posX=124.45 posY=69.75 posZ=186.23 rotX=0.00 rotY=-124.00 rotZ=0.00 timestamp=86.30
+INTERPOLATION
+posXInc=-4.35 posYInc=0.00 posZInc=-2.94 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=12
+
+KEYFRAME 15
+posX=72.22 posY=69.75 posZ=151.00 rotX=0.00 rotY=-124.00 rotZ=0.00 timestamp=88.69
+INTERPOLATION
+posXInc=-4.46 posYInc=0.00 posZInc=-3.01 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=16
+
+KEYFRAME 16
+posX=0.84 posY=69.75 posZ=102.85 rotX=0.00 rotY=-124.00 rotZ=0.00 timestamp=92.02
+INTERPOLATION
+posXInc=-1.25 posYInc=0.00 posZInc=-0.90 rotXInc=0.00 rotYInc=-0.31 rotZInc=0.00 framesInSegment=26
+
+KEYFRAME 17
+posX=-31.69 posY=69.75 posZ=79.35 rotX=0.00 rotY=-132.00 rotZ=0.00 timestamp=97.34
+INTERPOLATION
+posXInc=-1.57 posYInc=0.00 posZInc=-1.88 rotXInc=0.00 rotYInc=-0.09 rotZInc=0.00 framesInSegment=22
+
+KEYFRAME 18
+posX=-66.14 posY=69.75 posZ=38.04 rotX=0.00 rotY=-134.00 rotZ=0.00 timestamp=101.76
+INTERPOLATION
+posXInc=-1.41 posYInc=0.00 posZInc=-1.47 rotXInc=0.00 rotYInc=-1.22 rotZInc=0.00 framesInSegment=23
+
+KEYFRAME 19
+posX=-98.64 posY=69.75 posZ=4.12 rotX=0.00 rotY=-162.00 rotZ=0.00 timestamp=106.43
+INTERPOLATION
+posXInc=-1.28 posYInc=0.21 posZInc=-3.94 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=16
+
+KEYFRAME 20
+posX=-119.12 posY=73.15 posZ=-58.94 rotX=0.00 rotY=-162.00 rotZ=0.00 timestamp=109.74
+INTERPOLATION
+posXInc=-0.24 posYInc=0.00 posZInc=-1.14 rotXInc=0.00 rotYInc=-0.30 rotZInc=0.00 framesInSegment=20
+
+KEYFRAME 21
+posX=-123.99 posY=73.15 posZ=-81.83 rotX=0.00 rotY=-168.00 rotZ=0.00 timestamp=113.69
+INTERPOLATION
+posXInc=0.85 posYInc=-0.38 posZInc=-0.71 rotXInc=0.00 rotYInc=-2.82 rotZInc=0.00 framesInSegment=22
+
+KEYFRAME 22
+posX=-105.37 posY=64.75 posZ=-97.45 rotX=0.00 rotY=-230.00 rotZ=0.00 timestamp=118.35
+INTERPOLATION
+posXInc=1.86 posYInc=-0.68 posZInc=-0.46 rotXInc=0.00 rotYInc=-0.90 rotZInc=0.00 framesInSegment=29
+
+KEYFRAME 23
+posX=-51.52 posY=44.95 posZ=-110.87 rotX=0.00 rotY=-256.00 rotZ=0.00 timestamp=124.07
+INTERPOLATION
+posXInc=1.44 posYInc=0.00 posZInc=-0.11 rotXInc=0.00 rotYInc=-0.71 rotZInc=0.00 framesInSegment=31
+
+KEYFRAME 24
+posX=-6.88 posY=44.95 posZ=-114.36 rotX=0.00 rotY=-278.00 rotZ=0.00 timestamp=130.42
+INTERPOLATION
+posXInc=4.55 posYInc=0.00 posZInc=0.64 rotXInc=0.00 rotYInc=-2.31 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 25
+posX=52.24 posY=44.95 posZ=-106.05 rotX=0.00 rotY=-308.00 rotZ=0.00 timestamp=133.21
+INTERPOLATION
+posXInc=3.19 posYInc=0.00 posZInc=2.49 rotXInc=0.00 rotYInc=-2.43 rotZInc=0.00 framesInSegment=14
+
+KEYFRAME 26
+posX=96.92 posY=44.95 posZ=-71.14 rotX=0.00 rotY=-342.00 rotZ=0.00 timestamp=136.00
+INTERPOLATION
+posXInc=-0.71 posYInc=0.27 posZInc=0.64 rotXInc=0.00 rotYInc=-3.14 rotZInc=0.00 framesInSegment=21
+
+KEYFRAME 27
+posX=81.98 posY=50.55 posZ=-57.69 rotX=0.00 rotY=-408.00 rotZ=0.00 timestamp=140.21
+INTERPOLATION
+posXInc=-1.82 posYInc=0.37 posZInc=0.68 rotXInc=0.00 rotYInc=-0.63 rotZInc=0.00 framesInSegment=19
+
+KEYFRAME 28
+posX=47.49 posY=57.55 posZ=-44.79 rotX=0.00 rotY=-420.00 rotZ=0.00 timestamp=144.07
+INTERPOLATION
+posXInc=-2.94 posYInc=0.00 posZInc=1.70 rotXInc=0.00 rotYInc=-1.50 rotZInc=0.00 framesInSegment=12
+
+KEYFRAME 29
+posX=12.16 posY=57.55 posZ=-24.39 rotX=0.00 rotY=-438.00 rotZ=0.00 timestamp=146.56
+INTERPOLATION
+posXInc=-5.80 posYInc=0.00 posZInc=1.23 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 30
+posX=-63.26 posY=57.55 posZ=-8.36 rotX=0.00 rotY=-438.00 rotZ=0.00 timestamp=149.19
+INTERPOLATION
+posXInc=-1.52 posYInc=0.00 posZInc=0.32 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=11
+
+KEYFRAME 31
+posX=-79.98 posY=57.55 posZ=-4.80 rotX=0.00 rotY=-438.00 rotZ=0.00 timestamp=151.54
+INTERPOLATION
+posXInc=-0.48 posYInc=0.00 posZInc=1.32 rotXInc=0.00 rotYInc=3.87 rotZInc=0.00 framesInSegment=15
+
+KEYFRAME 32
+posX=-87.17 posY=57.55 posZ=14.93 rotX=0.00 rotY=-380.00 rotZ=0.00 timestamp=154.61
+INTERPOLATION
+posXInc=0.51 posYInc=0.00 posZInc=1.27 rotXInc=0.00 rotYInc=1.83 rotZInc=0.00 framesInSegment=23
+
+KEYFRAME 33
+posX=-75.37 posY=57.55 posZ=44.14 rotX=0.00 rotY=-338.00 rotZ=0.00 timestamp=159.13
+INTERPOLATION
+posXInc=0.90 posYInc=0.00 posZInc=1.31 rotXInc=0.00 rotYInc=1.86 rotZInc=0.00 framesInSegment=14
+
+KEYFRAME 34
+posX=-62.73 posY=57.55 posZ=62.41 rotX=0.00 rotY=-312.00 rotZ=0.00 timestamp=162.11
+INTERPOLATION
+posXInc=0.47 posYInc=-0.74 posZInc=-0.19 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=40
+
+KEYFRAME 35
+posX=-43.82 posY=28.15 posZ=54.77 rotX=0.00 rotY=-312.00 rotZ=0.00 timestamp=170.24
+INTERPOLATION
+posXInc=0.41 posYInc=-0.56 posZInc=0.28 rotXInc=0.00 rotYInc=1.13 rotZInc=0.00 framesInSegment=23
+
+KEYFRAME 36
+posX=-34.34 posY=15.35 posZ=61.18 rotX=0.00 rotY=-286.00 rotZ=0.00 timestamp=174.85
+INTERPOLATION
+posXInc=0.56 posYInc=-0.39 posZInc=0.16 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=15
+
+KEYFRAME 37
+posX=-25.98 posY=9.55 posZ=63.58 rotX=0.00 rotY=-286.00 rotZ=0.00 timestamp=177.93
+INTERPOLATION
+posXInc=0.27 posYInc=-0.13 posZInc=0.08 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=17
+
+KEYFRAME 38
+posX=-21.36 posY=7.35 posZ=64.90 rotX=0.00 rotY=-286.00 rotZ=0.00 timestamp=181.48
+INTERPOLATION
+posXInc=0.00 posYInc=0.16 posZInc=0.00 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=14
+
+KEYFRAME 39
+posX=-21.36 posY=9.55 posZ=64.90 rotX=0.00 rotY=-286.00 rotZ=0.00 timestamp=184.33
+INTERPOLATION
+posXInc=0.09 posYInc=0.00 posZInc=0.02 rotXInc=0.00 rotYInc=0.24 rotZInc=0.00 framesInSegment=34
+
+KEYFRAME 40
+posX=-18.43 posY=9.55 posZ=65.53 rotX=0.00 rotY=-278.00 rotZ=0.00 timestamp=191.10
+INTERPOLATION
+posXInc=0.00 posYInc=0.35 posZInc=0.00 rotXInc=0.00 rotYInc=-1.20 rotZInc=0.00 framesInSegment=20
+
+KEYFRAME 41
+posX=-18.43 posY=16.55 posZ=65.53 rotX=0.00 rotY=-302.00 rotZ=0.00 timestamp=195.17
+INTERPOLATION
+posXInc=0.25 posYInc=0.29 posZInc=0.16 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=14
+
+KEYFRAME 42
+posX=-14.87 posY=20.55 posZ=67.75 rotX=0.00 rotY=-302.00 rotZ=0.00 timestamp=198.19
+INTERPOLATION
+posXInc=1.10 posYInc=0.00 posZInc=0.85 rotXInc=0.00 rotYInc=-0.38 rotZInc=0.00 framesInSegment=26
+
+KEYFRAME 43
+posX=13.73 posY=20.55 posZ=89.86 rotX=0.00 rotY=-312.00 rotZ=0.00 timestamp=203.51
+INTERPOLATION
+posXInc=2.56 posYInc=0.00 posZInc=2.31 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=10
+
+KEYFRAME 44
+posX=39.37 posY=20.55 posZ=112.94 rotX=0.00 rotY=-312.00 rotZ=0.00 timestamp=205.46
+INTERPOLATION
+posXInc=2.63 posYInc=0.00 posZInc=2.37 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=10
+
+KEYFRAME 45
+posX=65.68 posY=20.55 posZ=136.63 rotX=0.00 rotY=-312.00 rotZ=0.00 timestamp=207.53
+INTERPOLATION
+posXInc=3.58 posYInc=0.00 posZInc=0.76 rotXInc=0.00 rotYInc=1.88 rotZInc=0.00 framesInSegment=16
+
+KEYFRAME 46
+posX=122.90 posY=20.55 posZ=148.79 rotX=0.00 rotY=-282.00 rotZ=0.00 timestamp=210.75
+INTERPOLATION
+posXInc=4.52 posYInc=0.00 posZInc=-0.96 rotXInc=0.00 rotYInc=1.60 rotZInc=0.00 framesInSegment=15
+
+KEYFRAME 47
+posX=190.68 posY=20.55 posZ=134.39 rotX=0.00 rotY=-258.00 rotZ=0.00 timestamp=213.83
+INTERPOLATION
+posXInc=3.46 posYInc=0.00 posZInc=-2.16 rotXInc=0.00 rotYInc=1.54 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 48
+posX=235.72 posY=20.55 posZ=106.25 rotX=0.00 rotY=-238.00 rotZ=0.00 timestamp=216.37
+INTERPOLATION
+posXInc=1.46 posYInc=0.00 posZInc=-4.01 rotXInc=0.00 rotYInc=2.71 rotZInc=0.00 framesInSegment=14
+
+KEYFRAME 49
+posX=256.13 posY=20.55 posZ=50.15 rotX=0.00 rotY=-200.00 rotZ=0.00 timestamp=219.30
+INTERPOLATION
+posXInc=1.32 posYInc=0.95 posZInc=-3.62 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 50
+posX=273.27 posY=32.95 posZ=3.07 rotX=0.00 rotY=-200.00 rotZ=0.00 timestamp=221.85
+INTERPOLATION
+posXInc=-0.82 posYInc=0.00 posZInc=-3.30 rotXInc=0.00 rotYInc=5.60 rotZInc=0.00 framesInSegment=15
+
+KEYFRAME 51
+posX=260.93 posY=32.95 posZ=-46.42 rotX=0.00 rotY=-116.00 rotZ=0.00 timestamp=225.05
+INTERPOLATION
+posXInc=-0.43 posYInc=0.64 posZInc=-0.16 rotXInc=0.00 rotYInc=0.22 rotZInc=0.00 framesInSegment=45
+
+KEYFRAME 52
+posX=241.67 posY=61.55 posZ=-53.78 rotX=0.00 rotY=-106.00 rotZ=0.00 timestamp=234.20
+INTERPOLATION
+posXInc=-3.37 posYInc=0.00 posZInc=-0.97 rotXInc=0.00 rotYInc=2.40 rotZInc=0.00 framesInSegment=20
+
+KEYFRAME 53
+posX=174.19 posY=61.55 posZ=-73.13 rotX=0.00 rotY=-58.00 rotZ=0.00 timestamp=238.19
+INTERPOLATION
+posXInc=-5.28 posYInc=2.17 posZInc=3.30 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 54
+posX=105.50 posY=89.75 posZ=-30.21 rotX=0.00 rotY=-58.00 rotZ=0.00 timestamp=240.82
+INTERPOLATION
+posXInc=-5.04 posYInc=0.00 posZInc=3.15 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=10
+
+KEYFRAME 55
+posX=55.12 posY=89.75 posZ=1.27 rotX=0.00 rotY=-58.00 rotZ=0.00 timestamp=242.95
+INTERPOLATION
+posXInc=-2.77 posYInc=0.00 posZInc=1.73 rotXInc=0.00 rotYInc=-1.05 rotZInc=0.00 framesInSegment=19
+
+KEYFRAME 56
+posX=2.46 posY=89.75 posZ=34.18 rotX=0.00 rotY=-78.00 rotZ=0.00 timestamp=246.76
+INTERPOLATION
+posXInc=-4.17 posYInc=0.00 posZInc=-0.89 rotXInc=0.00 rotYInc=-2.40 rotZInc=0.00 framesInSegment=10
+
+KEYFRAME 57
+posX=-39.21 posY=89.75 posZ=25.32 rotX=0.00 rotY=-102.00 rotZ=0.00 timestamp=248.83
+INTERPOLATION
+posXInc=-0.66 posYInc=-1.66 posZInc=0.14 rotXInc=0.00 rotYInc=1.20 rotZInc=0.00 framesInSegment=20
+
+KEYFRAME 58
+posX=-52.42 posY=56.55 posZ=28.13 rotX=0.00 rotY=-78.00 rotZ=0.00 timestamp=252.92
+INTERPOLATION
+posXInc=-0.47 posYInc=-1.58 posZInc=0.65 rotXInc=0.00 rotYInc=3.23 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 59
+posX=-58.59 posY=35.95 posZ=36.62 rotX=0.00 rotY=-36.00 rotZ=0.00 timestamp=255.55
+INTERPOLATION
+posXInc=1.57 posYInc=0.00 posZInc=0.98 rotXInc=0.00 rotYInc=7.23 rotZInc=0.00 framesInSegment=13
+
+KEYFRAME 60
+posX=-38.23 posY=35.95 posZ=49.34 rotX=0.00 rotY=58.00 rotZ=0.00 timestamp=258.20
+INTERPOLATION
+posXInc=0.21 posYInc=-0.42 posZInc=-0.17 rotXInc=0.00 rotYInc=2.25 rotZInc=0.00 framesInSegment=32
+
+KEYFRAME 61
+posX=-31.57 posY=22.55 posZ=43.75 rotX=0.00 rotY=130.00 rotZ=0.00 timestamp=264.65
+INTERPOLATION
+posXInc=0.00 posYInc=0.00 posZInc=0.00 rotXInc=0.00 rotYInc=-1.17 rotZInc=0.00 framesInSegment=12
+
+KEYFRAME 62
+posX=-31.57 posY=22.55 posZ=43.75 rotX=0.00 rotY=116.00 rotZ=0.00 timestamp=267.08
+INTERPOLATION
+posXInc=0.18 posYInc=-0.43 posZInc=-0.00 rotXInc=0.00 rotYInc=-0.75 rotZInc=0.00 framesInSegment=48
+
+KEYFRAME 63
+posX=-22.94 posY=1.95 posZ=43.66 rotX=0.00 rotY=80.00 rotZ=0.00 timestamp=277.03
+INTERPOLATION
+posXInc=0.19 posYInc=0.00 posZInc=0.03 rotXInc=0.00 rotYInc=-0.84 rotZInc=0.00 framesInSegment=19
+
+KEYFRAME 64
+posX=-19.39 posY=1.95 posZ=44.28 rotX=0.00 rotY=64.00 rotZ=0.00 timestamp=280.74
+INTERPOLATION
+posXInc=0.16 posYInc=-0.04 posZInc=0.08 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=19
+
+KEYFRAME 65
+posX=-16.43 posY=1.15 posZ=45.73 rotX=0.00 rotY=64.00 rotZ=0.00 timestamp=284.78
+INTERPOLATION
+posXInc=-0.23 posYInc=0.00 posZInc=-0.11 rotXInc=0.00 rotYInc=0.00 rotZInc=0.00 framesInSegment=43
+
+KEYFRAME 66
+posX=-26.13 posY=1.15 posZ=41.00 rotX=0.00 rotY=64.00 rotZ=0.00 timestamp=293.35
+INTERPOLATION
+posXInc=-28.02 posYInc=5.00 posZInc=-4.63 rotXInc=0.00 rotYInc=16.00 rotZInc=0.00 framesInSegment=1
+
