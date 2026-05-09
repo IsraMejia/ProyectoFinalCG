@@ -1,10 +1,11 @@
 #include "escenario_M.h"
 
+
 Escenario_M::Escenario_M()
 {
 	position    = glm::vec3(68.70f, -3.0f, -3.70f);
 	rotationY   = -90.0f;
-	material    = Material(0.3f, 4);   // Material_opaco
+	material  = Material(0.3f, 4);   // Material_opaco
 	cubo        = nullptr;
 	initialized = false;
 }
@@ -40,43 +41,43 @@ void Escenario_M::Initialize()
 	};
 
 	GLfloat vertices[] = {
-		// x      y      z       S     T       NX    NY    NZ
-		// Frontal
-		-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-		// Derecha
-		 0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,   0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-		// Trasera
-		 0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f, 0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f, 0.0f, -1.0f,
-		// Izquierda
-		-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,   1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,   1.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-		// Abajo
-		-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f, -1.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,   1.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,   0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-		// Arriba
-		-0.5f,  0.5f,  0.5f,   0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f, 1.0f, 0.0f
+		// x      y      z       S     T       NX     NY     NZ
+		// Frontal (normal -Z, indices horario visto desde +Z)
+		-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f,  0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f,  0.5f,   0.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+		// Derecha (normal -X)
+		 0.5f, -0.5f,  0.5f,   0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,   0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+		// Trasera (normal +Z)
+		 0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  0.0f,  1.0f,
+		// Izquierda (normal +X)
+		-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,   1.0f, 1.0f,   1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
+		// Abajo (normal +Y)
+		-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,   1.0f, 1.0f,   0.0f,  1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,   0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
+		// Arriba (normal -Y)
+		-0.5f,  0.5f,  0.5f,   0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f, -1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f, -1.0f,  0.0f
 	};
 
 	cubo = new Mesh();
 	cubo->CreateMesh(vertices, indices, 192, 36);
 
-	textura = Texture("Textures/plain.png");
+	textura = Texture("Textures/miku_textura.png");
 	textura.LoadTextureA();
 
 	initialized = true;
@@ -107,10 +108,11 @@ void Escenario_M::Render(GLuint uniformModel, GLuint uniformColor,
 	textura.UseTexture();
 	material.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-	// Colores
-	const glm::vec3 colorTubos    = glm::vec3(0.8f, 0.8f, 0.8f);
-	const glm::vec3 colorEscenario= glm::vec3(0.6f, 0.6f, 0.6f);
-	const glm::vec3 colorPared    = glm::vec3(0.15f, 0.15f, 0.15f);
+	// Colores — todos en blanco para que la textura se vea sin modificar
+	const glm::vec3 colorTubos    = glm::vec3(1.0f, 1.0f, 1.0f);
+	const glm::vec3 colorEscenario= glm::vec3(1.0f, 1.0f, 1.0f);
+	const glm::vec3 colorPared    = glm::vec3(1.0f, 1.0f, 1.0f);
+	const glm::vec3 colorGradas   = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Base del escenario: translate -> rotate -> escala global
 	glm::mat4 base = glm::mat4(1.0f);
@@ -159,4 +161,21 @@ void Escenario_M::Render(GLuint uniformModel, GLuint uniformColor,
 	// 6. Telón trasero
 	RenderPieza(uniformModel, uniformColor, base,
 		glm::vec3(0.0f, 6.0f, -4.75f), glm::vec3(15.0f, 11.5f, 0.2f), colorPared);
+
+	// 7. GRADAS (frente al escenario, jerarquicas sobre la base)
+	// Escalón 1 (más cercano al escenario, más bajo)
+	RenderPieza(uniformModel, uniformColor, base,
+		glm::vec3(0.0f, 0.5f, 13.0f), glm::vec3(14.0f, 1.0f, 2.0f), colorGradas);
+
+	// Escalón 2
+	RenderPieza(uniformModel, uniformColor, base,
+		glm::vec3(0.0f, -0.5f, 15.5f), glm::vec3(14.0f, 1.0f, 2.0f), colorGradas);
+
+	// Escalón 3
+	RenderPieza(uniformModel, uniformColor, base,
+		glm::vec3(0.0f, -1.5f, 18.0f), glm::vec3(14.0f, 1.0f, 2.0f), colorGradas);
+
+	// Escalón 4 (más alejado, más bajo)
+	RenderPieza(uniformModel, uniformColor, base,
+		glm::vec3(0.0f, -2.5f, 20.5f), glm::vec3(14.0f, 1.0f, 2.0f), colorGradas);
 }
