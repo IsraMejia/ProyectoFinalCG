@@ -592,10 +592,10 @@ int main()
 		escenario_m.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// Caliope (modulo Ceci)
-		caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
 
 		// Manometro (modulo Ceci)
-		manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
 
 		// Gramofonos (modulo Ceci)
 		gramofono1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
