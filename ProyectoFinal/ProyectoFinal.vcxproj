@@ -49,6 +49,10 @@
     <ClCompile Include="Integrantes\Andrea\funtime_foxy.cpp" />
     <ClCompile Include="Integrantes\Andrea\sala_monitores.cpp" />
     <ClCompile Include="Integrantes\Andrea\speakers.cpp" />
+    <ClCompile Include="Integrantes\Ceci\caliope.cpp" />
+    <ClCompile Include="Integrantes\Ceci\escenario_M.cpp" />
+    <ClCompile Include="Integrantes\Ceci\gramofono.cpp" />
+    <ClCompile Include="Integrantes\Ceci\manometro.cpp" />
     <ClCompile Include="Integrantes\Isra\animacion_KF.cpp" />
     <ClCompile Include="Integrantes\Isra\animKFcamara.cpp" />
     <ClCompile Include="Integrantes\Isra\big_raven.cpp" />
