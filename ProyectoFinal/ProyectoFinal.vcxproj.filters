@@ -144,6 +144,12 @@
     <ClCompile Include="Integrantes\Ceci\manometro.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Integrantes\Isra\iluminacion_dia_noche.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Integrantes\Isra\personaje_principal.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencias\Camera.h">

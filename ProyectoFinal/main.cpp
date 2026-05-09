@@ -29,7 +29,13 @@
 #include "dependencias/SpotLight.h"
 #include "dependencias/Material.h"
 
-// Modulos de integrantes
+// Solo modulos esenciales
+#include "Integrantes/Isra/camara_position.h"
+#include "Integrantes/Isra/iluminacion_dia_noche.h"
+#include "Integrantes/Isra/personaje_principal.h"
+
+// MODULOS DESACTIVADOS PARA COMPILACION RAPIDA
+/*
 #include "Integrantes/Isra/vias_tren.h"
 #include "Integrantes/Isra/estacion_tren.h"
 #include "Integrantes/Isra/torreforerunner.h"
@@ -41,8 +47,8 @@
 #include "Integrantes/Isra/big_raven.h"
 #include "Integrantes/Isra/halo_pelican.h"
 #include "Integrantes/Isra/tren.h"
-#include "Integrantes/Isra/camara_position.h"
-#include "Integrantes/Isra/iluminacion_dia_noche.h"
+#include "Integrantes/Isra/KF_por_codigo.h"
+#include "Integrantes/Isra/keyframes_main.h"
 #include "Integrantes/Andrea/escenario.h"
 #include "Integrantes/Andrea/cage_freddy.h"
 #include "Integrantes/Andrea/cage_ballora.h"
@@ -53,12 +59,11 @@
 #include "Integrantes/Andrea/farolas.h"
 #include "Integrantes/Andrea/arbol1.h"
 #include "Integrantes/Andrea/entrada.h"
-#include "Integrantes/Isra/KF_por_codigo.h"
-#include "Integrantes/Isra/keyframes_main.h"
 #include "Integrantes/Ceci/escenario_M.h"
 #include "Integrantes/Ceci/caliope.h"
 #include "Integrantes/Ceci/manometro.h"
 #include "Integrantes/Ceci/gramofono.h"
+*/
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -66,6 +71,7 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
+// ============ ELEMENTOS ACTIVOS ============
 CameraPositionTracker cameraTracker;
 
 // Modelo del oceano (reemplaza el piso)
@@ -74,6 +80,25 @@ Model oceanModel;
 // Modelo de la isla
 Model islandModel;
 
+// Jefe Maestro (modulo Isra) - Personaje principal con modelado jerarquico
+MasterChief masterChief;
+
+// Ciclo Dia/Noche (modulo Isra) - Sistema de ciclo dia/noche
+CicloDiaNoche cicloDiaNoche;
+
+// Configuracion del ciclo dia/noche
+// Este valor controla la duracion del DIA (semicirculo superior)
+// El ciclo completo (dia + noche) durara el DOBLE de este valor
+// Ejemplo: duracionDia = 10.0f -> Dia: 10s, Noche: 10s, Total: 20s
+const float DURACION_DIA_SEGUNDOS = 1000.0f; 
+
+// Control de tecla Z para pausar/reanudar ciclo dia/noche
+bool teclaZ_Presionada = false;
+
+Skybox skybox;
+
+// ============ ELEMENTOS DESACTIVADOS ============
+/*
 // Vias del tren (modulo Isra)
 ViasTren viasTren;
 
@@ -141,22 +166,10 @@ Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f)
 Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
 
 // Entrada (modulo Andrea) - Debajo del cuervo
-//Entrada entrada(glm::vec3(10.0f, -3.0f, -140.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); //glm::vec3(133.87f, -17.14f, -124.92f)
 Entrada entrada(glm::vec3(155.87f, -160.14f, -114.92f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); 
+
 // Keyframe Manager (modulo Isra) - Maneja todas las animaciones por keyframes
 KeyframeManager keyframeManager;
-
-// Ciclo Dia/Noche (modulo Isra) - Sistema de ciclo dia/noche
-CicloDiaNoche cicloDiaNoche;
-
-// Configuracion del ciclo dia/noche
-// Este valor controla la duracion del DIA (semicirculo superior)
-// El ciclo completo (dia + noche) durara el DOBLE de este valor
-// Ejemplo: duracionDia = 10.0f -> Dia: 10s, Noche: 10s, Total: 20s
-const float DURACION_DIA_SEGUNDOS = 10.0f; 
-
-// Control de tecla Z para pausar/reanudar ciclo dia/noche
-bool teclaZ_Presionada = false;
 
 // Escenario (modulo Ceci)
 Escenario_M escenario_m;
@@ -172,8 +185,7 @@ Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
 Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
 Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
 Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
-
-Skybox skybox;
+*/
 
 Material Material_opaco;
 
@@ -190,7 +202,6 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
-
 void CreateShaders()
 {
 	Shader* shader1 = new Shader();
@@ -205,7 +216,6 @@ int main()
 	mainWindow.Initialise();
 	CreateShaders();
 
-
 	//Posicion inicial de la camara
 	cameraTracker.Initialize(
 		glm::vec3(10.0f, 0.0f, -140.0f),  //Posicion Dev
@@ -214,12 +224,18 @@ int main()
 		-60.0f, 0.0f, 0.3f, 0.5f
 	);
 
+	// ============ CARGAR MODELOS ACTIVOS ============
 	// Cargar modelo del oceano
 	oceanModel.LoadModel("Models/ocean.obj");
 
 	// Cargar modelo de la isla
 	islandModel.LoadModel("Models/island.obj");
 
+	// Inicializar Jefe Maestro (modulo Isra)
+	masterChief.Initialize();
+
+	// ============ INICIALIZACIONES DESACTIVADAS ============
+	/*
 	// Inicializar vias del tren
 	viasTren.Initialize();
 
@@ -262,7 +278,7 @@ int main()
 	// Inicializar CageBallora (modulo Andrea)
 	cageBallora.Initialize();
 
-		// Inicializar Speakers (modulo Andrea)
+	// Inicializar Speakers (modulo Andrea)
 	speakers.Initialize();
 	speakers2.Initialize();
 
@@ -303,6 +319,7 @@ int main()
 	gramofono2.Initialize();
 	gramofono3.Initialize();
 	gramofono4.Initialize();
+	*/
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
@@ -321,13 +338,14 @@ int main()
 	// Radio orbital de 300 unidades
 	cicloDiaNoche.Inicializar(DURACION_DIA_SEGUNDOS, 300.0f);
 
+	// ============ LUCES DESACTIVADAS ============
+	/*
 	unsigned int spotLightCount = 0;
 	
 	// Configurar spotlights de las farolas (modulo Andrea)
 	farolasManager.SetupSpotLights(spotLights, spotLightCount, true);
 
 	// linterna ligada a la camara (desactivada)
-	/*
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		0.0f, 2.0f,
 		0.0f, 0.0f, 0.0f,
@@ -335,7 +353,6 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		5.0f);
 	spotLightCount++;
-	*/
 
 	// Luz roja al norte (Z negativo) y azul al sur (Z positivo)
 	unsigned int pointLightCount = 0;
@@ -355,6 +372,10 @@ int main()
 		0.0f, 10.0f, 200.0f,  // posicion sur
 		0.3f, 0.02f, 0.001f); // atenuacion
 	pointLightCount++;
+	*/
+
+	unsigned int spotLightCount = 0;
+	unsigned int pointLightCount = 0;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -381,9 +402,12 @@ int main()
 		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		Camera* camera = cameraTracker.GetCamera();
 
+		// ============ ACTUALIZACIONES DESACTIVADAS ============
+		/*
 		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
 		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
 		keyframeManager.Update(deltaTime);
+		*/
 
 		// Manejar control del ciclo dia/noche con tecla Z (modulo Isra)
 		if (mainWindow.getsKeys()[GLFW_KEY_Z] && !teclaZ_Presionada)
@@ -407,11 +431,14 @@ int main()
 		// Actualizar ciclo dia/noche (modulo Isra)
 		cicloDiaNoche.Actualizar(deltaTime);
 
-		// Obtener transformación de cámara según modo de grabación
-		glm::mat4 viewMatrix;
-		glm::vec3 eyePosition;
-		keyframeManager.GetCameraTransform(viewMatrix, eyePosition, 
-			camera->calculateViewMatrix(), camera->getCameraPosition());
+		// Actualizar animacion del Jefe Maestro (modulo Isra)
+		// La tecla flecha arriba activa la animacion de caminata
+		bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
+		masterChief.Update(isWalkingKeyPressed, deltaTime);
+
+		// Obtener transformación de cámara (sin keyframes activos, usa la cámara normal)
+		glm::mat4 viewMatrix = camera->calculateViewMatrix();
+		glm::vec3 eyePosition = camera->getCameraPosition();
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -430,18 +457,19 @@ int main()
 		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
+		// ============ LUCES DESACTIVADAS ============
+		/*
 		// Actualizar luces de faroles según estado (tecla L)
 		unsigned int currentSpotLightCount = 0;
 		farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
+		*/
 
 		// Configurar luces en el shader
 		shaderList[0].SetDirectionalLight(cicloDiaNoche.ObtenerLuzDireccional());
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-
-
-
+		// ============ RENDERIZADO DE ELEMENTOS ACTIVOS ============
 
 		// Oceano - por debajo del punto 0 (superficie de la isla)
 		model = glm::mat4(1.0);
@@ -465,10 +493,11 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		islandModel.RenderModel();
 
+		// Jefe Maestro en el centro de la isla
+		masterChief.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-
-
-
+		// ============ RENDERIZADOS DESACTIVADOS ============
+		/*
 		// Vias del tren (jerarquicamente sobre la isla)
 		viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
 
@@ -504,7 +533,6 @@ int main()
 
 		// Tren
 		tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-			
 			
 		// Escenario (modulo Andrea)
 		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
@@ -550,6 +578,7 @@ int main()
 		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		*/
 			
 
 		
