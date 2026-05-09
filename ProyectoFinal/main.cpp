@@ -62,6 +62,11 @@
 #include "Integrantes/Ceci/caliope.h"
 #include "Integrantes/Ceci/manometro.h"
 #include "Integrantes/Ceci/gramofono.h"
+#include "Integrantes/Ceci/miku.h"
+#include "Integrantes/Ceci/kalen.h"
+#include "Integrantes/Ceci/karin.h"
+#include "Integrantes/Ceci/cuervo.h"
+#include "Integrantes/Ceci/camara_interes.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -182,6 +187,21 @@ Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
 Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
 Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
 Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
+
+// Miku (modulo Ceci)
+Miku miku;
+
+// Kalen (modulo Ceci)
+Kalen kalen;
+
+// Karin (modulo Ceci)
+Karin karin;
+
+// Cuervo (modulo Ceci) - animacion de aleteo frente al gramofono 1
+Cuervo cuervo;
+
+// Camara de interes (modulo Ceci) - orbita alrededor del escenario de Miku, tecla C
+CamaraInteres camaraInteres;
 
 Material Material_opaco;
 
@@ -315,6 +335,18 @@ int main()
 	gramofono3.Initialize();
 	gramofono4.Initialize();
 
+	// Inicializar Miku (modulo Ceci)
+	miku.Initialize();
+
+	// Inicializar Kalen (modulo Ceci)
+	kalen.Initialize();
+
+	// Inicializar Karin (modulo Ceci)
+	karin.Initialize();
+
+	// Inicializar Cuervo (modulo Ceci)
+	cuervo.Initialize();
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
 	skyboxFaces.push_back("Textures/Skybox/CubemapL3.png");     // Left (Izquierda)
@@ -386,86 +418,84 @@ int main()
 		lastTime = now;
 
 		glfwPollEvents();
-		
-		// ========== SISTEMA DE CAMARAS ==========
-		// Actualizar camara con tracking de posicion
-		// Pasar la posicion del personaje para la camara en tercera persona
-		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), 
-			deltaTime, masterChief.GetPosition());
-		
-		// Obtener modo de camara actual
-		CameraMode cameraMode = cameraTracker.GetCameraMode();
-		
+
 		// ========== MOVIMIENTO DEL PERSONAJE ==========
-		// Solo mover el personaje cuando la camara en tercera persona esta activa
+		// Se procesa ANTES de actualizar la camara para que ThirdPersonCamera
+		// reciba la posicion ya actualizada del personaje en este frame.
+		// El modo de camara se consulta directamente del tracker (no cambia hasta Update).
+		CameraMode cameraMode = cameraTracker.GetCameraMode();
+
 		if (cameraMode == CameraMode::THIRD_PERSON)
 		{
 			ThirdPersonCamera* tpCamera = cameraTracker.GetThirdPersonCamera();
-			
-			// IMPORTANTE: El yaw de la cámara ES el yaw del personaje
-			// El mouse horizontal rota al personaje directamente
+
+			// El yaw del mouse (ya acumulado en el frame anterior) define la orientacion
 			float characterYaw = tpCamera->GetYaw();
 			masterChief.SetRotationY(characterYaw);
-			
-			// Calcular el vector forward del personaje basado en su yaw
-			// Debe coincidir con la fórmula de la cámara
+
+			// Vector forward del personaje (debe coincidir con la formula de ThirdPersonCamera)
 			float yawRadians = glm::radians(characterYaw);
 			glm::vec3 characterForward(-sin(yawRadians), 0.0f, -cos(yawRadians));
 			glm::vec3 characterRight = glm::normalize(glm::cross(characterForward, glm::vec3(0.0f, 1.0f, 0.0f)));
-			
-			// Variables de movimiento
+
 			glm::vec3 moveDirection(0.0f);
 			bool isMoving = false;
-			
-			// Teclas de flecha para mover el personaje
-			// El movimiento es relativo a la orientación del personaje
+
 			if (mainWindow.getsKeys()[GLFW_KEY_UP])
 			{
-				// Avanzar en la dirección que mira el personaje
 				moveDirection += characterForward;
 				isMoving = true;
 			}
 			if (mainWindow.getsKeys()[GLFW_KEY_DOWN])
 			{
-				// Retroceder
 				moveDirection -= characterForward;
 				isMoving = true;
 			}
 			if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
 			{
-				// Strafe izquierda
 				moveDirection -= characterRight;
 				isMoving = true;
 			}
 			if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
 			{
-				// Strafe derecha
 				moveDirection += characterRight;
 				isMoving = true;
 			}
-			
-			// Normalizar direccion si hay movimiento diagonal
+
 			if (isMoving && glm::length(moveDirection) > 0.0f)
 			{
 				moveDirection = glm::normalize(moveDirection);
-				
-				// Mover el personaje (velocidad similar a la camara de desarrollo: 0.3f)
 				masterChief.Move(moveDirection, deltaTime, 0.3f);
 			}
-			
-			// Actualizar animacion del personaje (camina si se presiona alguna flecha)
+
 			masterChief.Update(isMoving, deltaTime);
 		}
 		else
 		{
-			// En modo desarrollo, la animacion se activa con flecha arriba (comportamiento original)
+			// En modo desarrollo la animacion se activa con flecha arriba
 			bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
 			masterChief.Update(isWalkingKeyPressed, deltaTime);
 		}
-		
+
+		// ========== SISTEMA DE CAMARAS ==========
+		// Se actualiza DESPUES del movimiento del personaje para que la camara
+		// en tercera persona reciba la posicion ya actualizada este frame.
+		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(),
+			deltaTime, masterChief.GetPosition());
+
 		// Obtener transformación de cámara activa
 		glm::mat4 viewMatrix = cameraTracker.GetViewMatrix();
 		glm::vec3 eyePosition = cameraTracker.GetCameraPosition();
+
+		// ============ CAMARA DE INTERES (modulo Ceci) ============
+		// Tecla C activa/desactiva la camara orbital sobre el escenario de Miku
+		camaraInteres.HandleInput(mainWindow.getsKeys());
+		camaraInteres.Update(deltaTime);
+		if (camaraInteres.IsActiva())
+		{
+			viewMatrix   = camaraInteres.GetViewMatrix();
+			eyePosition  = camaraInteres.GetPosition();
+		}
 
 		// ============ ACTUALIZACIONES ACTIVADAS ============
 		// Manejar input y actualizar animaciones por keyframes (modulo Isra)
@@ -602,6 +632,18 @@ int main()
 		gramofono2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		gramofono3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		gramofono4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Miku (modulo Ceci)
+		miku.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Kalen (modulo Ceci)
+		kalen.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Karin (modulo Ceci)
+		karin.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
+		// Cuervo (modulo Ceci) - aleteo animado frente al gramofono 1
+		cuervo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
 		// CageFreddy (modulo Andrea)
 		cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
