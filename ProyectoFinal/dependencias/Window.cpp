@@ -43,9 +43,9 @@ int Window::Initialise()
 	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
 	
-	// Ventana ocupa mitad derecha con 5% de margen arriba y abajo
-	width  = (GLint)((float)videoMode->width  * 0.5f);  // 50% del ancho (mitad derecha)
-	height = (GLint)((float)videoMode->height * 0.9f);  // 90% del alto (5% arriba, 5% abajo)
+	// Ventana ocupa 95% del ancho y 80% del alto, centrada
+	width  = (GLint)((float)videoMode->width  * 0.95f);  // 95% del ancho
+	height = (GLint)((float)videoMode->height * 0.80f);  // 80% del alto
 
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
@@ -90,11 +90,11 @@ int Window::Initialise()
 	//Callback para detectar que se est� usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
 
-	// Posicionar la ventana en la mitad derecha del monitor con 5% de margen arriba
+	// Centrar la ventana en el monitor
 	int monitorX, monitorY;
 	glfwGetMonitorPos(primaryMonitor, &monitorX, &monitorY);
-	int windowPosX = monitorX + (videoMode->width / 2);  // Mitad derecha
-	int windowPosY = monitorY + (int)((float)videoMode->height * 0.05f);  // 5% de margen arriba
+	int windowPosX = monitorX + (videoMode->width - width) / 2;    // Centrado horizontal
+	int windowPosY = monitorY + (videoMode->height - height) / 2;  // Centrado vertical
 	glfwSetWindowPos(mainWindow, windowPosX, windowPosY);
 
 	// Centrar el mouse en la ventana al iniciar
