@@ -32,6 +32,7 @@
 // Solo modulos esenciales
 #include "Integrantes/Isra/camara_position.h"
 #include "Integrantes/Isra/iluminacion_dia_noche.h"
+#include "Integrantes/Isra/audio_universos.h"
 //#include "Integrantes/Isra/personaje_principal.h"
 
 // MODULOS ACTIVADOS - Solo faro y torre forerunner para pruebas
@@ -42,7 +43,7 @@
 //#include "Integrantes/Isra/grunt.h"
 //#include "Integrantes/Isra/maquina_vapor.h"
 #include "Integrantes/Isra/faro.h"
-//#include "Integrantes/Isra/gato_gigante.h"
+#include "Integrantes/Isra/gato_gigante.h"
 //#include "Integrantes/Isra/big_raven.h"
 //#include "Integrantes/Isra/halo_pelican.h"
 //#include "Integrantes/Isra/tren.h"
@@ -109,7 +110,7 @@ HaloForerunner haloForerunner;
 //GruntHalo gruntHalo;
 //MaquinaVapor maquinaVapor;
 Faro faro;
-//GatoGigante gatoGigante;
+GatoGigante gatoGigante;
 //BigRaven bigRaven;
 //HaloPelican haloPelican;
 //Tren tren;
@@ -199,7 +200,7 @@ int main()
 	//gruntHalo.Initialize();
 	//maquinaVapor.Initialize();
 	faro.Initialize();
-	//gatoGigante.Initialize();
+	gatoGigante.Initialize();
 	//bigRaven.Initialize();
 	//haloPelican.Initialize();
 	//tren.Initialize();
@@ -247,6 +248,15 @@ int main()
 	// El ciclo completo (dia + noche) durara el doble
 	// Radio orbital de 300 unidades
 	cicloDiaNoche.Inicializar(DURACION_DIA_SEGUNDOS, 300.0f);
+
+	// Inicializar sistema de audio posicional (modulo Isra)
+	printf("\n========================================\n");
+	printf("Inicializando sistema de audio...\n");
+	printf("========================================\n");
+	if (!initAudioSystem()) {
+		printf("ADVERTENCIA: Sistema de audio no pudo inicializarse completamente\n");
+	}
+	printf("========================================\n\n");
 
 	// ============ LUCES ACTIVADAS ============
 	unsigned int spotLightCount = 0;
@@ -402,6 +412,9 @@ int main()
 		// Actualizar rotacion de la luz del faro (modulo Isra)
 		faro.Update(deltaTime);
 
+		// Actualizar sistema de audio posicional (modulo Isra)
+		updateAudio(eyePosition);
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		skybox.DrawSkybox(viewMatrix, projection);
@@ -474,7 +487,9 @@ int main()
 		// Faro
 		faro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-		//gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		// Gato gigante en el centro de las vias
+		gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+
 		//bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		//entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		//haloPelican.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
@@ -509,6 +524,11 @@ int main()
 		
 		glUseProgram(0);		mainWindow.swapBuffers();
 	}
+
+	// Limpiar sistema de audio antes de cerrar (modulo Isra)
+	printf("\n========================================\n");
+	cleanupAudioSystem();
+	printf("========================================\n");
 
 	return 0;
 }
