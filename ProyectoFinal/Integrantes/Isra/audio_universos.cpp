@@ -92,7 +92,7 @@ UniverseZone zoneCeci(
 
 // Zona Isra (Halo)
 UniverseZone zoneIsra(
-    glm::vec3(-11.81f, 3.92f, 82.06f),      // SupIzq
+    glm::vec3(-80.81f, 3.92f, 40.06f),      // SupIzq
     glm::vec3(72.80f, 2.54f, 64.03f),       // SupDer
     glm::vec3(91.01f, 3.97f, 119.99f),      // InfDer
     glm::vec3(2.17f, 0.70f, 118.05f),       // InfIzq

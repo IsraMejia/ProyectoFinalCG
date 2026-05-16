@@ -29,45 +29,43 @@
 #include "dependencias/SpotLight.h"
 #include "dependencias/Material.h"
 
-// Solo modulos esenciales
+// Todos los modulos activados
 #include "Integrantes/Isra/camara_position.h"
 #include "Integrantes/Isra/iluminacion_dia_noche.h"
 #include "Integrantes/Isra/audio_universos.h"
-//#include "Integrantes/Isra/personaje_principal.h"
-
-// MODULOS ACTIVADOS - Solo faro y torre forerunner para pruebas
-//#include "Integrantes/Isra/vias_tren.h"
-//#include "Integrantes/Isra/estacion_tren.h"
+#include "Integrantes/Isra/personaje_principal.h"
+#include "Integrantes/Isra/vias_tren.h"
+#include "Integrantes/Isra/estacion_tren.h"
 #include "Integrantes/Isra/torreforerunner.h"
-//#include "Integrantes/Isra/elite.h"
-//#include "Integrantes/Isra/grunt.h"
-//#include "Integrantes/Isra/maquina_vapor.h"
+#include "Integrantes/Isra/elite.h"
+#include "Integrantes/Isra/grunt.h"
+#include "Integrantes/Isra/maquina_vapor.h"
 #include "Integrantes/Isra/faro.h"
 #include "Integrantes/Isra/gato_gigante.h"
-//#include "Integrantes/Isra/big_raven.h"
-//#include "Integrantes/Isra/halo_pelican.h"
-//#include "Integrantes/Isra/tren.h"
-//#include "Integrantes/Isra/KF_por_codigo.h"
-//#include "Integrantes/Isra/keyframes_main.h"
-//#include "Integrantes/Andrea/escenario.h"
-//#include "Integrantes/Andrea/cage_freddy.h"
-//#include "Integrantes/Andrea/cage_ballora.h"
-//#include "Integrantes/Andrea/speakers.h"
-//#include "Integrantes/Andrea/sala_monitores.h"
-//#include "Integrantes/Andrea/funtime_foxy.h"
-//#include "Integrantes/Andrea/farola.h"
-//#include "Integrantes/Andrea/farolas.h"
-//#include "Integrantes/Andrea/arbol1.h"
-//#include "Integrantes/Andrea/entrada.h"
-//#include "Integrantes/Ceci/escenario_M.h"
-//#include "Integrantes/Ceci/caliope.h"
-//#include "Integrantes/Ceci/manometro.h"
-//#include "Integrantes/Ceci/gramofono.h"
-//#include "Integrantes/Ceci/miku.h"
-//#include "Integrantes/Ceci/kalen.h"
-//#include "Integrantes/Ceci/karin.h"
-//#include "Integrantes/Ceci/cuervo.h"
-//#include "Integrantes/Ceci/camara_interes.h"
+#include "Integrantes/Isra/big_raven.h"
+#include "Integrantes/Isra/halo_pelican.h"
+#include "Integrantes/Isra/tren.h"
+#include "Integrantes/Isra/KF_por_codigo.h"
+#include "Integrantes/Isra/keyframes_main.h"
+#include "Integrantes/Andrea/escenario.h"
+#include "Integrantes/Andrea/cage_freddy.h"
+#include "Integrantes/Andrea/cage_ballora.h"
+#include "Integrantes/Andrea/speakers.h"
+#include "Integrantes/Andrea/sala_monitores.h"
+#include "Integrantes/Andrea/funtime_foxy.h"
+#include "Integrantes/Andrea/farola.h"
+#include "Integrantes/Andrea/farolas.h"
+#include "Integrantes/Andrea/arbol1.h"
+#include "Integrantes/Andrea/entrada.h"
+#include "Integrantes/Ceci/escenario_M.h"
+#include "Integrantes/Ceci/caliope.h"
+#include "Integrantes/Ceci/manometro.h"
+#include "Integrantes/Ceci/gramofono.h"
+#include "Integrantes/Ceci/miku.h"
+#include "Integrantes/Ceci/kalen.h"
+#include "Integrantes/Ceci/karin.h"
+#include "Integrantes/Ceci/cuervo.h"
+#include "Integrantes/Ceci/camara_interes.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -85,7 +83,7 @@ Model oceanModel;
 Model islandModel;
 
 // Jefe Maestro (modulo Isra) - Personaje principal con modelado jerarquico
-//MasterChief masterChief;
+MasterChief masterChief;
 
 // Ciclo Dia/Noche (modulo Isra) - Sistema de ciclo dia/noche
 CicloDiaNoche cicloDiaNoche;
@@ -101,48 +99,47 @@ bool teclaZ_Presionada = false;
 
 Skybox skybox;
 
-// ============ ELEMENTOS ACTIVADOS ============
-// Solo faro y torre forerunner para pruebas
-//ViasTren viasTren;
-//EstacionTren estacionTren;
+// ============ TODOS LOS ELEMENTOS ACTIVADOS ============
+ViasTren viasTren;
+EstacionTren estacionTren;
 HaloForerunner haloForerunner;
-//EliteHalo eliteHalo;
-//GruntHalo gruntHalo;
-//MaquinaVapor maquinaVapor;
+EliteHalo eliteHalo;
+GruntHalo gruntHalo;
+MaquinaVapor maquinaVapor;
 Faro faro;
 GatoGigante gatoGigante;
-//BigRaven bigRaven;
-//HaloPelican haloPelican;
-//Tren tren;
-//Train_Keyframe_System trainAnimSystem;
-//Escenario escenario;
-//CageFreddy cageFreddy;
-//CageBallora cageBallora;
-//Speakers speakers;
-//Speakers speakers2(glm::vec3(-76.58f, -3.0f, -8.39f));
-//SalaMonitores salaMonitores;
-//FuntimeFoxy funtimeFoxy;
-//FarolasManager farolasManager;
-//Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-//Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-//Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-//Arbol1 arbol4(glm::vec3(41.0f, -3.0f, 130.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));  
-//Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-//Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
-//Entrada entrada(glm::vec3(155.87f, -160.14f, -114.92f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); 
-//KeyframeManager keyframeManager;
-//Escenario_M escenario_m;
-//Caliope caliope;
-//Manometro manometro;
-//Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
-//Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
-//Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
-//Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
-//Miku miku;
-//Kalen kalen;
-//Karin karin;
-//Cuervo cuervo;
-//CamaraInteres camaraInteres;
+BigRaven bigRaven;
+HaloPelican haloPelican;
+Tren tren;
+Train_Keyframe_System trainAnimSystem;
+Escenario escenario;
+CageFreddy cageFreddy;
+CageBallora cageBallora;
+Speakers speakers;
+Speakers speakers2(glm::vec3(-76.58f, -3.0f, -8.39f));
+SalaMonitores salaMonitores;
+FuntimeFoxy funtimeFoxy;
+FarolasManager farolasManager;
+Arbol1 arbol1(glm::vec3(30.0f, -3.0f, 40.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol2(glm::vec3(107.20f, -2.0f, 21.70f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol3(glm::vec3(-40.0f, -3.0f, 30.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol4(glm::vec3(41.0f, -3.0f, 130.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));  
+Arbol1 arbol5(glm::vec3(10.0f, -3.0f, -50.0f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Arbol1 arbol6(glm::vec3(-83.00f, -2.0f, -80.15f), 0.0f, glm::vec3(0.5f, 0.5f, 0.5f));
+Entrada entrada(glm::vec3(155.87f, -160.14f, -114.92f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f)); 
+KeyframeManager keyframeManager;
+Escenario_M escenario_m;
+Caliope caliope;
+Manometro manometro;
+Gramofono gramofono1(glm::vec3( 66.62f, -1.95f,  35.20f),   0.0f);
+Gramofono gramofono2(glm::vec3( -2.21f, -1.58f, -83.83f),   0.0f);
+Gramofono gramofono3(glm::vec3( 66.24f, -1.60f, -55.17f),   0.0f);
+Gramofono gramofono4(glm::vec3(-51.90f, -0.68f,  32.54f),   0.0f);
+Miku miku;
+Kalen kalen;
+Karin karin;
+Cuervo cuervo;
+CamaraInteres camaraInteres;
 
 Material Material_opaco;
 
@@ -189,48 +186,47 @@ int main()
 	islandModel.LoadModel("Models/island.obj");
 
 	// Inicializar Jefe Maestro (modulo Isra)
-	//masterChief.Initialize();
+	masterChief.Initialize();
 
-	// ============ INICIALIZACIONES ACTIVADAS ============
-	// Solo faro y torre forerunner para pruebas
-	//viasTren.Initialize();
-	//estacionTren.Initialize();
+	// ============ TODAS LAS INICIALIZACIONES ACTIVADAS ============
+	viasTren.Initialize();
+	estacionTren.Initialize();
 	haloForerunner.Initialize();
-	//eliteHalo.Initialize();
-	//gruntHalo.Initialize();
-	//maquinaVapor.Initialize();
+	eliteHalo.Initialize();
+	gruntHalo.Initialize();
+	maquinaVapor.Initialize();
 	faro.Initialize();
 	gatoGigante.Initialize();
-	//bigRaven.Initialize();
-	//haloPelican.Initialize();
-	//tren.Initialize();
-	//escenario.Initialize();
-	//cageFreddy.Initialize();
-	//cageBallora.Initialize();
-	//speakers.Initialize();
-	//speakers2.Initialize();
-	//salaMonitores.Initialize();
-	//funtimeFoxy.Initialize();
-	//farolasManager.Initialize();
-	//arbol1.Initialize();
-	//arbol2.Initialize();
-	//arbol3.Initialize();
-	//arbol4.Initialize();
-	//arbol5.Initialize();
-	//arbol6.Initialize();
-	//entrada.Initialize();
-	//keyframeManager.Initialize(&cameraTracker, &haloPelican, &tren);
-	//escenario_m.Initialize();
-	//caliope.Initialize();
-	//manometro.Initialize();
-	//gramofono1.Initialize();
-	//gramofono2.Initialize();
-	//gramofono3.Initialize();
-	//gramofono4.Initialize();
-	//miku.Initialize();
-	//kalen.Initialize();
-	//karin.Initialize();
-	//cuervo.Initialize();
+	bigRaven.Initialize();
+	haloPelican.Initialize();
+	tren.Initialize();
+	escenario.Initialize();
+	cageFreddy.Initialize();
+	cageBallora.Initialize();
+	speakers.Initialize();
+	speakers2.Initialize();
+	salaMonitores.Initialize();
+	funtimeFoxy.Initialize();
+	farolasManager.Initialize();
+	arbol1.Initialize();
+	arbol2.Initialize();
+	arbol3.Initialize();
+	arbol4.Initialize();
+	arbol5.Initialize();
+	arbol6.Initialize();
+	entrada.Initialize();
+	keyframeManager.Initialize(&cameraTracker, &haloPelican, &tren);
+	escenario_m.Initialize();
+	caliope.Initialize();
+	manometro.Initialize();
+	gramofono1.Initialize();
+	gramofono2.Initialize();
+	gramofono3.Initialize();
+	gramofono4.Initialize();
+	miku.Initialize();
+	kalen.Initialize();
+	karin.Initialize();
+	cuervo.Initialize();
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/CubemapL1.png");     // Right (Derecha)
@@ -258,14 +254,14 @@ int main()
 	}
 	printf("========================================\n\n");
 
-	// ============ LUCES ACTIVADAS ============
+	// ============ TODAS LAS LUCES ACTIVADAS ============
 	unsigned int spotLightCount = 0;
 	
-	// Configurar spotlights de las farolas (modulo Andrea) - COMENTADO PARA PRUEBAS
-	//farolasManager.SetupSpotLights(spotLights, spotLightCount, true);
+	// Configurar spotlights de las farolas (modulo Andrea)
+	farolasManager.SetupSpotLights(spotLights, spotLightCount, true);
 
 	// Luz del faro - spotlight rotatorio amarillo
-	spotLights[0] = *faro.GetLight();
+	spotLights[spotLightCount] = *faro.GetLight();
 	spotLightCount++;
 
 	// linterna ligada a la camara (desactivada)
@@ -321,71 +317,71 @@ int main()
 
 		glfwPollEvents();
 
-		// ========== MOVIMIENTO DEL PERSONAJE ========== COMENTADO PARA PRUEBAS
-		//CameraMode cameraMode = cameraTracker.GetCameraMode();
-		//if (cameraMode == CameraMode::THIRD_PERSON)
-		//{
-		//	ThirdPersonCamera* tpCamera = cameraTracker.GetThirdPersonCamera();
-		//	float characterYaw = tpCamera->GetYaw();
-		//	masterChief.SetRotationY(characterYaw);
-		//	float yawRadians = glm::radians(characterYaw);
-		//	glm::vec3 characterForward(-sin(yawRadians), 0.0f, -cos(yawRadians));
-		//	glm::vec3 characterRight = glm::normalize(glm::cross(characterForward, glm::vec3(0.0f, 1.0f, 0.0f)));
-		//	glm::vec3 moveDirection(0.0f);
-		//	bool isMoving = false;
-		//	if (mainWindow.getsKeys()[GLFW_KEY_UP])
-		//	{
-		//		moveDirection += characterForward;
-		//		isMoving = true;
-		//	}
-		//	if (mainWindow.getsKeys()[GLFW_KEY_DOWN])
-		//	{
-		//		moveDirection -= characterForward;
-		//		isMoving = true;
-		//	}
-		//	if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
-		//	{
-		//		moveDirection -= characterRight;
-		//		isMoving = true;
-		//	}
-		//	if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
-		//	{
-		//		moveDirection += characterRight;
-		//		isMoving = true;
-		//	}
-		//	if (isMoving && glm::length(moveDirection) > 0.0f)
-		//	{
-		//		moveDirection = glm::normalize(moveDirection);
-		//		masterChief.Move(moveDirection, deltaTime, 0.3f);
-		//	}
-		//	masterChief.Update(isMoving, deltaTime);
-		//}
-		//else
-		//{
-		//	bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
-		//	masterChief.Update(isWalkingKeyPressed, deltaTime);
-		//}
+		// ========== MOVIMIENTO DEL PERSONAJE ==========
+		CameraMode cameraMode = cameraTracker.GetCameraMode();
+		if (cameraMode == CameraMode::THIRD_PERSON)
+		{
+			ThirdPersonCamera* tpCamera = cameraTracker.GetThirdPersonCamera();
+			float characterYaw = tpCamera->GetYaw();
+			masterChief.SetRotationY(characterYaw);
+			float yawRadians = glm::radians(characterYaw);
+			glm::vec3 characterForward(-sin(yawRadians), 0.0f, -cos(yawRadians));
+			glm::vec3 characterRight = glm::normalize(glm::cross(characterForward, glm::vec3(0.0f, 1.0f, 0.0f)));
+			glm::vec3 moveDirection(0.0f);
+			bool isMoving = false;
+			if (mainWindow.getsKeys()[GLFW_KEY_UP])
+			{
+				moveDirection += characterForward;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_DOWN])
+			{
+				moveDirection -= characterForward;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
+			{
+				moveDirection -= characterRight;
+				isMoving = true;
+			}
+			if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
+			{
+				moveDirection += characterRight;
+				isMoving = true;
+			}
+			if (isMoving && glm::length(moveDirection) > 0.0f)
+			{
+				moveDirection = glm::normalize(moveDirection);
+				masterChief.Move(moveDirection, deltaTime, 0.3f);
+			}
+			masterChief.Update(isMoving, deltaTime);
+		}
+		else
+		{
+			bool isWalkingKeyPressed = mainWindow.getsKeys()[GLFW_KEY_UP];
+			masterChief.Update(isWalkingKeyPressed, deltaTime);
+		}
 
 		// ========== SISTEMA DE CAMARAS ==========
 		cameraTracker.Update(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(),
-			deltaTime, glm::vec3(0.0f)); // Posicion dummy ya que no hay personaje
+			deltaTime, masterChief.GetPosition());
 
 		// Obtener transformación de cámara activa
 		glm::mat4 viewMatrix = cameraTracker.GetViewMatrix();
 		glm::vec3 eyePosition = cameraTracker.GetCameraPosition();
 
-		// ============ CAMARA DE INTERES (modulo Ceci) ============ COMENTADO PARA PRUEBAS
-		//camaraInteres.HandleInput(mainWindow.getsKeys());
-		//camaraInteres.Update(deltaTime);
-		//if (camaraInteres.IsActiva())
-		//{
-		//	viewMatrix   = camaraInteres.GetViewMatrix();
-		//	eyePosition  = camaraInteres.GetPosition();
-		//}
+		// ============ CAMARA DE INTERES (modulo Ceci) ============
+		camaraInteres.HandleInput(mainWindow.getsKeys());
+		camaraInteres.Update(deltaTime);
+		if (camaraInteres.IsActiva())
+		{
+			viewMatrix   = camaraInteres.GetViewMatrix();
+			eyePosition  = camaraInteres.GetPosition();
+		}
 
-		// ============ ACTUALIZACIONES ACTIVADAS ============ COMENTADO PARA PRUEBAS
-		//keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
-		//keyframeManager.Update(deltaTime);
+		// ============ TODAS LAS ACTUALIZACIONES ACTIVADAS ============
+		keyframeManager.HandleInput(mainWindow.getsKeys(), mainWindow.getXChange(), mainWindow.getYChange(), deltaTime);
+		keyframeManager.Update(deltaTime);
 
 		// Manejar control del ciclo dia/noche con tecla Z (modulo Isra)
 		if (mainWindow.getsKeys()[GLFW_KEY_Z] && !teclaZ_Presionada)
@@ -432,18 +428,19 @@ int main()
 		glUniformMatrix4fv(uniformView,       1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniform3f(uniformEyePosition, eyePosition.x, eyePosition.y, eyePosition.z);
 
-		// ============ LUCES ACTIVADAS ============
-		// Actualizar luces de faroles según estado (tecla L) - COMENTADO PARA PRUEBAS
-		//unsigned int currentSpotLightCount = 0;
-		//farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
+		// ============ TODAS LAS LUCES ACTIVADAS ============
+		// Actualizar luces de faroles según estado (tecla L)
+		unsigned int currentSpotLightCount = 0;
+		farolasManager.SetupSpotLights(spotLights, currentSpotLightCount, mainWindow.getFarolesEncendidos());
 
 		// Actualizar spotlight del faro con la nueva direccion rotada
-		spotLights[0] = *faro.GetLight();
+		spotLights[currentSpotLightCount] = *faro.GetLight();
+		currentSpotLightCount++;
 
 		// Configurar luces en el shader
 		shaderList[0].SetDirectionalLight(cicloDiaNoche.ObtenerLuzDireccional());
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		shaderList[0].SetSpotLights(spotLights, currentSpotLightCount);
 
 		// ============ RENDERIZADO DE ELEMENTOS ACTIVOS ============
 
@@ -469,56 +466,47 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		islandModel.RenderModel();
 
-		// Jefe Maestro en el centro de la isla - COMENTADO PARA PRUEBAS
-		//masterChief.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		// Jefe Maestro en el centro de la isla
+		masterChief.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 
-		// ============ RENDERIZADOS ACTIVADOS ============
-		// Solo faro y torre forerunner para pruebas
-		//viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
-		//estacionTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		
-		// Forerunner en el cuadrante sur-este de la isla
+		// ============ TODOS LOS RENDERIZADOS ACTIVADOS ============
+		viasTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, islandTransform, toRadians);
+		estacionTren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		haloForerunner.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		
-		//eliteHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//gruntHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//maquinaVapor.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-
-		// Faro
+		eliteHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gruntHalo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		maquinaVapor.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 		faro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-
-		// Gato gigante en el centro de las vias
 		gatoGigante.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-
-		//bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//haloPelican.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//escenario_m.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
-		//manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
-		//gramofono1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//gramofono2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//gramofono3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//gramofono4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//miku.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//kalen.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//karin.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//cuervo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//cageBallora.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//speakers.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//speakers2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//salaMonitores.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//funtimeFoxy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//farolasManager.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
-		//arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		bigRaven.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		entrada.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		haloPelican.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		tren.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		escenario.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		escenario_m.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		caliope.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
+		manometro.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, 0, toRadians, deltaTime);
+		gramofono1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		gramofono4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		miku.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		kalen.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		karin.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		cuervo.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		cageFreddy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		cageBallora.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		speakers.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		speakers2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		salaMonitores.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		funtimeFoxy.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		farolasManager.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol1.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol2.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol3.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol4.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol5.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
+		arbol6.Render(uniformModel, uniformColor, uniformSpecularIntensity, uniformShininess, toRadians);
 			
 
 		
