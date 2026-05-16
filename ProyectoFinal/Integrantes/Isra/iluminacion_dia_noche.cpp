@@ -32,8 +32,8 @@ void CicloDiaNoche::Inicializar(float duracionDia, float radioOrbita)
     );
     
     luzNoche = DirectionalLight(
-        0.7f, 0.8f, 1.0f,  // color azul-blanco suave
-        0.15f, 0.24f,      // ambient y diffuse al 30% de la luz de dia (0.5*0.3=0.15, 0.8*0.3=0.24)
+        0.75f, 0.85f, 1.50f,  // color azul-blanco suave
+        0.75f, 0.9f,      // ambient y diffuse al 50% mas fuerte (0.5*1.5=0.75, 0.6*1.5=0.9)
         0.0f, 1.0f, 0.0f   // direccion inicial (apunta hacia arriba)
     );
     
@@ -128,10 +128,10 @@ void CicloDiaNoche::ActualizarLuces()
     
     if (posicionLuzNoche.y > 0.0f)
     {
-        // La luz de noche esta arriba - encendida con intensidad suave (30% de la luz de dia)
+        // La luz de noche esta arriba - encendida con intensidad visible
         luzNoche = DirectionalLight(
-            0.7f, 0.8f, 1.0f,  // color azul-blanco suave
-            0.15f, 0.24f,      // ambient y diffuse al 30% de la luz de dia (0.5*0.3=0.15, 0.8*0.3=0.24)
+            0.6f, 0.7f, 1.0f,  // color azul-blanco suave (mas saturado)
+            0.4f, 0.6f,        // AJUSTABLE: ambient y diffuse mas fuertes para que sea visible (antes: 0.15, 0.24)
             direccionNoche.x, direccionNoche.y, direccionNoche.z
         );
     }
@@ -175,10 +175,10 @@ void CicloDiaNoche::CombinarLuces()
         glm::vec3 centro(0.0f, 0.0f, 0.0f);
         direccionFinal = glm::normalize(centro - posicionLuzNoche);
         
-        // Color azul-blanco de noche con intensidad suave (30% de la luz de dia)
-        colorFinal = glm::vec3(0.7f, 0.8f, 1.0f);
-        ambientFinal = 0.15f;  // 30% de la luz de dia
-        diffuseFinal = 0.24f;  // 30% de la luz de dia
+        // Color azul-blanco de noche con intensidad visible
+        colorFinal = glm::vec3(0.6f, 0.7f, 1.0f);  // AJUSTABLE: Color azul mas saturado
+        ambientFinal = 0.4f;  // AJUSTABLE: Intensidad ambiental (antes: 0.15)
+        diffuseFinal = 0.6f;  // AJUSTABLE: Intensidad difusa (antes: 0.24)
     }
     
     // Crear la luz combinada
